@@ -1,0 +1,14 @@
+VAGRANTFILE_API_VERSION = "2"
+Vagrant.configure("2") do |config|
+  config.vm.box = "hashicorp/bionic64"
+  config.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--memory", "4096"]
+    vb.customize ["modifyvm", :id, "--cpus", "2"]
+  end
+  config.vm.provision "shell", path: "coldstart.sh"
+  config.vm.synced_folder "../salt/cloud.profiles.d", "/etc/salt/cloud.profiles.d", owner: "root", group: "root", :mount_options => ["ro"]
+  config.vm.synced_folder "../salt/cloud.providers.d", "/etc/salt/cloud.providers.d", owner: "root", group: "root", :mount_options => ["ro"]
+  config.vm.synced_folder "../salt/master.d", "/etc/salt/master.d", owner: "root", group: "root", :mount_options => ["ro"]
+  config.vm.synced_folder "../salt/states", "/srv/salt", owner: "root", group: "root", :mount_options => ["ro"]
+  config.vm.synced_folder "../salt/pillar", "/srv/pillar", owner: "root", group: "root", :mount_options => ["ro"]
+end
