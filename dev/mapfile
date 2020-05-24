@@ -1,0 +1,28 @@
+lxc-xenial:
+  - master:
+      make_master: True
+  # - forum:
+  #     minion:
+  #       log_level: debug
+  #     grains:
+  #       role: forum
+  # - mail:
+  #     minion:
+  #       log_level: debug
+  #     grains:
+  #       role: mailserver
+  # - keycloak:
+  #     minion:
+  #       log_level: debug
+  #     grains:
+  #       role: identity
+  # - web1:
+  #     minion:
+  #       log_level: debug
+  #     grains:
+  #       role: web
+  # - web2:
+  #     minion:
+  #       log_level: debug
+  #     grains:
+  #       role: web

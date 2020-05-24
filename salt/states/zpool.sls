@@ -1,3 +1,6 @@
+include:
+  - lxd
+
 # Create 3 GB ZFS pool for postgresql
 dd if=/dev/zero of=/var/lib/lxd/disks/pgdata.img bs=100M count=30:
   cmd.run:
@@ -12,3 +15,5 @@ pgdata.img:
         comment: Pool for most lxc images
     - layout:
         - /var/lib/lxd/disks/pgdata.img
+    - require_in:
+        - lxd.containers

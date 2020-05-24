@@ -59,106 +59,143 @@ lxd:
           require:
             - lxd_profile: lxd_profile_local_autostart
             - lxd_profile: lxd_profile_local_basics
-      postgres:
-        running: True
-        source: xenial/amd64
-        profiles:
-          - default
-          - basics
-          - autostart
-          - pgdata
-        config:
-          boot.autostart.priority: 100
-        opts:
-          require:
-            - lxd_profile: lxd_profile_local_autostart
-            - lxd_profile: lxd_profile_local_pgdata
-            - lxd_profile: lxd_profile_local_basics
-      redis:
-        running: True
-        source: xenial/amd64
-        profiles:
-          - default
-          - basics
-          - autostart
-        config:
-          boot.autostart.priority: 100
-        opts:
-          require:
-            - lxd_profile: lxd_profile_local_autostart
-            - lxd_profile: lxd_profile_local_basics
-      mail:
-        running: True
-        source: xenial/amd64
-        profiles:
-          - default
-          - basics
-          - autostart
-          - docker
-        config:
-          boot.autostart.priority: 500
-        opts:
-          require:
-            - lxd_profile: lxd_profile_local_autostart
-            - lxd_profile: lxd_profile_local_basics
-            - lxd_profile: lxd_profile_local_docker
-      keycloak:
-        running: True
-        source: xenial/amd64
-        profiles:
-          - default
-          - basics
-          - autostart
-          - docker
-        config:
-          boot.autostart.priority: 10
-        opts:
-          require:
-            - lxd_profile: lxd_profile_local_autostart
-            - lxd_profile: lxd_profile_local_basics
-            - lxd_profile: lxd_profile_local_docker
-      web:
-        running: True
-        source: xenial/amd64
-        profiles:
-          - default
-          - basics
-          - autostart
-          - docker
-        config:
-          boot.autostart.priority: 2000
-        opts:
-          require:
-            - lxd_profile: lxd_profile_local_autostart
-            - lxd_profile: lxd_profile_local_basics
-            - lxd_profile: lxd_profile_local_docker
-      discourse:
-        running: True
-        source: xenial/amd64
-        profiles:
-          - default
-          - basics
-          - autostart
-          - docker
-        config:
-          boot.autostart.priority: 2000
-        opts:
-          require:
-            - lxd_profile: lxd_profile_local_autostart
-            - lxd_profile: lxd_profile_local_basics
-            - lxd_profile: lxd_profile_local_docker
-      bastion:
-        running: True
-        source: xenial/amd64
-        profiles:
-          - default
-          - basics
-          - autostart
-          - docker
-        config:
-          boot.autostart.priority: 100
-        opts:
-          require:
-            - lxd_profile: lxd_profile_local_autostart
-            - lxd_profile: lxd_profile_local_basics
-            - lxd_profile: lxd_profile_local_docker
+        bootstrap_scripts:
+          - cmd: [ '/bin/sleep', '10' ]
+          - src: salt://lxd/scripts/lxd_insecure_ssh.sh
+            dst: /root/lxd_insecure_ssh.sh
+            cmd: [ '/root/lxd_insecure_ssh.sh' ]
+          # - cmd: [ '/bin/sleep', '10' ]
+          # - cmd: [ '/usr/bin/apt-get', 'update' ]
+          # - cmd: [ '/usr/bin/apt-get', 'install', '-y', 'openssh-server' ]
+          # - cmd: [ '/bin/sed', '-i', '-e', 's/^#* *PermitRootLogin .*$/PermitRootLogin yes/g', '-e', 's/^#* *PasswordAuthentication .*$/PasswordAuthentication yes/g', '/etc/ssh/sshd_config']
+          # - cmd: [ '/usr/sbin/usermod', '--password', '$1$Q3J0TuD5$zuS/qAcS139eyXrmAcWyu1', 'root' ]
+          # - cmd: [ '/bin/systemctl', 'restart', 'sshd' ]
+      # postgres:
+      #   running: True
+      #   source: xenial/amd64
+      #   profiles:
+      #     - default
+      #     - basics
+      #     - autostart
+      #     - pgdata
+      #   config:
+      #     boot.autostart.priority: 10
+      #   opts:
+      #     require:
+      #       - lxd_profile: lxd_profile_local_autostart
+      #       - lxd_profile: lxd_profile_local_pgdata
+      #       - lxd_profile: lxd_profile_local_basics
+      # redis:
+      #   running: True
+      #   source: xenial/amd64
+      #   profiles:
+      #     - default
+      #     - basics
+      #     - autostart
+      #   config:
+      #     boot.autostart.priority: 100
+      #   opts:
+      #     require:
+      #       - lxd_profile: lxd_profile_local_autostart
+      #       - lxd_profile: lxd_profile_local_basics
+      # mail:
+      #   running: True
+      #   source: xenial/amd64
+      #   profiles:
+      #     - default
+      #     - basics
+      #     - autostart
+      #     - docker
+      #   config:
+      #     boot.autostart.priority: 500
+      #   opts:
+      #     require:
+      #       - lxd_profile: lxd_profile_local_autostart
+      #       - lxd_profile: lxd_profile_local_basics
+      #       - lxd_profile: lxd_profile_local_docker
+      # keycloak:
+      #   running: True
+      #   source: xenial/amd64
+      #   profiles:
+      #     - default
+      #     - basics
+      #     - autostart
+      #     - docker
+      #   config:
+      #     boot.autostart.priority: 50
+      #   opts:
+      #     require:
+      #       - lxd_profile: lxd_profile_local_autostart
+      #       - lxd_profile: lxd_profile_local_basics
+      #       - lxd_profile: lxd_profile_local_docker
+      # web:
+      #   running: True
+      #   source: xenial/amd64
+      #   profiles:
+      #     - default
+      #     - basics
+      #     - autostart
+      #     - docker
+      #   config:
+      #     boot.autostart.priority: 2000
+      #   opts:
+      #     require:
+      #       - lxd_profile: lxd_profile_local_autostart
+      #       - lxd_profile: lxd_profile_local_basics
+      #       - lxd_profile: lxd_profile_local_docker
+      # discourse:
+      #   running: True
+      #   source: xenial/amd64
+      #   profiles:
+      #     - default
+      #     - basics
+      #     - autostart
+      #     - docker
+      #   config:
+      #     boot.autostart.priority: 2000
+      #   opts:
+      #     require:
+      #       - lxd_profile: lxd_profile_local_autostart
+      #       - lxd_profile: lxd_profile_local_basics
+      #       - lxd_profile: lxd_profile_local_docker
+      # vpn:
+      #   running: True
+      #   source: xenial/amd64
+      #   profiles:
+      #     - default
+      #     - basics
+      #     - autostart
+      #   config:
+      #     boot.autostart.priority: 5000
+      #   opts:
+      #     require:
+      #       - lxd_profile: lxd_profile_local_autostart
+      #       - lxd_profile: lxd_profile_local_basics
+      # dns:
+      #   running: True
+      #   source: xenial/amd64
+      #   profiles:
+      #     - default
+      #     - basics
+      #     - autostart
+      #   config:
+      #     boot.autostart.priority: 1
+      #   opts:
+      #     require:
+      #       - lxd_profile: lxd_profile_local_autostart
+      #       - lxd_profile: lxd_profile_local_basics
+      # bastion:
+      #   running: True
+      #   source: xenial/amd64
+      #   profiles:
+      #     - default
+      #     - basics
+      #     - autostart
+      #     - docker
+      #   config:
+      #     boot.autostart.priority: 10
+      #   opts:
+      #     require:
+      #       - lxd_profile: lxd_profile_local_autostart
+      #       - lxd_profile: lxd_profile_local_basics
+      #       - lxd_profile: lxd_profile_local_docker
