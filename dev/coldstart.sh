@@ -4,10 +4,10 @@
 set -x
 set -e
 
-echo "Installing a few dependencies..."
+# echo "Installing a few dependencies..."
 # Install some dependencies
-sudo apt-get update
-sudo apt-get install -y python-pygit2 lxd zfsutils-linux python-pip
+# sudo apt-get update
+# sudo apt-get install -y python-pygit2 lxc zfsutils-linux python-pip
 
 echo "Bootstrap Phase 0: Installing salt"
 echo "########################################"
@@ -15,6 +15,11 @@ echo "########################################"
 cd /tmp
 wget -O bootstrap-salt.sh https://bootstrap.saltstack.com
 sudo sh bootstrap-salt.sh -L -M -A 127.0.0.1 -i vagrant.vm
+
+# 'Fix' Salt.
+# https://github.com/saltstack/salt/issues/50679
+sudo sed -i 's/lxc.network/lxc.net.0/g' /usr/lib/python*/dist-packages/salt/modules/lxc.py
+sudo systemctl restart salt-master
 
 # Connect local client to local master
 sleep 60
@@ -30,11 +35,18 @@ sudo salt 'vagrant.vm' state.highstate
 
 echo "Bootstrap Phase 2: Provisioning Cloud"
 echo "########################################"
-# Bring up the cloud
-# NOT THIS ONE. sudo salt-cloud -y -m /vagrant/mapfile
-# And delete mapfile.
-# sudo salt-call state.sls dev
-sudo salt-cloud -y -m /vagrant/saltify-map
+
+# Setup saltmaster:
+sudo salt 'vagrant.vm' lxc.init saltmaster profile=standard_xenial network_profile=standard_net bootstrap_args="-M -A saltmaster"
+
+# Instantiate the cloud of the cloud:
+sudo salt-cloud -y -m /vagrant/mapfile
+
+# Accept all the keys
+sleep 90
+sudo lxc-attach --name=saltmaster -- sudo salt-key -y -A
+
+# TODO Join the host computer to the salt master.
 
 echo "Bootstrap Phase 3: Orchestrating Cloud"
 echo "########################################"

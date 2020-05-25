@@ -1,6 +1,0 @@
-make_salty:
-  - master:
-      ssh_host: master.lxd
-      ssh_username: root
-      password: password
-      make_master: True
