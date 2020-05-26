@@ -1,22 +1,31 @@
 lxc-xenial:
-  - postgresql:
+  - nginx:
       grains:
-        role: postgresql
-  - redis:
+        role: nginx
+  - influxdb:
       grains:
-        role: redis
-  - mailu:
+        role: influxdb
+  - grafana:
       grains:
-        role: mailu
-  - keycloak:
-      grains:
-        role: keycloak
-  - discourse:
-      grains:
-        role: discourse
-  - bastion:
-      grains:
-        role: bastion
-  - bakery:
-      grains:
-        role: bakery
+        role: grafana
+  # - postgresql:
+  #     grains:
+  #       role: postgresql
+  # - redis:
+  #     grains:
+  #       role: redis
+  # - mailu:
+  #     grains:
+  #       role: mailu
+  # - keycloak:
+  #     grains:
+  #       role: keycloak
+  # - discourse:
+  #     grains:
+  #       role: discourse
+  # - bastion:
+  #     grains:
+  #       role: bastion
+  # - bakery:
+  #     grains:
+  #       role: bakery

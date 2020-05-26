@@ -37,9 +37,32 @@ echo "Bootstrap Phase 2: Provisioning Cloud"
 echo "########################################"
 
 # Setup saltmaster:
+echo "Step 1. Setup new Saltmaster"
 sudo salt 'vagrant.vm' lxc.init saltmaster profile=standard_xenial network_profile=standard_net bootstrap_args="-M -A saltmaster"
 
+# For the dev session, Shutdown the saltmaster, add in appropriate
+# mounts so we have all the salt files in the new saltmaster.
+# in production, we'd manually pull from the git repo.
+echo "Step 2. Setup Saltmaster for development environment"
+sudo lxc-attach --name=saltmaster -- mkdir /etc/salt/cloud.profiles.d
+sudo lxc-attach --name=saltmaster -- mkdir /etc/salt/cloud.providers.d
+sudo lxc-attach --name=saltmaster -- mkdir -p /etc/salt/master.d
+sudo lxc-attach --name=saltmaster -- mkdir /srv/salt
+sudo lxc-attach --name=saltmaster -- mkdir /srv/pillar
+sudo lxc-stop saltmaster
+cat <<EOF | sudo tee -a /var/lib/lxc/saltmaster/config
+
+# Development Mounts
+lxc.mount.entry = /etc/salt/cloud.profiles.d etc/salt/cloud.profiles.d none ro,bind 0 0
+lxc.mount.entry = /etc/salt/cloud.providers.d etc/salt/cloud.providers.d none ro,bind 0 0
+lxc.mount.entry = /etc/salt/master.d etc/salt/master.d none ro,bind 0 0
+lxc.mount.entry = /srv/salt srv/salt none ro,bind 0 0
+lxc.mount.entry = /srv/pillar srv/pillar none ro,bind 0 0
+EOF
+sudo lxc-start saltmaster
+
 # Instantiate the cloud of the cloud:
+echo "Step 3. Produce cloud"
 sudo salt-cloud -y -m /vagrant/mapfile
 
 # Accept all the keys
@@ -50,3 +73,8 @@ sudo lxc-attach --name=saltmaster -- sudo salt-key -y -A
 
 echo "Bootstrap Phase 3: Orchestrating Cloud"
 echo "########################################"
+
+echo "Step 1. Setup monitoring infrastructure."
+alias AS_MASTER="sudo lxc-attach --name=saltmaster -- "
+AS_MASTER salt-run state.orchestrate _orchestrate.monitoring
+unalias AS_MASTER
