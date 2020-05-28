@@ -1,10 +1,9 @@
 lxc.container_profile:
-  standard_xenial:
-    # clone_from: xenial
+  standard_bionic:
     template: download
     options:
       dist: ubuntu
-      release: xenial
+      release: bionic
       arch: amd64
     size: 1G
     # Adding these features doesn't work and I haven't had time to enable. -WW

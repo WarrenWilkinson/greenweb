@@ -1,13 +1,8 @@
-lxc-xenial:
+lxc-bionic:
+  - logging
   - nginx:
-      grains:
-        role: nginx
   - influxdb:
-      grains:
-        role: influxdb
   - grafana:
-      grains:
-        role: grafana
   # - postgresql:
   #     grains:
   #       role: postgresql
