@@ -18,14 +18,11 @@ box. Start it up:
 
 This will create a virtual machine (VM) on which salt will
 self-install and begin bootstrapping.  Salt will instruct the VM to
-create eight LXD instances (LXD is a light weight linux form of
+create additional LXC instances (LXC is a light weight linux form of
 virtualization).
 
-TODO:
-One of these LXD instances will become a new salt master, the
-remaining seven will be joined to it.
+One of these LXC instances will become a new salt master, and all will join
+onto it. The next stage of bootstrapping provisions all of these machines
+and export the web services:
 
-The next stage of bootstrapping has the new salt-master provision the
-remaining seven LXDs. This completes the bootstrapping process.
-
-
+ - http://grafana.vagrant.vm:8080

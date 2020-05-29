@@ -38,7 +38,12 @@ echo "########################################"
 
 # Setup saltmaster:
 echo "Step 1. Setup new Saltmaster"
+sleep 30
+set +e
+# Try this twice, it fails sometimes and I'm not sure why...
 sudo salt 'vagrant.vm' lxc.init saltmaster profile=standard_bionic network_profile=standard_net bootstrap_args="-M -A saltmaster"
+sudo salt 'vagrant.vm' lxc.init saltmaster profile=standard_bionic network_profile=standard_net bootstrap_args="-M -A saltmaster"
+set -e
 
 # For the dev session, Shutdown the saltmaster, add in appropriate
 # mounts so we have all the salt files in the new saltmaster.

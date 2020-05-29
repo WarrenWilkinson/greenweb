@@ -22,6 +22,41 @@ nginx:
     - watch:
       - pkg: nginx
 
+# Setup nginx to have sites-enabled, sites-available structure
+# and get rid of the default site.
+
+/etc/nginx/sites-available:
+  file.directory:
+    - user: root
+    - group: root
+    - mode: 755
+
+/etc/nginx/sites-enabled:
+  file.directory:
+    - user: root
+    - group: root
+    - mode: 755
+    - watch_in:
+      - service: nginx
+
+/etc/nginx/nginx.conf:
+  file.managed:
+    - source: salt://nginx/config/nginx.conf
+    - user: root
+    - group: root
+    - mode: 755
+    - watch_in:
+      - service: nginx
+
+/etc/nginx/conf.d:
+  file.absent:
+    - source: salt://nginx/config/nginx.conf
+    - user: root
+    - group: root
+    - mode: 755
+
+# Reverse Proxy Grafana
+
 # Next thing to do is to configure
 # nginx to forward grafana so that
 # I can start looking at it.
@@ -39,3 +74,21 @@ nginx:
 # my logs?  Yes, there is ommail.
 # But perhaps set this up later
 # when I have more experience.
+
+/etc/nginx/sites-available/grafana.conf:
+  file.managed:
+    - source: salt://nginx/config/nginx_grafana.conf
+    - user: root
+    - group: root
+    - mode: 644
+    - watch_in:
+      - service: nginx
+
+/etc/nginx/sites-enabled/grafana.conf:
+  file.symlink:
+    - target: /etc/nginx/sites-available/grafana.conf
+    - user: root
+    - group: root
+    - mode: 644
+    - watch_in:
+      - service: nginx

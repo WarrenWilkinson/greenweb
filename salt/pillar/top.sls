@@ -8,6 +8,7 @@ base:
     - telegraf_account
   'influxdb':
     - telegraf_account
+    - influxdb_account
   'nginx':
     - telegraf_account
   'logging':

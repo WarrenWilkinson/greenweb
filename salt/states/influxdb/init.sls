@@ -17,7 +17,14 @@ influxdb:
       - pkg: influxdb
       - file: /etc/influxdb/influxdb.conf
 
-influxdb_telegraf_db:
+influxdb_users:
+  influxdb_user.present:
+    - name: {{ pillar['influxdb']['admin']['username'] }}
+    - passwd: {{ pillar['influxdb']['admin']['password'] }}
+    - admin: True
+    - require:
+      - service: influxdb
+      - sls: influxdb.pip
   influxdb_database.present:
     - name: "telegraf"
     - require:
@@ -42,6 +49,9 @@ influxdb_telegraf_retention:
       - service: influxdb
       - sls: influxdb.pip
 
+# Unfortunately, we can't turn on authentication and expect to
+# use saltstack. TODO fix it later, turn on authentication
+# via a special state that can be manually applied.
 /etc/influxdb/influxdb.conf:
   file.managed:
     - source: salt://influxdb/config/influxdb.conf
