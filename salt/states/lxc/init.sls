@@ -12,7 +12,7 @@ lxc-net:
 
 /etc/default/lxc-net:
   file.managed:
-    - source: salt://lxc/lxc-net
+    - source: salt://lxc/files/lxc-net
     - user: root
     - group: root
     - mode: 644
@@ -21,13 +21,13 @@ lxc-net:
 
 /etc/lxc/dnsmasq.conf:
   file.managed:
-    - source: salt://lxc/dnsmasq.conf
+    - source: salt://lxc/files/dnsmasq.conf
     - user: root
     - group: root
     - mode: 644
     - require:
       - pkg: lxc
 
-saltmaster:
+salt:
   host.present:
     - ip: 10.0.3.2

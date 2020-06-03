@@ -37,25 +37,25 @@ echo "Bootstrap Phase 2: Provisioning Cloud"
 echo "########################################"
 
 # Setup saltmaster:
-echo "Step 1. Setup new Saltmaster"
+echo "Step 1. Setup new Salt master"
 sleep 30
 set +e
 # Try this twice, it fails sometimes and I'm not sure why...
-sudo salt 'vagrant.vm' lxc.init saltmaster profile=standard_bionic network_profile=standard_net bootstrap_args="-M -A saltmaster"
-sudo salt 'vagrant.vm' lxc.init saltmaster profile=standard_bionic network_profile=standard_net bootstrap_args="-M -A saltmaster"
+sudo salt 'vagrant.vm' lxc.init salt profile=standard_bionic network_profile=standard_net bootstrap_args="-M -A salt"
+sudo salt 'vagrant.vm' lxc.init salt profile=standard_bionic network_profile=standard_net bootstrap_args="-M -A salt"
 set -e
 
 # For the dev session, Shutdown the saltmaster, add in appropriate
 # mounts so we have all the salt files in the new saltmaster.
 # in production, we'd manually pull from the git repo.
 echo "Step 2. Setup Saltmaster for development environment"
-sudo lxc-attach --name=saltmaster -- mkdir /etc/salt/cloud.profiles.d
-sudo lxc-attach --name=saltmaster -- mkdir /etc/salt/cloud.providers.d
-sudo lxc-attach --name=saltmaster -- mkdir -p /etc/salt/master.d
-sudo lxc-attach --name=saltmaster -- mkdir /srv/salt
-sudo lxc-attach --name=saltmaster -- mkdir /srv/pillar
-sudo lxc-stop saltmaster
-cat <<EOF | sudo tee -a /var/lib/lxc/saltmaster/config
+sudo lxc-attach --name=salt -- mkdir /etc/salt/cloud.profiles.d
+sudo lxc-attach --name=salt -- mkdir /etc/salt/cloud.providers.d
+sudo lxc-attach --name=salt -- mkdir -p /etc/salt/master.d
+sudo lxc-attach --name=salt -- mkdir /srv/salt
+sudo lxc-attach --name=salt -- mkdir /srv/pillar
+sudo lxc-stop salt
+cat <<EOF | sudo tee -a /var/lib/lxc/salt/config
 
 # Development Mounts
 lxc.mount.entry = /etc/salt/cloud.profiles.d etc/salt/cloud.profiles.d none ro,bind 0 0
@@ -64,22 +64,27 @@ lxc.mount.entry = /etc/salt/master.d etc/salt/master.d none ro,bind 0 0
 lxc.mount.entry = /srv/salt srv/salt none ro,bind 0 0
 lxc.mount.entry = /srv/pillar srv/pillar none ro,bind 0 0
 EOF
-sudo lxc-start saltmaster
+sudo lxc-start salt
 
 # Instantiate the cloud of the cloud:
 echo "Step 3. Produce cloud"
 sudo salt-cloud -y -m /vagrant/mapfile
 
+# Stop the old master, and connect vagrant.vm to the new one.
+sudo rm /etc/salt/pki/minion/minion_master.pub
+sudo rm /etc/salt/minion.d/99-master-address.conf
+sudo systemctl restart salt-minion
+sudo systemctl stop salt-master
+sudo systemctl disable salt-master
+
 # Accept all the keys
 sleep 90
-sudo lxc-attach --name=saltmaster -- sudo salt-key -y -A
-
-# TODO Join the host computer to the salt master.
+sudo lxc-attach --name=salt -- sudo salt-key -y -A
 
 echo "Bootstrap Phase 3: Orchestrating Cloud"
 echo "########################################"
 
 echo "Step 1. Setup monitoring infrastructure."
-salt="sudo lxc-attach --name=saltmaster -- salt"
+salt="sudo lxc-attach --name=salt -- salt"
 $salt-run state.orchestrate _orchestrate.monitoring
 
