@@ -6,6 +6,7 @@ base:
   'vagrant.vm':
     - lxc
     - telegraf_account
+    - nft
   'influxdb':
     - telegraf_account
     - influxdb_account

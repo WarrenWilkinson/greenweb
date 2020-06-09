@@ -19,6 +19,12 @@ influx_pip:
 
 prep_servers:
   salt.state:
-    - tgt: 'nginx,influxdb,grafana,logging'
+    - tgt: 'nginx,influxdb,grafana,logging,vagrant.vm'
     - tgt_type: list
-    - highstate: True 
+    - highstate: True
+
+nat:
+  salt.state:
+    - tgt: 'vagrant.vm'
+    - sls:
+      - nft

@@ -4,6 +4,7 @@ base:
     'vagrant.vm':
       - zpool
       - lxc
+      - nft
     'nginx':
       - nginx
       - telegraf

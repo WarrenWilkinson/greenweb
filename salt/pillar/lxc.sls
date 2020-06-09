@@ -1,3 +1,7 @@
+# -*- coding: utf-8; mode: yaml -*-
+# vim: ft=yaml
+---
+
 lxc.container_profile:
   standard_bionic:
     template: download
@@ -13,9 +17,19 @@ lxc.container_profile:
 lxc.network_profile:
   standard_net:
     eth0:
-      link: lxcbr0
+      link: switch0 # Use openvswitch, not lxcbr0
       type: veth
       flags: up
+      script.up: /etc/network/if-up.d/lxc-ifup
+      script.down: /etc/network/if-post-down.d/lxc-ifdown
     # Adding these doesn't work and I don't know what they mean anyway -WW
     # gateway: 10.0.3.1
     # bridge: lxcbr0
+
+  # ipv4.dhcp: "false"
+  # ipv4.firewall: "false"
+  # ipv4.nat: "false"
+  # ipv6.address: ...
+  # ipv6.dhcp: "false"
+  # ipv6.firewall: "false"
+  # ipv6.nat: "false"

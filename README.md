@@ -23,6 +23,18 @@ virtualization).
 
 One of these LXC instances will become a new salt master, and all will join
 onto it. The next stage of bootstrapping provisions all of these machines
-and export the web services:
+and export the web services.  Bind your local ports 80 and 443 to the virtual machine (any
+password is probably 'vagrant'):
 
- - http://grafana.vagrant.vm:8080
+    sudo ssh -p 2222 -gNfL 80:localhost:80 vagrant@localhost -i ~/.vagrant.d/insecure_private_key
+    sudo ssh -p 2222 -gNfL 443:localhost:443 vagrant@localhost -i ~/.vagrant.d/insecure_private_key
+
+And add this line to your /etc/hosts:
+
+    127.0.0.1	localhost vagrant.vm grafana.vagrant.vm mail.vagrant.vm identity.vagrant.vm
+
+You should now be able to check out the various services:
+
+  - http://grafana.vagrant.vm
+
+TODO, setup a VPN or something and hide grafana behind that.

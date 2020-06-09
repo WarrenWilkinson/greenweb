@@ -81,6 +81,8 @@ nginx:
     - user: root
     - group: root
     - mode: 644
+    - require:
+      - file: /etc/nginx/sites-available
     - watch_in:
       - service: nginx
 
@@ -90,5 +92,7 @@ nginx:
     - user: root
     - group: root
     - mode: 644
+    - require:
+      - file: /etc/nginx/sites-available/grafana.conf
     - watch_in:
       - service: nginx

@@ -1,0 +1,6 @@
+#!/bin/bash
+ovsBr='switch0'
+ovs-vsctl --may-exist add-br ${ovsBr}
+ovs-vsctl --if-exists del-port ${ovsBr} $5
+ovs-vsctl --may-exist add-port ${ovsBr} $5 -- set Interface $5 type=internal
+echo "done" # Seems to be necessary.
