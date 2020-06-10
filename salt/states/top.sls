@@ -1,4 +1,7 @@
 base:
+    'netplan.static:yes':
+      - match: pillar
+      - netplan.static
     '*':
       - rsyslog
     'vagrant.vm':

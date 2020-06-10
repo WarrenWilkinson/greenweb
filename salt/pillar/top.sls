@@ -14,3 +14,5 @@ base:
     - telegraf_account
   'logging':
     - telegraf_account
+  'dns':
+    - netplan.dns

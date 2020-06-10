@@ -1,0 +1,11 @@
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    {{ interface }}:
+      addresses:
+        - {{ ip4 }}/24
+      gateway4: {{ gateway4 }}
+      nameservers:
+          search: {{ search }}
+          addresses: {{ addresses }}
