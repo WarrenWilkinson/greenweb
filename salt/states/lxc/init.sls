@@ -37,10 +37,6 @@ lxc-net:
     - require:
       - pkg: lxc
 
-salt:
-  host.present:
-    - ip: 10.0.3.2
-
 # Use openwswitch for the bridge network
 openvswitch-switch:
   pkg.installed
