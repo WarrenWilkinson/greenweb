@@ -1,5 +1,5 @@
 base:
-    'netplan.static:yes':
+    'netplan:static:true':
       - match: pillar
       - netplan.static
     '*':
@@ -15,3 +15,5 @@ base:
       - influxdb
     'grafana':
       - grafana
+    'dns':
+      - dnsmasq

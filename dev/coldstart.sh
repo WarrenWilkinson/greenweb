@@ -37,14 +37,17 @@ sleep 15
 echo "Bootstrap Phase 2: Setup Bootstrap DNS"
 echo "########################################"
 
-# Create the container this way, without bootstrapping
-# because internet isn't going to work out of the box.
-# ... and do it twice. The first time downloads the image,
-# which sometimes times out.
-set +e
+# Predownload the template
+sudo lxc-create --template download -n downloaded -- --no-validate -d ubuntu -r bionic -a amd64
+
+# Create the container this way, without bootstrapping because
+# internet isn't going to work out of the box.  ... and do it a few
+# times. Sometimes it times out downloading the image.
+#set +e
 sudo salt vagrant.vm lxc.create bootdns profile=standard_bionic network_profile=standard_net nic_opts="{eth0: {ipv4.address: 10.0.3.222/24, gateway: 10.0.3.1}}"
-sudo salt vagrant.vm lxc.create bootdns profile=standard_bionic network_profile=standard_net nic_opts="{eth0: {ipv4.address: 10.0.3.222/24, gateway: 10.0.3.1}}"
-set -e
+#sudo salt vagrant.vm lxc.create bootdns profile=standard_bionic network_profile=standard_net nic_opts="{eth0: {ipv4.address: 10.0.3.222/24, gateway: 10.0.3.1}}"
+#sudo salt vagrant.vm lxc.create bootdns profile=standard_bionic network_profile=standard_net nic_opts="{eth0: {ipv4.address: 10.0.3.222/24, gateway: 10.0.3.1}}"
+#set -e
 
 # Fix the internet by getting rid of netplan, which attempts DHCP.
 sudo lxc-start bootdns
@@ -62,14 +65,25 @@ sudo lxc-attach bootdns -- sudo systemctl disable systemd-resolved
 sudo lxc-attach bootdns -- sed -i 's/^nameserver.*$/nameserver 8.8.8.8/g' /etc/resolv.conf
 sudo lxc-attach bootdns -- apt-get update
 sudo lxc-attach bootdns -- apt-get install -y dnsmasq
-sudo lxc-attach bootdns -- sh -c 'echo "dhcp-host=salt,10.0.3.2" >> /etc/dnsmasq.conf'
-sudo lxc-attach bootdns -- sh -c 'echo "dhcp-host=dns,10.0.3.3" >> /etc/dnsmasq.conf'
-sudo lxc-attach bootdns -- sh -c 'echo "server=8.8.8.8" >> /etc/dnsmasq.conf'
-sudo lxc-attach bootdns -- sh -c 'echo "server=8.8.4.4" >> /etc/dnsmasq.conf'
+sudo lxc-attach bootdns -- sh -c 'echo "domain=greenweb.ca" >> /etc/dnsmasq.conf'
+sudo lxc-attach bootdns -- sh -c 'echo "local=/greenweb.ca/" >> /etc/dnsmasq.conf'
+sudo lxc-attach bootdns -- sh -c 'echo "expand-hosts" >> /etc/dnsmasq.conf'
+
+# The host's salt minion needs to be able to find the salt server. Pre-agreement
+# on the IP is easy. Later the host will rely on the IP of the DNS server and we'll
+# delete the salt reference.
+sudo lxc-attach bootdns -- sh -c 'echo "dhcp-host=salt,10.0.3.3" >> /etc/dnsmasq.conf'
+sudo sh -c "echo '10.0.3.3 salt' >> /etc/hosts"
+sudo lxc-attach bootdns -- sh -c 'echo "dhcp-host=dns,10.0.3.2" >> /etc/dnsmasq.conf'
+sudo sh -c "echo '10.0.3.2 dns' >> /etc/hosts"
+
+#sudo lxc-attach bootdns -- sh -c 'echo "server=10.0.3.222" >> /etc/dnsmasq.conf'
+#sudo lxc-attach bootdns -- sh -c 'echo "server=8.8.8.8" >> /etc/dnsmasq.conf'
+#sudo lxc-attach bootdns -- sh -c 'echo "server=8.8.4.4" >> /etc/dnsmasq.conf'
 sudo lxc-attach bootdns -- sh -c 'echo "dhcp-range=10.0.3.70,10.0.3.100,12h" >> /etc/dnsmasq.conf'
 sudo lxc-attach bootdns -- sh -c 'echo "dhcp-authoritative" >> /etc/dnsmasq.conf'
 sudo lxc-attach bootdns -- sh -c 'echo "dhcp-option=option:router,10.0.3.1" >> /etc/dnsmasq.conf'
-sudo lxc-attach bootdns -- sh -c 'echo "10.0.3.2 salt" >> /etc/hosts'
+#sudo lxc-attach bootdns -- sh -c 'echo "10.0.3.2 salt" >> /etc/hosts'
 
 sudo lxc-attach bootdns -- systemctl restart dnsmasq
 
@@ -106,8 +120,6 @@ $salt-key -y -a salt
 echo "Bootstrap Phase 4: Attach host to new Salt"
 echo "########################################"
 
-sudo sh -c "echo '10.0.3.2 salt' >> /etc/hosts"
-
 # Stop the old master, and connect vagrant.vm to the new one.
 sudo rm /etc/salt/pki/minion/minion_master.pub
 sudo rm /etc/salt/minion.d/99-master-address.conf
@@ -116,29 +128,33 @@ sudo systemctl stop salt-master
 sudo systemctl disable salt-master
 sleep 30
 $salt-key -y -a vagrant.vm
+sleep 30
 
 echo "Bootstrap Phase 4: Create New DNS server"
 echo "########################################"
 
 $salt-cloud -p lxc-bionic dns
 
+$salt 'dns' state.highstate
+
+Shutdown the old DNS server.
+sudo lxc-stop bootdns
+sudo lxc-destroy bootdns
+
+# Reboot it to use it's new static IP.
+sudo lxc-stop dns
+sudo lxc-start dns
+sleep 30
+
+# Reboot the salt machine so it gets a new IP
+# and added to the DNS table.
+sudo lxc-stop salt
+sudo lxc-start salt
+
 # YOU ARE HERE
-# Provision the new DNS server and then shut down the old
-# one and remove the hardcoded salt ip from vagrant. Nobody
-# should require a hardcoded IP anymore (unless firewall rules
-# require it).
-
-# # Turn off bootdns
-# sudo lxc-stop bootdns
-# sudo lxc-destroy bootdns
-
-# $salt 'dns' state.highstate
-
-# # Restart dns and salt master to ensure they come up correctly.
-# sudo lxc-stop salt
-# sudo lxc-stop dns
-# sudo lxc-start dns
-# sudo lxc-start salt
+# Remove the entries in /etc/hosts
+# and restart the salt-minion ond vagrant.vm
+# Ping should now work.
 
 # # Does ping work?
 # $salt 'dns' test.ping

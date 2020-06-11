@@ -9,5 +9,5 @@ netplan:
   gateway4: 10.0.3.1
   file: /etc/netplan/10-lxc.yaml
   nameservers:
-    search: [vagrant.vm]
-    addresses: [8.8.8.8, 8.8.4.4]
+    search: [greenweb.ca]
+    addresses: [127.0.0.1]

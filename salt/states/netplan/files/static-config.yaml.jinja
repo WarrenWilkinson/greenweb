@@ -7,5 +7,7 @@ network:
         - {{ ip4 }}/24
       gateway4: {{ gateway4 }}
       nameservers:
-          search: {{ search }}
-          addresses: {{ addresses }}
+          search:{% for name in search %}
+            - {{ name }}{% endfor %}
+          addresses:{% for ip in addresses %}
+            - {{ ip }}{% endfor %}
