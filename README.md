@@ -16,25 +16,12 @@ box. Start it up:
     cd dev
     vagrant up
 
-This will create a virtual machine (VM) on which salt will
-self-install and begin bootstrapping.  Salt will instruct the VM to
-create additional LXC instances (LXC is a light weight linux form of
-virtualization).
+This will create a virtual machine (VM) and bootstrap it, installing
+all the necessary software.  When it's done, it exists at 172.30.1.5. Modify
+your /etc/hosts file to contain this line:
 
-One of these LXC instances will become a new salt master, and all will join
-onto it. The next stage of bootstrapping provisions all of these machines
-and export the web services.  Bind your local ports 80 and 443 to the virtual machine (any
-password is probably 'vagrant'):
+    172.30.1.5             vagrant.vm forum.vagrant.vm mail.vagrant.vm identity.vagrant.vm grafana.vagrant.vm
 
-    sudo ssh -p 2222 -gNfL 80:localhost:80 vagrant@localhost -i ~/.vagrant.d/insecure_private_key
-    sudo ssh -p 2222 -gNfL 443:localhost:443 vagrant@localhost -i ~/.vagrant.d/insecure_private_key
+Now you should be able to visit the various external services:
 
-And add this line to your /etc/hosts:
-
-    127.0.0.1	localhost vagrant.vm grafana.vagrant.vm mail.vagrant.vm identity.vagrant.vm
-
-You should now be able to check out the various services:
-
-  - http://grafana.vagrant.vm
-
-TODO, setup a VPN or something and hide grafana behind that.
+  - http://grafana.vagrant.vm (TODO move this internal).

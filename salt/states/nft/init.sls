@@ -20,8 +20,8 @@ nftables:
     - defaults:
         ssh_port: {{ pillar['nft']['ssh_port'] }}
         lxc_bridge: switch0
-        primary_interface: eth0
-        lxc_nginx_ip: 10.0.3.4
+        primary_interface: eth1 # static IP.
+        lxc_nginx_ip: {{ pillar['nginx']['static_ip'] }}
 
 # Enable Packet forwarding
 /etc/sysctl.d/15-enable-ip-forward.conf:
