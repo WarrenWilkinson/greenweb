@@ -40,7 +40,7 @@ systemd-resolved:
         gateway: 10.0.3.1
         dhcp_range_min: 10.0.3.120
         dhcp_range_max: 10.0.3.200
-        dhcp_duration: 12h
+        dhcp_duration: infinite
         nginx_static_ip: {{ pillar['nginx']['static_ip'] }}
     - require:
       - pkg: dnsmasq
