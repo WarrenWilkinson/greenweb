@@ -138,6 +138,7 @@ sudo systemctl restart salt-minion
 
 # Ping should work and return
 # vagrant.vm, dns, and salt.
+sleep 60
 $salt '*' test.ping
 
 echo "Bootstrap Phase 5: Orchestrating Cloud"

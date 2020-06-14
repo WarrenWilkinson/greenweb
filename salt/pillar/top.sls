@@ -5,7 +5,6 @@
 base:
   'vagrant.vm':
     - lxc
-    - telegraf_account
     - nft
     - nginx.ip
   'influxdb':
@@ -18,3 +17,6 @@ base:
   'dns':
     - netplan.dns
     - nginx.ip
+  'grafana':
+    - grafana
+    - telegraf_account

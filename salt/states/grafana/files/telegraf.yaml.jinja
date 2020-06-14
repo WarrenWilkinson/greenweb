@@ -1,0 +1,19 @@
+# config file version
+apiVersion: 1
+
+datasources:
+  - name: Telegraf
+    type: influxdb
+    access: proxy
+    orgId: 1
+    url: http://influxdb:8086
+    database: telegraf
+    basicAuth: true
+    basicAuthUser: {{ telegraf_user }}
+    user: {{ telegraf_user }}
+    isDefault: true
+    secureJsonData:
+      basicAuthPassword: {{ telegraf_password }}
+      password: {{ telegraf_password }}
+    version: 1
+    editable: false

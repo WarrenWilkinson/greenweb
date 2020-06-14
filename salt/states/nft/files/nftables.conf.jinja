@@ -79,6 +79,8 @@ table inet filter {
 		# lxc containers cannot reach the internet.
 		iifname "{{ lxc_bridge }}" oifname "{{ primary_interface }}" accept
 		iifname "{{ primary_interface }}" oifname "{{ lxc_bridge }}" accept
+		iifname "{{ lxc_bridge }}" oifname "{{ secondary_interface }}" accept
+		iifname "{{ secondary_interface }}" oifname "{{ lxc_bridge }}" accept
 	}
 
 	chain output {
@@ -90,7 +92,7 @@ table inet filter {
 table ip nat {
     chain prerouting {
         type nat hook prerouting priority 0;
-	iif "{{ primary_interface }}" tcp dport {80, 443} dnat "{{ lxc_nginx_ip }}"
+	iif "{{ secondary_interface }}" tcp dport {80, 443} dnat "{{ lxc_nginx_ip }}"
     }
 
     # Apply source masquarade so that lxc containers can reach
@@ -98,6 +100,7 @@ table ip nat {
     chain postrouting {
     	type nat hook postrouting priority 0;
 	ip saddr 10.0.3.0/24 oifname "{{ primary_interface }}" masquerade
+	ip saddr 10.0.3.0/24 oifname "{{ secondary_interface }}" masquerade
     }
 }
 
