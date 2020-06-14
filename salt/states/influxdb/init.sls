@@ -31,23 +31,25 @@ influxdb_users:
       - service: influxdb
       - sls: influxdb.pip
 
-influxdb_telegraf_user:
-  influxdb_user.present:
-    - name: {{ pillar['telegraf']['influx_http']['username'] }}
-    - passwd: {{ pillar['telegraf']['influx_http']['password'] }}
-    - admin: False
-    - require:
-      - service: influxdb
-      - sls: influxdb.pip
+# # TODO Eliminate all of this, and find a way to
+# # do it without salt so I can turn on authentication.
+# influxdb_telegraf_user:
+#   influxdb_user.present:
+#     - name: {{ pillar['telegraf']['influx_http']['username'] }}
+#     - passwd: {{ pillar['telegraf']['influx_http']['password'] }}
+#     - admin: False
+#     - require:
+#       - service: influxdb
+#       - sls: influxdb.pip
 
-influxdb_telegraf_retention:
-  influxdb_retention_policy.present:
-    - name: "telegraf retention"
-    - database: "telegraf"
-    - duration: "21d"
-    - require:
-      - service: influxdb
-      - sls: influxdb.pip
+# influxdb_telegraf_retention:
+#   influxdb_retention_policy.present:
+#     - name: "telegraf retention"
+#     - database: "telegraf"
+#     - duration: "21d"
+#     - require:
+#       - service: influxdb
+#       - sls: influxdb.pip
 
 # Unfortunately, we can't turn on authentication and expect to
 # use saltstack. TODO fix it later, turn on authentication

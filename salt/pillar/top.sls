@@ -3,20 +3,17 @@
 ---
 
 base:
+  '*':
+    - telegraf.account
   'vagrant.vm':
     - lxc
     - nft
     - nginx.ip
+    - telegraf.memory
   'influxdb':
-    - telegraf_account
     - influxdb_account
-  'nginx':
-    - telegraf_account
-  'logging':
-    - telegraf_account
   'dns':
     - netplan.dns
     - nginx.ip
   'grafana':
     - grafana
-    - telegraf_account

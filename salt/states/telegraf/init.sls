@@ -26,4 +26,5 @@ telegraf:
     - defaults:
         username: {{ pillar['telegraf']['influx_http']['username'] }}
         password: {{ pillar['telegraf']['influx_http']['password'] }}
+        memory: {{ pillar['telegraf']['memory'] }}
 

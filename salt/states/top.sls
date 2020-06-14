@@ -8,6 +8,7 @@ base:
       - zpool
       - lxc
       - nft
+      - telegraf
     'nginx':
       - nginx
       - telegraf
