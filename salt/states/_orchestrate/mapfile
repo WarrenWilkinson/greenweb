@@ -1,14 +1,10 @@
 lxc-bionic:
   - logging
-  - nginx:
-  - influxdb:
-  - grafana:
-  # - postgresql:
-  #     grains:
-  #       role: postgresql
-  # - redis:
-  #     grains:
-  #       role: redis
+  - nginx
+  - influxdb
+  - grafana
+  - postgresql
+  - redis
   # - mailu:
   #     grains:
   #       role: mailu
@@ -18,9 +14,6 @@ lxc-bionic:
   # - discourse:
   #     grains:
   #       role: discourse
-  # - bastion:
-  #     grains:
-  #       role: bastion
   # - bakery:
   #     grains:
   #       role: bakery

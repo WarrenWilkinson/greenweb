@@ -18,3 +18,7 @@ base:
       - grafana
     'dns':
       - dnsmasq
+    'postgresql':
+      - postgresql
+    'redis':
+      - redis

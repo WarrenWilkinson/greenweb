@@ -147,4 +147,5 @@ echo "########################################"
 # Spin up all the remaining servers
 $salt-cloud -y -m /srv/salt/_orchestrate/mapfile
 $salt '*' test.ping
-$salt-run state.orchestrate _orchestrate.monitoring
+$salt '*' state.highstate
+#$salt-run state.orchestrate _orchestrate.monitoring
