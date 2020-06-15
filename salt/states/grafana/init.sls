@@ -25,6 +25,26 @@ grafana:
         telegraf_user: {{ pillar['telegraf']['influx_http']['username'] }}
         telegraf_password: {{ pillar['telegraf']['influx_http']['password'] }}
 
+/var/lib/grafana/dashboards:
+  file.directory:
+    - user: root
+    - group: root
+    - mode: 755
+
+/etc/grafana/provisioning/dashboards/system.yaml:
+  file.managed:
+    - source: salt://grafana/files/system-dashboard.yaml
+    - user: root
+    - group: root
+    - mode: 644
+
+/var/lib/grafana/dashboards/system.json:
+  file.managed:
+    - source: salt://grafana/files/system-dashboard.json
+    - user: root
+    - group: root
+    - mode: 644
+
 # For now lock it down. Later, perhaps public facing so users can see
 # their sites requirements.  Also needs SMTP integration, and might as
 # well integrate with Postgresql and keycloak.
@@ -61,3 +81,5 @@ grafana-server:
       - pkg: grafana
       - file: /etc/grafana/grafana.ini
       - file: /etc/grafana/provisioning/datasources/telegraf.yaml
+      - file: /etc/grafana/provisioning/dashboards/system.yaml
+      - file: /var/lib/grafana/dashboards/system.json
