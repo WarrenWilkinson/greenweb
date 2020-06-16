@@ -20,5 +20,7 @@ base:
       - dnsmasq
     'postgresql':
       - postgresql
+    'keycloak':
+      - keycloak
     'redis':
       - redis
