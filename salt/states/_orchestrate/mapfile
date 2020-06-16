@@ -4,8 +4,9 @@ lxc-bionic:
   - influxdb
   - grafana
   - postgresql
-  - keycloak
-  - redis
+  - kubernetes
+  #- keycloak
+  #- redis
   # - mailu:
   #     grains:
   #       role: mailu

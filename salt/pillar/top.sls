@@ -17,3 +17,7 @@ base:
     - nginx.ip
   'grafana':
     - grafana
+  'postgresql':
+    - kubernetes.database
+  'kubernetes':
+    - kubernetes.database

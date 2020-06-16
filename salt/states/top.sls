@@ -18,6 +18,8 @@ base:
       - grafana
     'dns':
       - dnsmasq
+    'kubernetes':
+      - kubernetes
     'postgresql':
       - postgresql
     'keycloak':
