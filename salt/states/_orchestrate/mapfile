@@ -4,7 +4,10 @@ lxc-bionic:
   - influxdb
   - grafana
   - postgresql
-  - kubernetes
+
+kvm-bionic:
+  - docker
+  #- kubernetes
   #- keycloak
   #- redis
   # - mailu:

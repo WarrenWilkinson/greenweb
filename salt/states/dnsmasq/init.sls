@@ -2,9 +2,6 @@
 # vim: ft=yaml
 ---
 
-# This is a systemd resolver for domain names. We need to disable it
-# to use dnsmasq.
-
 dnsmasq:
   pkg.installed:
     - refresh: True
@@ -15,6 +12,8 @@ dnsmasq:
       - service: systemd-resolved
       - file: /etc/dnsmasq.conf
 
+# This is a systemd resolver for domain names. We need to tweak it
+# to not bind the DNS port so that dnsmasq can have it.
 systemd-resolved:
   service.running:
     - enable: true

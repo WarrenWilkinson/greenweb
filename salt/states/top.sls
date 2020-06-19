@@ -4,11 +4,14 @@ base:
       - netplan.static
     '*':
       - rsyslog
+    'salt':
+      - libvirt
     'vagrant.vm':
       - zpool
       - lxc
       - nft
       - telegraf
+      - libvirt
     'nginx':
       - nginx
       - telegraf

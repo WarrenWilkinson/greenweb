@@ -73,6 +73,9 @@ echo "########################################"
 
 sudo salt 'vagrant.vm' lxc.init salt profile=standard_bionic network_profile=standard_net bootstrap_args="-L -M -A salt"
 
+# Create a space to mount libvirt into it.
+sudo lxc-attach --name=salt -- mkdir /opt/libvirt
+
 # For the dev session, Shutdown the saltmaster, add in appropriate
 # mounts so we have all the salt files in the new saltmaster.
 # in production, we'd manually pull from the git repo.
@@ -84,6 +87,9 @@ sudo lxc-attach --name=salt -- mkdir /srv/salt
 sudo lxc-attach --name=salt -- mkdir /srv/pillar
 sudo lxc-stop salt
 cat <<EOF | sudo tee -a /var/lib/lxc/salt/config
+
+# KVM mounts
+lxc.mount.entry = /var/run/libvirt/libvirt-sock opt/libvirt-sock none ro,bind 0 0
 
 # Development Mounts
 lxc.mount.entry = /etc/salt/cloud.profiles.d etc/salt/cloud.profiles.d none ro,bind 0 0
