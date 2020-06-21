@@ -35,3 +35,21 @@ libvirt:
 #     - pkgs:
 #       - libguestfs
 #       - libguestfs-tools
+
+'virsh pool-define-as guest_images dir - - - - "/opt/libvirt_images"':
+  cmd.run:
+    - unless: 'virsh pool-info guest_images'
+
+'virsh pool-build guest_images':
+  cmd.run:
+    - creates: /opt/libvirt_images
+
+'virsh pool-start guest_images':
+  cmd.run:
+    - unless: 'virsh pool-info guest_images | grep running'
+    - require:
+        - cmd: 'virsh pool-build guest_images'
+
+'virsh pool-autostart guest_images':
+  cmd.run:
+    - unless: 'virsh pool-info guest_images | grep "Autostart: *yes"'

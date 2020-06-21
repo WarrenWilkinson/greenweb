@@ -1,0 +1,64 @@
+<domain type='kvm'>
+  <name>base-bionic-64</name>
+  <title>Bionic Beaver amd64</title>
+  <description>A Bionic amd64 Base Image</description>
+  <currentMemory unit='KiB'>524288</currentMemory>
+  <memory unit='KiB'>524288</memory>
+  <os>
+    <type arch='x86_64'>hvm</type>
+    <boot dev='hd'/>
+  </os>
+  <!-- <features> -->
+  <!--   <acpi/> -->
+  <!--   <apic/> -->
+  <!--   <pae/> -->
+  <!-- </features> -->
+  <clock offset="utc"/>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>restart</on_crash>
+  <vcpu>1</vcpu>
+  <devices>
+    <emulator>/usr/bin/kvm-spice</emulator>
+    <!-- <emulator>/usr/bin/qemu-kvm</emulator> -->
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='/opt/libvirt_images/*bionic-server-cloudimg-amd64.img'/>
+      <!-- <backingStore type='file' index='1'> -->
+      <!--   <format type='qcow2'/> -->
+      <!--   <source file='/var/lib/uvtool/libvirt/images/x-uvt-b64-Y29tLnVidW50dS5jbG91ZDpzZXJ2ZXI6MTguMDQ6YW1kNjQgMjAyMDA2MTAuMQ=='/> -->
+      <!--   <backingStore/> -->
+      <!-- </backingStore> -->
+      <target dev='vda' bus='virtio'/>
+      <!-- <alias name='virtio-disk0'/> -->
+      <!-- <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/> -->
+    </disk>
+    <!-- <disk type='file' device='disk'> -->
+    <!--   <driver name='qemu' type='raw'/> -->
+    <!--   <source file='/var/lib/libvirt/images/MyNewVM.img'/> -->
+    <!--   <target dev='vda' bus='virtio'/> -->
+    <!-- </disk> -->
+    <!-- <disk type='block' device='cdrom'> -->
+    <!--   <target dev='hdc' bus='ide'/> -->
+    <!--   <readonly/> -->
+    <!-- </disk> -->
+    <!-- <interface type='network'> -->
+    <!--   <source network='default'/> -->
+    <!--   <mac address='52:54:00:9c:94:3b'/> -->
+    <!--   <model type='virtio'/> -->
+    <!-- </interface> -->
+    <interface type='bridge'>
+      <source bridge='switch0'/>
+      <virtualport type='openvswitch' />
+	<!-- <parameters profileid='menial' interfaceid='09b11c53-8b5c-4eeb-8f00-d84eaa0aaa4f'/> -->
+      <!-- </virtualport> -->
+    </interface>
+    <!-- <input type='tablet' bus='usb'/> -->
+    <!-- <graphics type='vnc' port='-1'/> -->
+    <console type='pty'/>
+    <!-- <sound model='ac97'/> -->
+    <!-- <video> -->
+    <!--   <model type='cirrus'/> -->
+    <!-- </video> -->
+  </devices>
+</domain>

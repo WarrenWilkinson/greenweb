@@ -6,13 +6,13 @@ base:
       - rsyslog
     'salt':
       - libvirt
-      - libvirt.bionic-img
     'vagrant.vm':
       - zpool
       - lxc
       - nft
       - telegraf
       - libvirt
+      - libvirt.bionic-img
     'nginx':
       - nginx
       - telegraf
