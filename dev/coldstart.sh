@@ -89,7 +89,7 @@ sudo lxc-stop salt
 cat <<EOF | sudo tee -a /var/lib/lxc/salt/config
 
 # KVM mounts
-lxc.mount.entry = /var/run/libvirt/libvirt-sock opt/libvirt-sock none ro,bind 0 0
+lxc.mount.entry = /var/run/libvirt opt/libvirt none ro,bind 0 0
 
 # Development Mounts
 lxc.mount.entry = /etc/salt/cloud.profiles.d etc/salt/cloud.profiles.d none ro,bind 0 0
@@ -113,6 +113,11 @@ sudo rm /etc/salt/minion.d/99-master-address.conf
 sudo systemctl restart salt-minion
 sudo systemctl stop salt-master
 sudo systemctl disable salt-master
+
+# Turn off dnsseq on resolved.
+sed -e 's/^DNSSEC=yes$/DNSSEC=no/' -i /etc/systemd/resolved.conf
+systemctl restart systemd-resolved
+
 sleep 30
 $salt-key -y -a vagrant.vm
 sleep 30
@@ -151,6 +156,7 @@ echo "Bootstrap Phase 5: Orchestrating Cloud"
 echo "########################################"
 
 # Spin up all the remaining servers
+$salt 'salt' state.highstate # To install libvirt
 $salt-cloud -y -m /srv/salt/_orchestrate/mapfile
 $salt '*' test.ping
 $salt '*' state.highstate

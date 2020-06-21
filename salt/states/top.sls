@@ -6,6 +6,7 @@ base:
       - rsyslog
     'salt':
       - libvirt
+      - libvirt.bionic-img
     'vagrant.vm':
       - zpool
       - lxc
