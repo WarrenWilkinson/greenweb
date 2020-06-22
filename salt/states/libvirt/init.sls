@@ -5,7 +5,7 @@
 libvirt:
   pkg.installed:
     - pkgs:
-      - python-libvirt
+      - python3-libvirt
       - qemu-kvm
       - libvirt-daemon-system
 #      - libvirt-clients

@@ -5,7 +5,7 @@
 base:
   '*':
     - telegraf.account
-  'vagrant.vm':
+  'vmhost':
     - lxc
     - nft
     - nginx.ip

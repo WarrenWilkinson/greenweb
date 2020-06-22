@@ -3,13 +3,14 @@
 ---
 
 lxc.container_profile:
-  standard_bionic:
+  standard_focal:
     template: download
     options:
       dist: ubuntu
-      release: bionic
+      release: focal
       arch: amd64
     size: 1G
+    script_args: "-x python3" # Needed for Focal
     # Adding these features doesn't work and I haven't had time to enable. -WW
     # backing: zfs
     # zfs_root: root.img

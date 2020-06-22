@@ -14,37 +14,43 @@ echo "########################################"
 # Install salt master software with salt-cloud support
 cd /tmp
 wget -O bootstrap-salt.sh https://bootstrap.saltstack.com
-sudo sh bootstrap-salt.sh -L -M -A 127.0.0.1 -i vagrant.vm
+sudo sh bootstrap-salt.sh -L -M -A 127.0.0.1 -i vmhost -x python3
 
 # 'Fix' Salt.
 # https://github.com/saltstack/salt/issues/50679
 sudo sed -i 's/lxc.network/lxc.net.0/g' /usr/lib/python*/dist-packages/salt/modules/lxc.py
-sudo systemctl restart salt-master
+# https://github.com/saltstack/salt/issues/52219
+sudo sed -i 's/ntf.write(self.as_string())/ntf.write(salt.utils.stringutils.to_bytes(self.as_string()))/' /usr/lib/python*/dist-packages/salt/modules/lxc.py
+#sudo systemctl restart salt-master
 
 # Connect local client to local master
+# echo "master: localhost" | sudo tee /etc/salt/minion.d/99-master-address.conf
+# echo "id: vmhost" | sudo tee /etc/salt/minion.d/01-minion-id.conf
+sudo systemctl restart salt-minion
 sleep 60
-sudo salt-key -y -a vagrant.vm
+sudo salt-key -y -a vmhost
+sudo salt vmhost saltutil.refresh_pillar
 
 echo "Bootstrap Phase 1: Preparing Host"
 echo "########################################"
 # Finish setup, run twice because it seems to be necessary
 set +e
-sudo salt 'vagrant.vm' state.highstate
+sudo salt 'vmhost' state.highstate
 set -e
-sudo salt 'vagrant.vm' state.highstate
+sudo salt 'vmhost' state.highstate
 sleep 15
 
 echo "Bootstrap Phase 2: Setup Bootstrap DNS"
 echo "########################################"
 
 # Predownload the template
-sudo lxc-create --template download -n downloaded -- --no-validate -d ubuntu -r bionic -a amd64
+sudo lxc-create --template download -n downloaded -- --no-validate -d ubuntu -r focal -a amd64
 
 # Create the container this way, without bootstrapping because
 # internet isn't going to work out of the box. Set it up on the
 # special DNS ip address (which the host container is setup to query
 # from).
-sudo salt vagrant.vm lxc.create bootdns profile=standard_bionic network_profile=standard_net nic_opts="{eth0: {ipv4.address: 10.0.3.2/24, gateway: 10.0.3.1}}"
+sudo salt vmhost lxc.create bootdns profile=standard_focal network_profile=standard_net nic_opts="{eth0: {ipv4.address: 10.0.3.2/24, gateway: 10.0.3.1}}"
 
 # Fix the internet by getting rid of netplan, which attempts DHCP.
 sudo lxc-start bootdns
@@ -57,7 +63,11 @@ sleep 10
 # Install dnsmasq
 sudo lxc-attach bootdns -- sudo systemctl stop systemd-resolved
 sudo lxc-attach bootdns -- sudo systemctl disable systemd-resolved
-sudo lxc-attach bootdns -- sed -i 's/^nameserver.*$/nameserver 8.8.8.8/g' /etc/resolv.conf
+sudo lxc-stop bootdns
+sudo lxc-start bootdns
+sleep 10
+sudo lxc-attach bootdns -- rm -f /etc/resolv.conf
+sudo lxc-attach bootdns -- sh -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf'
 sudo lxc-attach bootdns -- apt-get update
 sudo lxc-attach bootdns -- apt-get install -y dnsmasq
 sudo lxc-attach bootdns -- sh -c 'echo "domain=greenweb.ca" >> /etc/dnsmasq.conf'
@@ -71,7 +81,7 @@ sudo lxc-attach bootdns -- systemctl restart dnsmasq
 echo "Bootstrap Phase 3: Initialize the New Salt Master"
 echo "########################################"
 
-sudo salt 'vagrant.vm' lxc.init salt profile=standard_bionic network_profile=standard_net bootstrap_args="-L -M -A salt"
+sudo salt 'vmhost' lxc.init salt profile=standard_focal network_profile=standard_net bootstrap_args="-L -M -A salt -x python3"
 
 # Create a space to mount libvirt into it.
 sudo lxc-attach --name=salt -- mkdir /opt/libvirt
@@ -107,7 +117,7 @@ $salt-key -y -a salt
 echo "Bootstrap Phase 4: Attach host to new Salt"
 echo "########################################"
 
-# Stop the old master, and connect vagrant.vm to the new one.
+# Stop the old master, and connect vmhost to the new one.
 sudo rm /etc/salt/pki/minion/minion_master.pub
 sudo rm /etc/salt/minion.d/99-master-address.conf
 sudo systemctl restart salt-minion
@@ -115,17 +125,17 @@ sudo systemctl stop salt-master
 sudo systemctl disable salt-master
 
 # Turn off dnsseq on resolved.
-sed -e 's/^DNSSEC=yes$/DNSSEC=no/' -i /etc/systemd/resolved.conf
-systemctl restart systemd-resolved
+#sed -e 's/^DNSSEC=yes$/DNSSEC=no/' -i /etc/systemd/resolved.conf
+#systemctl restart systemd-resolved
 
 sleep 30
-$salt-key -y -a vagrant.vm
+$salt-key -y -a vmhost
 sleep 30
 
 echo "Bootstrap Phase 4: Create New DNS server"
 echo "########################################"
 
-$salt-cloud -p lxc-bionic dns
+$salt-cloud -p lxc-focal dns
 
 $salt 'dns' state.highstate
 
@@ -148,7 +158,7 @@ sudo lxc-start salt
 sudo systemctl restart salt-minion
 
 # Ping should work and return
-# vagrant.vm, dns, and salt.
+# vmhost, dns, and salt.
 sleep 60
 $salt '*' test.ping
 

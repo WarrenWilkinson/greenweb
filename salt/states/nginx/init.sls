@@ -5,8 +5,8 @@
 nginx:
   pkgrepo.managed:
     - humanname: Nginx Upstream Repository
-    - name: deb https://nginx.org/packages/ubuntu/ bionic nginx
-    - dist: bionic
+    - name: deb https://nginx.org/packages/ubuntu/ focal nginx
+    - dist: focal
     - file: /etc/apt/sources.list.d/nginx.list
     - gpgcheck: 1
     - keyid: ABF5BD827BD9BF62

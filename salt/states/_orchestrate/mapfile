@@ -1,11 +1,11 @@
-lxc-bionic:
+lxc-focal:
   - logging
   - nginx
   - influxdb
   - grafana
   - postgresql
 
-kvm-bionic:
+kvm-focal:
   - docker
   #- kubernetes
   #- keycloak
