@@ -170,6 +170,11 @@ echo "########################################"
 # Spin up all the remaining servers
 $salt 'salt' state.highstate # To install libvirt
 $salt-cloud -y -m /srv/salt/_orchestrate/mapfile
+
+# Reboot docker so it gets it's new IP (hostname is set after cloud-init has an IP).
+sudo virsh reboot docker
+sleep 120
+
 $salt '*' test.ping
 $salt '*' state.highstate
 #$salt-run state.orchestrate _orchestrate.monitoring

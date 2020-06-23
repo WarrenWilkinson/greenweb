@@ -2,6 +2,7 @@
 password: password
 ssh_pwauth: true
 chpasswd: { expire: False }
+hostname: docker
 runcmd:
   - apt-get update
   - apt-get install qemu-guest-agent

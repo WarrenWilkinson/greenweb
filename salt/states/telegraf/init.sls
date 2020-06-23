@@ -20,9 +20,9 @@ telegraf:
     - watch:
       - pkg: telegraf
       - file: /etc/telegraf/telegraf.conf
+{% if docker %}
       - group: add-telegraf-to-docker
 
-{% if docker %}
 add-telegraf-to-docker:
   group.present:
     - name: docker
