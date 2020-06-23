@@ -33,10 +33,13 @@ grafana:
 
 /etc/grafana/provisioning/dashboards/system.yaml:
   file.managed:
-    - source: salt://grafana/files/system-dashboard.yaml
+    - source: salt://grafana/files/system-dashboard.yaml.jinja
     - user: root
     - group: root
     - mode: 644
+    - template: jinja
+    - defaults:
+        json: /var/lib/grafana/dashboards/system.json
 
 /var/lib/grafana/dashboards/system.json:
   file.managed:

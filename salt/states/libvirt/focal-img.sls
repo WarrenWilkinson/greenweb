@@ -14,10 +14,19 @@ focal-img:
     - group: root
     - mode: 755
 
+focal-resized-img:
+  cmd.wait:
+    - name: cp "*focal-server-cloudimg-amd64.img" "focal-server-cloudimg-amd64.img" && qemu-img resize focal-server-cloudimg-amd64.img +8G
+    - cwd: /opt/libvirt_images/
+    - watch:
+        - file: /opt/libvirt_images/*focal-server-cloudimg-amd64.img
+    - creates: /opt/libvirt_images/focal-server-cloudimg-amd64.img
+
 'virsh pool-refresh guest_images':
   cmd.wait:
     - watch:
         - file: /opt/libvirt_images/*focal-server-cloudimg-amd64.img
+        - cmd: focal-resized-img
 
 focal-definition:
   file.managed:

@@ -23,7 +23,7 @@
     <!-- <emulator>/usr/bin/qemu-kvm</emulator> -->
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
-      <source file='/opt/libvirt_images/*focal-server-cloudimg-amd64.img'/>
+      <source file='/opt/libvirt_images/focal-server-cloudimg-amd64.img'/>
       <!-- <backingStore type='file' index='1'> -->
       <!--   <format type='qcow2'/> -->
       <!--   <source file='/var/lib/uvtool/libvirt/images/x-uvt-b64-Y29tLnVidW50dS5jbG91ZDpzZXJ2ZXI6MTguMDQ6YW1kNjQgMjAyMDA2MTAuMQ=='/> -->

@@ -13,17 +13,15 @@ base:
       - telegraf
       - libvirt
       - libvirt.focal-img
-    'nginx':
-      - nginx
-      - telegraf
     'influxdb':
       - influxdb
-    'grafana':
-      - grafana
     'dns':
       - dnsmasq
-    'kubernetes':
-      - kubernetes
+    'docker':
+      - docker
+      - telegraf
+      - grafana.dockerized
+      - nginx.dockerized
     'postgresql':
       - postgresql
     'keycloak':

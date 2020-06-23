@@ -2,11 +2,11 @@
 # vim: ft=yaml
 ---
 
-python-pip:
+python3-pip:
   pkg.installed
 
 install_influxdb-python:
   pip.installed:
     - name: influxdb
     - require:
-      - pkg: python-pip
+      - pkg: python3-pip

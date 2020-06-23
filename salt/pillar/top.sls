@@ -8,15 +8,19 @@ base:
   'vmhost':
     - lxc
     - nft
-    - nginx.ip
+    - docker.ip
     - telegraf.memory
+    - telegraf.cpu
+    - telegraf.disk
   'influxdb':
     - influxdb_account
   'dns':
     - netplan.dns
-    - nginx.ip
-  'grafana':
+    - docker.ip
+  'docker':
     - grafana
+    - telegraf.disk
+    - telegraf.docker
   'postgresql':
     - kubernetes.database
   'kubernetes':

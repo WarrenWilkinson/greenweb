@@ -17,6 +17,9 @@ influxdb:
       - pkg: influxdb
       - file: /etc/influxdb/influxdb.conf
 
+influxdb-client:
+  pkg.installed
+
 influxdb_users:
   influxdb_user.present:
     - name: {{ pillar['influxdb']['admin']['username'] }}
