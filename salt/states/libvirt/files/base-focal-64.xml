@@ -33,6 +33,11 @@
       <!-- <alias name='virtio-disk0'/> -->
       <!-- <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/> -->
     </disk>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='/opt/libvirt_images/cloudinit.img'/>
+      <target dev='vdb' bus='virtio'/>
+    </disk>
     <!-- <disk type='file' device='disk'> -->
     <!--   <driver name='qemu' type='raw'/> -->
     <!--   <source file='/var/lib/libvirt/images/MyNewVM.img'/> -->
@@ -56,6 +61,9 @@
     <!-- <input type='tablet' bus='usb'/> -->
     <!-- <graphics type='vnc' port='-1'/> -->
     <console type='pty'/>
+    <channel type='unix'>
+      <target type='virtio' name='org.qemu.guest_agent.0'/>
+    </channel>
     <!-- <sound model='ac97'/> -->
     <!-- <video> -->
     <!--   <model type='cirrus'/> -->

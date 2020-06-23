@@ -1,6 +1,8 @@
 # -*- coding: utf-8; mode: yaml -*-
 # vim: ft=yaml
 ---
+include:
+  - libvirt.cloudinit-img
 
 focal-img:
   file.managed:
@@ -24,6 +26,12 @@ focal-definition:
     - user: root
     - group: root
     - mode: 755
+
+'virsh undefine base-focal-64':
+  cmd.wait:
+    - watch:
+        - file: /tmp/base-focal-64.xml
+    - unless: '! virsh dumpxml base-focal-64'
 
 'virsh define /tmp/base-focal-64.xml':
   cmd.run:
