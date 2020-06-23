@@ -31,7 +31,7 @@ include:
     - group: root
     - mode: 755
 
-/opt/grafana/json:
+/opt/grafana/provisioning/json:
   file.directory:
     - user: root
     - group: root
@@ -56,9 +56,9 @@ include:
     - mode: 644
     - template: jinja        
     - defaults:
-        json: /opt/grafana/json/system.json
+        json: /etc/grafana/provisioning/json/system.json
 
-/opt/grafana/json/system.json:
+/opt/grafana/provisioning/json/system.json:
   file.managed:
     - source: salt://grafana/files/system-dashboard.json
     - user: root
@@ -71,7 +71,8 @@ grafana:
   docker_container.running:
     - name: grafana
     - image: grafana/grafana:6.5.0
-    - binds: /opt/grafana:/opt/grafana:ro
+    - binds:
+        - /opt/grafana/provisioning/:/etc/grafana/provisioning/:ro
     - port_bindings:
       - 3000:3000
     - environment:
@@ -80,6 +81,10 @@ grafana:
     - restart_policy: always
     - networks:
         - production
+    - watch:
+        - file: /opt/grafana/provisioning/json/system.json
+        - file: /opt/grafana/provisioning/dashboards/system.yaml
+        - file: /opt/grafana/provisioning/datasources/telegraf.yaml
 
 # # For now lock it down. Later, perhaps public facing so users can see
 # # their sites requirements.  Also needs SMTP integration, and might as
