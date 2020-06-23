@@ -29,14 +29,16 @@ sudo sed -i 's/ntf.write(self.as_string())/ntf.write(salt.utils.stringutils.to_b
 sudo systemctl restart salt-minion
 sleep 60
 sudo salt-key -y -a vmhost
-sudo salt vmhost saltutil.refresh_pillar
+sleep 60
 
 echo "Bootstrap Phase 1: Preparing Host"
 echo "########################################"
 # Finish setup, run twice because it seems to be necessary
 set +e
+sudo salt vmhost saltutil.refresh_pillar
 sudo salt 'vmhost' state.highstate
 set -e
+sudo salt vmhost saltutil.refresh_pillar
 sudo salt 'vmhost' state.highstate
 sleep 15
 
@@ -125,12 +127,12 @@ sudo systemctl stop salt-master
 sudo systemctl disable salt-master
 
 # Turn off dnsseq on resolved.
-#sed -e 's/^DNSSEC=yes$/DNSSEC=no/' -i /etc/systemd/resolved.conf
-#systemctl restart systemd-resolved
+sudo sed -e 's/^DNSSEC=yes$/DNSSEC=no/' -i /etc/systemd/resolved.conf
+sudo systemctl restart systemd-resolved
 
-sleep 30
+sleep 60
 $salt-key -y -a vmhost
-sleep 30
+sleep 60
 
 echo "Bootstrap Phase 4: Create New DNS server"
 echo "########################################"

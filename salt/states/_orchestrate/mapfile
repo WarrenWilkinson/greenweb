@@ -1,8 +1,8 @@
 lxc-focal:
-  - logging
-  - nginx
+#  - logging
+#  - nginx
+#  - grafana
   - influxdb
-  - grafana
   - postgresql
 
 kvm-focal:
