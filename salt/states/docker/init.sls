@@ -7,3 +7,15 @@ docker.io:
 
 python3-docker:
   pkg.installed
+
+add-telegraf-to-docker:
+  group.present:
+    - name: docker
+    - addusers:
+      - ubuntu
+    - require:
+      - pkg: docker.io
+
+network_production:
+  docker_network.present:
+    - name: production

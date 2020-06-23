@@ -78,6 +78,8 @@ grafana:
       - VAR1: value
     - log_driver: syslog
     - restart_policy: always
+    - networks:
+        - production
 
 # # For now lock it down. Later, perhaps public facing so users can see
 # # their sites requirements.  Also needs SMTP integration, and might as

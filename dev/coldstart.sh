@@ -175,6 +175,7 @@ $salt-cloud -y -m /srv/salt/_orchestrate/mapfile
 sudo virsh reboot docker
 sleep 120
 
+sudo virsh autostart docker
 $salt '*' test.ping
 $salt '*' state.highstate
 #$salt-run state.orchestrate _orchestrate.monitoring
