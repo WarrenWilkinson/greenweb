@@ -65,31 +65,11 @@ include:
     - group: root
     - mode: 644
 
-# Run it!
-
-grafana:
-  docker_container.running:
-    - name: grafana
-    - image: grafana/grafana:6.5.0
-    - binds:
-        - /opt/grafana/provisioning/:/etc/grafana/provisioning/:ro
-    - port_bindings:
-      - 3000:3000
-    - environment:
-      - VAR1: value
-    - log_driver: syslog
-    - restart_policy: always
-    - networks:
-        - production
-    - watch:
-        - file: /opt/grafana/provisioning/json/system.json
-        - file: /opt/grafana/provisioning/dashboards/system.yaml
-        - file: /opt/grafana/provisioning/datasources/telegraf.yaml
-
-# # For now lock it down. Later, perhaps public facing so users can see
-# # their sites requirements.  Also needs SMTP integration, and might as
-# # well integrate with Postgresql and keycloak.
-# /etc/grafana/grafana.ini:
+# For now lock it down. Later, perhaps public facing so users can see
+# their sites requirements.  Also needs SMTP integration, and might as
+# well integrate with Postgresql and keycloak.
+# TODO integrate some of these changes...
+# /opt/grafana/grafana.ini:
 #   file.managed:
 #     - source: salt://grafana/files/grafana.ini.jinja
 #     - user: root
@@ -114,6 +94,27 @@ grafana:
 #         allow_sign_up: false
 #         log: syslog
 #         rendering_timezone: America/Vancouver
+
+# Run it!
+
+grafana:
+  docker_container.running:
+    - name: grafana
+    - image: grafana/grafana:6.5.0
+    - binds:
+        - /opt/grafana/provisioning/:/etc/grafana/provisioning/:ro
+    - port_bindings:
+      - 3000:3000
+    - environment:
+      - VAR1: value
+    - log_driver: syslog
+    - restart_policy: always
+    - networks:
+        - production
+    - watch:
+        - file: /opt/grafana/provisioning/json/system.json
+        - file: /opt/grafana/provisioning/dashboards/system.yaml
+        - file: /opt/grafana/provisioning/datasources/telegraf.yaml
 
 # grafana-server:
 #   service.running:

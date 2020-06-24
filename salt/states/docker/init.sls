@@ -8,7 +8,7 @@ docker.io:
 python3-docker:
   pkg.installed
 
-add-telegraf-to-docker:
+add-ubuntu-to-docker:
   group.present:
     - name: docker
     - addusers:

@@ -2,10 +2,10 @@
 # vim: ft=yaml
 ---
 
-kubernetes:
+keycloak:
   database:
-    username: kubernetes
-    password: kubernetes
+    username: keycloak
+    password: keycloak
     hostname: postgresql
     port: 5432
-    database: kubernetes
+    database: keycloak

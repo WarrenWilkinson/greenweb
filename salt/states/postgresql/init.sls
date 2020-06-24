@@ -9,16 +9,35 @@ postgresql:
     - enable: true
     - watch:
       - pkg: postgresql
+      - file: /etc/postgresql/12/main/conf.d/10-custom.conf
+      - file: /etc/postgresql/12/main/pg_hba.conf
 
-# Create a user and database for kubernetes.
-{% set kbuser = pillar['kubernetes']['database']['username'] %}
-{% set kbpass = pillar['kubernetes']['database']['password'] %}
-{% set kbname = pillar['kubernetes']['database']['database'] %}
+/etc/postgresql/12/main/conf.d/10-custom.conf:
+  file.managed:
+    - source: salt://postgresql/files/10-custom.conf
+    - user: root
+    - group: root
+    - mode: 644
 
-kubernetes_user:
+# Create a user and database for keycloak.
+{% set keycloak_user = pillar['keycloak']['database']['username'] %}
+{% set keycloak_password = pillar['keycloak']['database']['password'] %}
+{% set keycloak_database = pillar['keycloak']['database']['database'] %}
+
+/etc/postgresql/12/main/pg_hba.conf:
+  file.managed:
+    - source: salt://postgresql/files/pg_hba.conf.jinja
+    - user: root
+    - group: root
+    - mode: 644
+    - template: jinja
+    - defaults:
+        keycloak_user: {{ keycloak_user }}
+
+keycloak_user:
   postgres_user.present:
-    - name: {{ kbuser }}
-    - password: {{ kbpass }}
+    - name: {{ keycloak_user }}
+    - password: {{ keycloak_password }}
     - createdb: false
     - createroles: false
     - encrypted: true
@@ -26,10 +45,8 @@ kubernetes_user:
     - superuser: false
     - user: postgres
 
-kubernetes_database:
+keycloak_database:
   postgres_database.present:
-    - name: {{ kbname }}
-    - owner: {{ kbuser }}
+    - name: {{ keycloak_database }}
+    - owner: {{ keycloak_user }}
     - user: postgres
-
-# TODO Setup postgresql to listen to external connections.

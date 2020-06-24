@@ -21,7 +21,7 @@ base:
     - grafana
     - telegraf.disk
     - telegraf.docker
+    - keycloak.admin
+    - keycloak.database
   'postgresql':
-    - kubernetes.database
-  'kubernetes':
-    - kubernetes.database
+    - keycloak.database
