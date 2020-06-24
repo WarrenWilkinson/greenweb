@@ -20,7 +20,6 @@ base:
     'docker':
       - docker
       - telegraf
-      - keycloak.dockerized
       - grafana.dockerized
       - nginx.dockerized
     'postgresql':

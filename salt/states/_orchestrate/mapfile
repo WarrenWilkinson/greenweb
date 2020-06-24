@@ -1,24 +1,8 @@
 lxc-focal:
   - logging
-#  - nginx
-#  - grafana
+  - ldap
   - influxdb
   - postgresql
 
 kvm-focal:
   - docker
-  #- kubernetes
-  #- keycloak
-  #- redis
-  # - mailu:
-  #     grains:
-  #       role: mailu
-  # - keycloak:
-  #     grains:
-  #       role: keycloak
-  # - discourse:
-  #     grains:
-  #       role: discourse
-  # - bakery:
-  #     grains:
-  #       role: bakery

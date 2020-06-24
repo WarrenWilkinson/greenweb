@@ -21,7 +21,3 @@ base:
     - grafana
     - telegraf.disk
     - telegraf.docker
-    - keycloak.admin
-    - keycloak.database
-  'postgresql':
-    - keycloak.database
