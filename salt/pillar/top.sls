@@ -21,3 +21,5 @@ base:
     - grafana
     - telegraf.disk
     - telegraf.docker
+  'ldap':
+    - ldap.rootpw

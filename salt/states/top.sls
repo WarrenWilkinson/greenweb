@@ -13,6 +13,8 @@ base:
       - telegraf
       - libvirt
       - libvirt.focal-img
+    'ldap':
+      - openldap
     'influxdb':
       - influxdb
     'dns':
