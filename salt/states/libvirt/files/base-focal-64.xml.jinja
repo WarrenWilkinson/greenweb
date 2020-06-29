@@ -1,3 +1,4 @@
+<!-- -*- mode: xml -*- -->
 <domain type='kvm'>
   <name>base-focal-64</name>
   <title>Focal Fossil amd64</title>
@@ -38,6 +39,12 @@
       <source file='/opt/libvirt_images/cloudinit.img'/>
       <target dev='vdb' bus='virtio'/>
     </disk>
+    {% for label in mounts %}
+    <filesystem type='mount' accessmode='passthrough'>
+      <source dir='{{ mounts[label] }}'/>
+      <target dir='{{ label }}'/>
+    </filesystem>
+    {% endfor %}
     <!-- <disk type='file' device='disk'> -->
     <!--   <driver name='qemu' type='raw'/> -->
     <!--   <source file='/var/lib/libvirt/images/MyNewVM.img'/> -->

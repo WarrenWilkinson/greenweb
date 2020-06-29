@@ -31,10 +31,14 @@ focal-resized-img:
 focal-definition:
   file.managed:
     - name: /tmp/base-focal-64.xml
-    - source: salt://libvirt/files/base-focal-64.xml
+    - source: salt://libvirt/files/base-focal-64.xml.jinja
     - user: root
     - group: root
     - mode: 755
+    - template: jinja
+    - defaults:
+        mounts:
+          greenwebauth: /opt/greenwebauth
 
 'virsh undefine base-focal-64':
   cmd.wait:

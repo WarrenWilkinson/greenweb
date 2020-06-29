@@ -4,10 +4,14 @@
 
 /tmp/cloudinit.yaml:
   file.managed:
-    - source: salt://libvirt/files/cloudinit.yaml
+    - source: salt://libvirt/files/cloudinit.yaml.jinja
     - user: root
     - group: root
     - mode: 644
+    - template: jinja
+    - defaults:
+        mounts:
+          greenwebauth: /opt/greenwebauth
 
 cloud-image-utils:
   pkg.installed
