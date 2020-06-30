@@ -37,23 +37,28 @@ include:
     - require:
         - file: /opt/nginx
 
-/opt/nginx/sites-available/grafana.conf:
+
+{% for site in ['grafana', 'auth'] %}
+/opt/nginx/sites-available/{{ site }}.conf:
   file.managed:
-    - source: salt://nginx/config/nginx_grafana.conf
+    - source: salt://nginx/config/nginx_{{ site }}.conf
     - user: root
     - group: root
     - mode: 644
     - require:
       - file: /opt/nginx/sites-available
 
-/opt/nginx/sites-enabled/grafana.conf:
+/opt/nginx/sites-enabled/{{ site }}.conf:
   file.managed:
-    - source: salt://nginx/config/nginx_grafana.conf
+    - source: salt://nginx/config/nginx_{{ site }}.conf
     - user: root
     - group: root
     - mode: 644
     - require:
       - file: /opt/nginx/sites-enabled
+    - watch_in:
+      - docker_container: nginx
+{% endfor %}
 
 nginx:
   docker_container.running:

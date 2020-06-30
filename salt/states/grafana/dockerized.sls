@@ -103,8 +103,9 @@ grafana:
     - image: grafana/grafana:6.5.0
     - binds:
         - /opt/grafana/provisioning/:/etc/grafana/provisioning/:ro
-    - port_bindings:
-      - 3000:3000
+    # No need, because it's on it's own network.
+    # - port_bindings:
+    #   - 3000:3000
     - environment:
       - VAR1: value
     - log_driver: syslog
