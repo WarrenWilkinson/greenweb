@@ -24,6 +24,7 @@ base:
       - telegraf
       - grafana.dockerized
       - nginx.dockerized
+      - auth.dockerized
     'postgresql':
       - postgresql
     'redis':

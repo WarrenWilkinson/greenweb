@@ -3,8 +3,11 @@
   <name>base-focal-64</name>
   <title>Focal Fossil amd64</title>
   <description>A Focal amd64 Base Image</description>
-  <currentMemory unit='KiB'>524288</currentMemory>
-  <memory unit='KiB'>524288</memory>
+  <!-- 500 megs of ram is too little... -->
+  <!-- <currentMemory unit='KiB'>524288</currentMemory>
+  <memory unit='KiB'>524288</memory> -->
+  <currentMemory unit='KiB'>1048576</currentMemory>
+  <memory unit='KiB'>1048576</memory>
   <os>
     <type arch='x86_64'>hvm</type>
     <boot dev='hd'/>

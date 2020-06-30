@@ -19,6 +19,7 @@ base:
     - docker.ip
   'docker':
     - grafana
+    - telegraf.memory
     - telegraf.disk
     - telegraf.docker
   'ldap':
