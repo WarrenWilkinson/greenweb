@@ -19,10 +19,10 @@ postgresql:
     - group: root
     - mode: 644
 
-# Create a user and database for keycloak.
-{% set keycloak_user = pillar['keycloak']['database']['username'] %}
-{% set keycloak_password = pillar['keycloak']['database']['password'] %}
-{% set keycloak_database = pillar['keycloak']['database']['database'] %}
+# Create a user and database for hydra.
+{% set hydra_user = pillar['hydra']['database']['username'] %}
+{% set hydra_password = pillar['hydra']['database']['password'] %}
+{% set hydra_database = pillar['hydra']['database']['database'] %}
 
 /etc/postgresql/12/main/pg_hba.conf:
   file.managed:
@@ -32,12 +32,12 @@ postgresql:
     - mode: 644
     - template: jinja
     - defaults:
-        keycloak_user: {{ keycloak_user }}
+        hydra_user: {{ hydra_user }}
 
-keycloak_user:
+hydra_user:
   postgres_user.present:
-    - name: {{ keycloak_user }}
-    - password: {{ keycloak_password }}
+    - name: {{ hydra_user }}
+    - password: {{ hydra_password }}
     - createdb: false
     - createroles: false
     - encrypted: true
@@ -45,8 +45,8 @@ keycloak_user:
     - superuser: false
     - user: postgres
 
-keycloak_database:
+hydra_database:
   postgres_database.present:
-    - name: {{ keycloak_database }}
-    - owner: {{ keycloak_user }}
+    - name: {{ hydra_database }}
+    - owner: {{ hydra_user }}
     - user: postgres

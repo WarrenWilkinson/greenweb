@@ -2,10 +2,10 @@
 # vim: ft=yaml
 ---
 
-keycloak:
+hydra:
   database:
-    username: keycloak
-    password: keycloak
+    username: hydra
+    password: hydra
     hostname: postgresql
     port: 5432
-    database: keycloak
+    database: hydra

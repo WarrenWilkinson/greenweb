@@ -24,3 +24,5 @@ base:
     - telegraf.docker
   'ldap':
     - ldap.rootpw
+  'postgresql':
+    - hydra.database
