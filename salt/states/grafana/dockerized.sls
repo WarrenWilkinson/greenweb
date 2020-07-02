@@ -108,7 +108,7 @@ grafana:
     #   - 3000:3000
     - environment:
       - GF_SERVER_DOMAIN: grafana.greenweb.ca
-      - GF_SERVER_ROOT_URL: http://grafana.greenweb.ca/
+      - GF_SERVER_ROOT_URL: https://grafana.greenweb.ca/
       - GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION: True
       - GF_SECURITY_DISABLE_GRAVATAR: True
       - GF_USERS_ALLOW_SIGN_UP: False
@@ -119,7 +119,7 @@ grafana:
       - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: secret
       - GF_AUTH_GENERIC_OAUTH_SECRET: secret
       - GF_AUTH_GENERIC_OAUTH_SCOPES: openid
-      - GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://hydra.greenweb.ca/oauth2/auth
+      - GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://hydra.greenweb.ca/oauth2/auth/requests/login?login_challenge=grafana
       - GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://hydra.greenweb.ca/oauth2/token
       - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: False
     - log_driver: syslog

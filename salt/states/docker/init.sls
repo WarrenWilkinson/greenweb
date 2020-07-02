@@ -19,3 +19,5 @@ add-ubuntu-to-docker:
 network_production:
   docker_network.present:
     - name: production
+    - subnet: {{ pillar['docker']['subnet'] }}
+    - gateway: {{ pillar['docker']['gateway'] }}
