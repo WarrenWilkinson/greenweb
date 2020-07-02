@@ -22,6 +22,8 @@ base:
     - telegraf.memory
     - telegraf.disk
     - telegraf.docker
+    - hydra.database
+    - hydra.secret
   'ldap':
     - ldap.rootpw
   'postgresql':

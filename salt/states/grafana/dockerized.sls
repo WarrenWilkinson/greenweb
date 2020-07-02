@@ -100,14 +100,28 @@ include:
 grafana:
   docker_container.running:
     - name: grafana
-    - image: grafana/grafana:6.5.0
+    - image: grafana/grafana:7.0.5
     - binds:
         - /opt/grafana/provisioning/:/etc/grafana/provisioning/:ro
     # No need, because it's on it's own network.
     # - port_bindings:
     #   - 3000:3000
     - environment:
-      - VAR1: value
+      - GF_SERVER_DOMAIN: grafana.greenweb.ca
+      - GF_SERVER_ROOT_URL: http://grafana.greenweb.ca/
+      - GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION: True
+      - GF_SECURITY_DISABLE_GRAVATAR: True
+      - GF_USERS_ALLOW_SIGN_UP: False
+      - GF_USERS_ALLOW_ORG_CREATE: False
+      - GF_AUTH_DISABLE_LOGIN_FORM: True
+      - GF_AUTH_GENERIC_OAUTH_ENABLED: True
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: secret
+      - GF_AUTH_GENERIC_OAUTH_SECRET: secret
+      - GF_AUTH_GENERIC_OAUTH_SCOPES: openid
+      - GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://hydra.greenweb.ca/oauth2/auth
+      - GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://hydra.greenweb.ca/oauth2/token
+      - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: False
     - log_driver: syslog
     - restart_policy: always
     - networks:

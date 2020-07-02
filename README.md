@@ -20,8 +20,9 @@ This will create a virtual machine (VM) and bootstrap it, installing
 all the necessary software.  When it's done, it exists at 172.30.1.5. Modify
 your /etc/hosts file to contain this line:
 
-    172.30.1.5             vagrant.vm forum.vagrant.vm mail.vagrant.vm identity.vagrant.vm grafana.vagrant.vm
+    172.30.1.5             greenweb.ca forum.greenweb.ca mail.greenweb.ca identity.greenweb.ca grafana.greenweb.ca
 
 Now you should be able to visit the various external services:
 
-  - http://grafana.vagrant.vm (TODO move this internal).
+  - http://grafana.greenweb.ca (TODO move this internal).
+

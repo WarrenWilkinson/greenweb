@@ -1,3 +1,8 @@
+# -*- coding: utf-8; mode: yaml -*-
+# vim: ft=yaml
+---
+
+
 base:
     'netplan:static:true':
       - match: pillar
@@ -24,7 +29,8 @@ base:
       - telegraf
       - grafana.dockerized
       - nginx.dockerized
-      - auth.dockerized
+      - identity.dockerized
+      - hydra.dockerized
     'postgresql':
       - postgresql
     'redis':

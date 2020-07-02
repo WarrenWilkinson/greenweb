@@ -37,8 +37,9 @@ include:
     - require:
         - file: /opt/nginx
 
-
-{% for site in ['grafana', 'auth'] %}
+# NOTE: In production, I don't need to normally expose
+# hydra.
+{% for site in ['grafana', 'identity', 'hydra'] %}
 /opt/nginx/sites-available/{{ site }}.conf:
   file.managed:
     - source: salt://nginx/config/nginx_{{ site }}.conf

@@ -7,20 +7,20 @@ include:
 
 {% set dev = true %}
 {% if dev %}
-greenweb/auth:
+greenweb/identity:
   docker_image.present:
     - build: /opt/greenwebauth
     - tag: latest
     - require_in:
-      - docker_container: auth
+      - docker_container: identity
 {% endif %}
 
-auth:
+identity:
   docker_container.running:
-    - name: auth
-    - image: greenweb/auth:latest
-    - binds:
-        - /opt/auth/provisioning/:/etc/auth/provisioning/:ro
+    - name: identity
+    - image: greenweb/identity:latest
+    # - binds:
+    #     - /opt/auth/provisioning/:/etc/auth/provisioning/:ro
     # No need, because it's on it's own network
     # - port_bindings:
     #   - 3333:3000
