@@ -116,8 +116,7 @@ grafana:
       - GF_AUTH_DISABLE_LOGIN_FORM: True
       - GF_AUTH_GENERIC_OAUTH_ENABLED: True
       - GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
-      - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: secret
-      - GF_AUTH_GENERIC_OAUTH_SECRET: secret
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: {{ pillar['hydra']['client_secret']['grafana'] }}
       - GF_AUTH_GENERIC_OAUTH_SCOPES: openid
       - GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://hydra.greenweb.ca/oauth2/auth/requests/login?login_challenge=grafana
       - GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://hydra.greenweb.ca/oauth2/token

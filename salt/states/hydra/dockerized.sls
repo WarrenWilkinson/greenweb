@@ -14,8 +14,8 @@ hydra:
     - image: oryd/hydra:v1.5.2
     # No need, because it's on it's own network.
     # - port_bindings:
-    #   - 9000:4444
-    #   - 9001:4445
+    #   - 4444:4444 # The public API (which nginx handles)
+    #   - 4445:4445 # The admin API (not exposed)
     - environment:
       - SECRETS_SYSTEM: {{ secret }}
       - DSN: {{ dsn }}

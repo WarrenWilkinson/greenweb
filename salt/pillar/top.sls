@@ -25,6 +25,7 @@ base:
     - hydra.database
     - hydra.secret
     - docker.ip
+    - hydra.hydra_grafana_client_secret
   'ldap':
     - ldap.rootpw
   'postgresql':

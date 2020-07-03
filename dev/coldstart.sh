@@ -177,7 +177,8 @@ sleep 120
 
 sudo virsh autostart docker
 $salt '*' test.ping
-$salt 'docker' state.sls hydra.provision
+$salt 'docker' state.sls hydra.migrate
 $salt '*' state.highstate
+$salt 'docker' state.sls hydra.provision
 
 #$salt-run state.orchestrate _orchestrate.monitoring
