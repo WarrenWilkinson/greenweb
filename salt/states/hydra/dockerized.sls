@@ -16,10 +16,11 @@ hydra:
     # - port_bindings:
     #   - 4444:4444 # The public API (which nginx handles)
     #   - 4445:4445 # The admin API (not exposed)
+    - command: "serve all"
     - environment:
       - SECRETS_SYSTEM: {{ secret }}
       - DSN: {{ dsn }}
-      - URLS_SELF_ISSUER: https://localhost:9000/
+      - URLS_SELF_ISSUER: https://hydra.greenweb.ca/
       - URLS_CONSENT: https://identity.greenweb.ca/consent
       - URLS_LOGIN: https://identity.greenweb.ca/login
       - SERVE_TLS_ALLOW_TERMINATION_FROM: {{ pillar['docker']['subnet'] }}

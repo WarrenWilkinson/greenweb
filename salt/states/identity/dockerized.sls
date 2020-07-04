@@ -25,7 +25,8 @@ identity:
     # - port_bindings:
     #   - 3333:3000
     - environment:
-      - VAR1: value
+      - HYDRA_ADMIN_URL: http://hydra:4445/
+      - MOCK_TLS_TERMINATION: True
     - log_driver: syslog
     - restart_policy: always
     - networks:
