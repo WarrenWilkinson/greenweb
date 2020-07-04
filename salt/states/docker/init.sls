@@ -21,3 +21,4 @@ network_production:
     - name: production
     - subnet: {{ pillar['docker']['subnet'] }}
     - gateway: {{ pillar['docker']['gateway'] }}
+    - iprange: {{ pillar['docker']['iprange'] }}

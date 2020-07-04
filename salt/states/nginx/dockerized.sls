@@ -107,7 +107,8 @@ nginx:
       - 80:80
       - 443:443
     - networks:
-        - production
+        - production:
+          - ipv4_address: {{ pillar['docker']['nginx'] }}
     - log_driver: syslog
     - restart_policy: always
     - watch:

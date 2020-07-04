@@ -118,13 +118,15 @@ grafana:
       - GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
       - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: {{ pillar['hydra']['client_secret']['grafana'] }}
       - GF_AUTH_GENERIC_OAUTH_SCOPES: openid
-      - GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://hydra.greenweb.ca/oauth2/auth/requests/login?login_challenge=grafana
+      - GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://hydra.greenweb.ca/oauth2/auth?login_challenge=grafana
       - GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://hydra.greenweb.ca/oauth2/token
       - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: False
     - log_driver: syslog
     - restart_policy: always
     - networks:
         - production
+    - extra_hosts:
+      - hydra.greenweb.ca:{{ pillar['docker']['nginx'] }}
     - watch:
         - file: /opt/grafana/provisioning/json/system.json
         - file: /opt/grafana/provisioning/dashboards/system.yaml
