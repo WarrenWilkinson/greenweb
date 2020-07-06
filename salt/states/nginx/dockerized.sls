@@ -2,40 +2,23 @@
 # vim: ft=yaml
 ---
 
+{% set dev = true %}
+
 include:
   - docker
   - grafana.dockerized
+{% if dev %}
+  - cert.dev 
+{% endif %}
+
+{% set ssl_cert = '/opt/cert/development.crt' %}
+{% set ssl_key = '/opt/cert/development.key' %}
 
 /opt/nginx:
   file.directory:
     - user: root
     - group: root
     - mode: 755
-
-{% set dev = true %}
-{% set ssl_cert = '/opt/cert/development.crt' %}
-{% set ssl_key = '/opt/cert/development.key' %}
-{% if dev %}
-/opt/nginx/cert:
-  file.directory:
-    - user: root
-    - group: root
-    - mode: 755
-
-/opt/nginx/cert/development.key:
-  file.managed:
-    - source: salt://nginx/files/development.key
-    - user: root
-    - group: root
-    - mode: 444
-
-/opt/nginx/cert/development.crt:
-  file.managed:
-    - source: salt://nginx/files/development.crt
-    - user: root
-    - group: root
-    - mode: 444
-{% endif %}
 
 /opt/nginx/sites-available:
   file.directory:
@@ -99,7 +82,7 @@ nginx:
     - name: nginx
     - image: nginx:1.19.0
     - binds:
-        - /opt/nginx/cert/:/opt/cert/:ro
+        - /opt/cert/:/opt/cert/:ro
         - /opt/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
         - /opt/nginx/sites-available/:/etc/nginx/sites-available/:ro
         - /opt/nginx/sites-enabled/:/etc/nginx/sites-enabled/:ro

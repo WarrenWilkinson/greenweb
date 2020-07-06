@@ -65,6 +65,59 @@ include:
     - group: root
     - mode: 644
 
+
+{% set dev = true %}
+{% if dev %}
+
+# docker run --name temp grafana/grafana:7.0.5 bash -c 'apk add python':
+#   cmd.run:
+#     - require_in:
+#       - docker_image: grafana/grafana
+
+/opt/grafana-dev:
+  file.directory:
+    - user: root
+    - group: root
+    - mode: 755
+
+/opt/grafana-dev/development.crt:
+  file.managed:
+    - source: salt://cert/files/development.crt
+    - user: root
+    - group: root
+    - mode: 755
+    - require:
+        - file: /opt/grafana-dev
+
+/opt/grafana-dev/Dockerfile:
+  file.managed:
+    - source: salt://grafana/files/Dockerfile
+    - user: root
+    - group: root
+    - mode: 755
+    - require:
+        - file: /opt/grafana-dev/development.crt
+        - file: /opt/grafana-dev
+
+grafana/grafana:
+  docker_image.present:
+    - build: /opt/grafana-dev
+    - tag: dev
+    - require_in:
+      - docker_container: grafana
+
+# grafana/grafana:
+#   docker_image.present:
+#     - tag: dev
+#     - require_in:
+#       - docker_container: grafana
+#     - sls: cert.alpine-trust
+#     - base: temp
+#     - saltenv: base
+
+{% set grafana_image = 'grafana/grafana:dev' %}
+{% endif %}
+
 # For now lock it down. Later, perhaps public facing so users can see
 # their sites requirements.  Also needs SMTP integration, and might as
 # well integrate with Postgresql and keycloak.
@@ -100,7 +153,7 @@ include:
 grafana:
   docker_container.running:
     - name: grafana
-    - image: grafana/grafana:7.0.5
+    - image: {{ grafana_image }}
     - binds:
         - /opt/grafana/provisioning/:/etc/grafana/provisioning/:ro
     # No need, because it's on it's own network.
