@@ -173,7 +173,8 @@ grafana:
       - GF_AUTH_GENERIC_OAUTH_SCOPES: openid
       - GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://hydra.greenweb.ca/oauth2/auth?login_challenge=grafana
       - GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://hydra.greenweb.ca/oauth2/token
-      - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: False
+      - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: True
+      - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: role
     - log_driver: syslog
     - restart_policy: always
     - networks:
