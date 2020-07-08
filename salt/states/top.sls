@@ -31,6 +31,8 @@ base:
       - nginx.dockerized
       - identity.dockerized
       - hydra.dockerized
+    'postfix':
+      - postfix
     'postgresql':
       - postgresql
     'redis':

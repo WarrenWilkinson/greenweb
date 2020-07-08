@@ -91,10 +91,14 @@ switch0:
 
 /etc/netplan/02-switch0-netplan.yaml:
   file.managed:
-    - source: salt://lxc/files/02-switch0-netplan.yaml
+    - source: salt://lxc/files/02-switch0-netplan.yaml.jinja
     - user: root
     - group: root
     - mode: 644
+    - template: jinja
+    - defaults:
+        cidr: {{ pillar['openvswitch']['cidr'] }}
+        nameserver: {{ pillar['openvswitch']['nameserver'] }}
 
 'netplan apply':
   cmd.run:

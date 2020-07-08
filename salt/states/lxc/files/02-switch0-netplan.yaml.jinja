@@ -4,7 +4,7 @@ network:
   ethernets:
     switch0:
       addresses:
-        - 10.0.3.1/24
+        - {{ cidr }}
       nameservers:
         search: [greenweb.ca]
-        addresses: [10.0.3.2]
+        addresses: [{{ nameserver }}]

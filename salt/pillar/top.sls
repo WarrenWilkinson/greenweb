@@ -6,6 +6,7 @@ base:
   '*':
     - telegraf.account
   'vmhost':
+    - openvswitch
     - lxc
     - nft
     - docker.ip
@@ -28,5 +29,8 @@ base:
     - hydra.hydra_grafana_client_secret
   'ldap':
     - ldap.rootpw
+  'postfix':
+    - openvswitch
+    - external_ip
   'postgresql':
     - hydra.database
