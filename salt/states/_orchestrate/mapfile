@@ -3,6 +3,7 @@ lxc-focal:
   - ldap
   - influxdb
   - postgresql
+  - postfix
 
 kvm-focal:
   - docker

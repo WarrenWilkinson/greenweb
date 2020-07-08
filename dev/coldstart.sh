@@ -177,6 +177,7 @@ sleep 120
 
 sudo virsh autostart docker
 $salt '*' test.ping
+$salt 'postgresql' state.highstate
 $salt 'docker' state.sls hydra.migrate
 $salt '*' state.highstate
 $salt 'docker' state.sls hydra.provision
