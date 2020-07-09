@@ -22,6 +22,7 @@ nftables:
         lxc_bridge: switch0
         primary_interface: eth0
         secondary_interface: eth1 # static vagrant IP.
+        lxc_postfix_ip: {{ pillar['postfix']['static_ip'] }}
         lxc_docker_ip: {{ pillar['docker']['static_ip'] }}
 
 # Enable Packet forwarding

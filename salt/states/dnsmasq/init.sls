@@ -41,5 +41,6 @@ systemd-resolved:
         dhcp_range_max: 10.0.3.200
         dhcp_duration: infinite
         docker_static_ip: {{ pillar['docker']['static_ip'] }}
+        postfix_static_ip: {{ pillar['postfix']['static_ip'] }}
     - require:
       - pkg: dnsmasq

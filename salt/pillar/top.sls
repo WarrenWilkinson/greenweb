@@ -10,6 +10,7 @@ base:
     - lxc
     - nft
     - docker.ip
+    - postfix.ip
     - telegraf.memory
     - telegraf.cpu
     - telegraf.disk
@@ -18,6 +19,7 @@ base:
   'dns':
     - netplan.dns
     - docker.ip
+    - postfix.ip
   'docker':
     - grafana
     - telegraf.memory
