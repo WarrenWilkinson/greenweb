@@ -92,7 +92,7 @@ table inet filter {
 table ip nat {
     chain prerouting {
         type nat hook prerouting priority 0;
-	iif "{{ secondary_interface }}" tcp dport {80, 443} dnat "{{ lxc_docker_ip }}"
+	iif "{{ secondary_interface }}" tcp dport {smtp, pop3, imap, http, https} dnat "{{ lxc_docker_ip }}"
     }
 
     # Apply source masquarade so that lxc containers can reach
