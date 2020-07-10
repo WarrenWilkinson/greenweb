@@ -16,6 +16,7 @@ Vagrant.configure("2") do |config|
   # Provision with shell script and local files.
   # config.vm.provision "shell", path: "coldstart.sh"
   config.vm.synced_folder "./", "/vagrant", owner: "vagrant", group: "vagrant", :mount_options => ["ro"]
+  config.vm.synced_folder "../tests", "/opt/tests", owner: "vagrant", group: "vagrant", :mount_options => ["ro"]
   config.vm.synced_folder "../salt/cloud.profiles.d", "/etc/salt/cloud.profiles.d", owner: "root", group: "root", :mount_options => ["ro"]
   config.vm.synced_folder "../salt/cloud.providers.d", "/etc/salt/cloud.providers.d", owner: "root", group: "root", :mount_options => ["ro"]
   config.vm.synced_folder "../salt/master.d", "/etc/salt/master.d", owner: "root", group: "root", :mount_options => ["ro"]

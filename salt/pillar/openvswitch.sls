@@ -3,5 +3,5 @@
 ---
 
 openvswitch:
-  cidr: 10.0.3.1/24
+  cidr: 10.0.3.0/24
   nameserver: 10.0.3.2
