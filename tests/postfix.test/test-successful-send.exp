@@ -1,13 +1,9 @@
-set timeout 3
+set timeout 5
 spawn telnet postfix.greenweb.ca 25
-send "EHLO vmhost.greenweb.ca\r"
-expect "mail.greenweb.ca"
+send "EHLO postfix.greenweb.ca\r"
 send "MAIL FROM: <fakename@fakedomain.fake>\r"
-expect "Ok"
 send "RCPT TO:<postmaster@greenweb.ca>\r"
-expect "Ok"
 send "DATA\r"
-expect "354"
 send "From: Bogus <bogus@bogus.com>\r"
 send "Subject: The Next Meeting\r"
 send "To: john@mail.com\r"
@@ -18,6 +14,7 @@ send "\r"
 send "Bye!\r"
 send "Bogus\r"
 send ".\r"
-expect "queued"
+expect "queued" { pass "Mail was successfully queued." } \
+       timeout { fail "Mail was not sent." }
 send "QUIT\r"
 expect "Bye"

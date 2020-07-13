@@ -1,0 +1,8 @@
+#!/usr/bin/expect -f
+
+set timeout 5
+spawn telnet postfix.greenweb.ca 25
+send "MAIL FROM: <fakename@fakedomain.fake>\r"
+expect "send HELO/EHLO first" { pass "No hello was caught" } \
+    timeout { fail "helo doesn't seem to be required" }
+send "QUIT\r"

@@ -1,8 +1,8 @@
 #!/usr/bin/expect -f
 
-set timeout 3
+set timeout 5
 spawn telnet postfix.greenweb.ca 25
-send "EHLO vmhost.greenweb.ca\r"
+send "EHLO postfix.greenweb.ca\r"
 expect "mail.greenweb.ca"
 send "VRFY <postmaster@greenweb.ca>\r"
 expect "VRFY command is disabled" { pass "Verify command disabled" } \

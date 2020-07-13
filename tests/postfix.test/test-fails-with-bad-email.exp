@@ -1,0 +1,7 @@
+set timeout 5
+spawn telnet postfix.greenweb.ca 25
+send "EHLO postfix.greenweb.ca\r"
+send "MAIL FROM: fakename@fakedomain.fake\r"
+expect "Bad sender address syntax" { pass "Bad sender address detected." } \
+       timeout { fail "Bad send address accepted." }
+send "QUIT\r"
