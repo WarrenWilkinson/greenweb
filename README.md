@@ -26,3 +26,9 @@ Now you should be able to visit the various external services:
 
   - http://grafana.greenweb.ca (TODO move this internal).
 
+
+## Tests
+
+In the development environment, a number of tests are installed in
+/opt/test.  If you cd to this directory, you can run them with the
+`runtest` command (no arguments necessary).
