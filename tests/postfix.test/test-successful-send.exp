@@ -1,7 +1,7 @@
 set timeout 5
 spawn telnet postfix.greenweb.ca 25
 send "EHLO postfix.greenweb.ca\r"
-send "MAIL FROM: <fakename@fakedomain.fake>\r"
+send "MAIL FROM: <postmaster@greenweb.ca>\r"
 send "RCPT TO:<postmaster@greenweb.ca>\r"
 send "DATA\r"
 send "From: Bogus <bogus@bogus.com>\r"

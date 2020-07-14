@@ -60,6 +60,11 @@ smtpd_helo_restrictions =
     reject_non_fqdn_helo_hostname
     reject_invalid_helo_hostname
     reject_unknown_helo_hostname
+    # superset of reject_unknown_reverse_client_hostname
+    reject_unknown_client_hostname
+    reject_unknown_sender_domain
+
+
 
 # require properly formatted email addresses - prevents a lot of spam
 strict_rfc821_envelopes = yes
