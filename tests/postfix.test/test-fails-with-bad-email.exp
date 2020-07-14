@@ -1,6 +1,8 @@
 set timeout 5
 spawn telnet postfix.greenweb.ca 25
 send "EHLO postfix.greenweb.ca\r"
+# Wait with an expect, for pipelining reasons.
+expect "mail.greenweb.ca"
 send "MAIL FROM: fakename@fakedomain.fake\r"
 expect "Bad sender address syntax" { pass "Bad sender address detected." } \
        timeout { fail "Bad send address accepted." }

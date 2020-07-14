@@ -1,6 +1,8 @@
 set timeout 5
 spawn telnet postfix.greenweb.ca 25
 send "EHLO postfix.greenweb.ca\r"
+# Wait with an expect, for pipelining reasons.
+expect "mail.greenweb.ca"
 send "MAIL FROM: <personr@totallyfakedomainaaaa.ca>\r"
 send "RCPT TO:<postmaster@greenweb.ca>\r"
 expect "omain not found" { pass "Mail was blocked bad domain" } \
