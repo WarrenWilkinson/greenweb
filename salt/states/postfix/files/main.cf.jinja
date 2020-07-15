@@ -15,17 +15,25 @@ readme_directory = no
 # fresh installs.
 compatibility_level = 2
 
-
-
 # TLS parameters
-smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
-smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
-smtpd_tls_security_level=may
+#smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+#smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+#smtpd_tls_security_level=may
+
+# generated 2020-07-14, Mozilla Guideline v5.4, Postfix 3.4.8, OpenSSL 1.1.1d, modern configuration
+# https://ssl-config.mozilla.org/#server=postfix&version=3.4.8&config=modern&openssl=1.1.1d&guideline=5.4
+smtpd_tls_security_level = may
+smtpd_tls_auth_only = yes
+smtpd_tls_cert_file = {{ ssl_cert }}
+smtpd_tls_key_file = {{ ssl_key }}
+smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1, !TLSv1.2
+smtpd_tls_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1, !TLSv1.2
+
+tls_preempt_cipherlist = no
 
 smtp_tls_CApath=/etc/ssl/certs
 smtp_tls_security_level=may
 smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
-
 
 smtpd_relay_restrictions =
    permit_mynetworks
@@ -98,17 +106,6 @@ swap_bangpath = no
 
 # allow plus-aliasing: "user+tag@domain.tld" delivers to "user" mailbox
 recipient_delimiter = +
-
-# # generated 2020-07-14, Mozilla Guideline v5.4, Postfix 3.4.8, OpenSSL 1.1.1d, modern configuration
-# # https://ssl-config.mozilla.org/#server=postfix&version=3.4.8&config=modern&openssl=1.1.1d&guideline=5.4
-# smtpd_tls_security_level = may
-# smtpd_tls_auth_only = yes
-# smtpd_tls_cert_file = /path/to/signed_cert_plus_intermediates
-# smtpd_tls_key_file = /path/to/private_key
-# smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1, !TLSv1.2
-# smtpd_tls_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1, !TLSv1.2
-
-# tls_preempt_cipherlist = no
 
 # add a message header when email was recieved over TLS
 smtpd_tls_received_header = yes

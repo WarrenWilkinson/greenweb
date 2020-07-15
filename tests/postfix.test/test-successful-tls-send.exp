@@ -1,0 +1,23 @@
+set timeout 5
+spawn openssl s_client -connect postfix.greenweb.ca:25 -starttls smtp
+send "EHLO postfix.greenweb.ca\r"
+# Wait with an expect, for pipelining reasons.
+expect "mail.greenweb.ca"
+send "MAIL FROM: <postmaster@greenweb.ca>\r"
+# Needs to be lowercase for oppenssl to accept it.
+send "rcpt to:<postmaster@greenweb.ca>\r"
+send "DATA\r"
+send "From: Bogus <bogus@bogus.com>\r"
+send "Subject: The Next Meeting\r"
+send "To: john@mail.com\r"
+send "\r"
+send "Hi John,\r"
+send "The next meeting will be on Friday.\r"
+send "\r"
+send "Bye!\r"
+send "Bogus\r"
+send ".\r"
+expect "queued" { pass "Mail was successfully queued." } \
+       timeout { fail "Mail was not sent." }
+send "QUIT\r"
+expect "Bye"

@@ -1,0 +1,10 @@
+set timeout 5
+spawn telnet postfix.greenweb.ca 25
+send "EHLO postfix.greenweb.ca\r"
+# Wait with an expect, for pipelining reasons.
+expect "mail.greenweb.ca"
+send "AUTH LOGIN\r"
+expect "authentication not enabled" { pass "Authentication not enabled on 25." } \
+       timeout { fail "AUTH LOGIN understood on port 25." }
+send "QUIT\r"
+expect "Bye"

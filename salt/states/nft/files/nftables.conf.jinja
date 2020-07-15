@@ -92,7 +92,8 @@ table inet filter {
 table ip nat {
     chain prerouting {
         type nat hook prerouting priority 0;
-	iif "{{ secondary_interface }}" tcp dport {smtp, imap, pop3} dnat "{{ lxc_postfix_ip }}"
+	# Port names -> numbers in /etc/services
+	iif "{{ secondary_interface }}" tcp dport {smtp, submission, imap, pop3} dnat "{{ lxc_postfix_ip }}"
 	iif "{{ secondary_interface }}" tcp dport {http, https} dnat "{{ lxc_docker_ip }}"
     }
 
