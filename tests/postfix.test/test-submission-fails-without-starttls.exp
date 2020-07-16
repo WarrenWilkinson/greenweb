@@ -1,0 +1,10 @@
+set timeout 5
+spawn telnet postfix.greenweb.ca 587
+send "EHLO postfix.greenweb.ca\r"
+# Wait with an expect, for pipelining reasons.
+expect "mail.greenweb.ca"
+send "MAIL FROM: <postmaster@greenweb.ca>\r"
+expect "issue a STARTTLS" { pass "STARTTLS required." } \
+       timeout { fail "STARTTLS not required." }
+send "QUIT\r"
+expect "Bye"
