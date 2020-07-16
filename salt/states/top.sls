@@ -32,6 +32,7 @@ base:
       - identity.dockerized
       - hydra.dockerized
     'postfix':
+      - dovecot
       - postfix
     'postgresql':
       - postgresql
