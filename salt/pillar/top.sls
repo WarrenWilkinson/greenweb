@@ -31,8 +31,12 @@ base:
     - hydra.hydra_grafana_client_secret
   'ldap':
     - ldap.rootpw
+    - dovecot.ldap
+    - postfix.ldap
   'postfix':
     - openvswitch
     - external_ip
+    - dovecot.ldap
+    - postfix.ldap
   'postgresql':
     - hydra.database

@@ -23,6 +23,7 @@ compatibility_level = 2
 # generated 2020-07-14, Mozilla Guideline v5.4, Postfix 3.4.8, OpenSSL 1.1.1d, modern configuration
 # https://ssl-config.mozilla.org/#server=postfix&version=3.4.8&config=modern&openssl=1.1.1d&guideline=5.4
 smtpd_tls_security_level = may
+# only allow authentication over TLS
 smtpd_tls_auth_only = yes
 smtpd_tls_cert_file = {{ ssl_cert }}
 smtpd_tls_key_file = {{ ssl_key }}
@@ -44,12 +45,12 @@ smtpd_relay_restrictions =
 myhostname = mail.greenweb.ca
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
-mydestination = $myhostname, localhost, localhost.$mydomain, $mydomain
+# $myhostname, localhost, localhost.$mydomain, $mydomain
+mydestination = localhost
 relayhost =
 # Restricted -- can send from itself, from the vswitch network
 # I don't think I need the docker network because of NATting... could be wrong.
 mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 {{ openvswitch_cidr }}
-mailbox_size_limit = 0
 recipient_delimiter = +
 inet_interfaces = all
 inet_protocols = all
@@ -91,6 +92,19 @@ strict_rfc821_envelopes = yes
 # disable "new mail" notifications for local unix users
 biff = no
 
+smtpd_recipient_restrictions =
+   reject_unauth_pipelining,
+   reject_non_fqdn_recipient,
+   reject_unknown_recipient_domain,
+   reject_unauth_destination,
+   # if dovecot doesn't know them, reject it.
+   # reject_unverified_recipient,
+   # probably redundant with this quota check...
+   # Note that this affects postmaster@greenweb.ca also.
+   check_policy_service inet:127.0.0.1:12340,
+   permit
+#   permit_mynetworks,
+
 # don't give any helpful info when a mailbox doesn't exist
 show_user_unknown_table_name = no
 
@@ -107,5 +121,26 @@ swap_bangpath = no
 # allow plus-aliasing: "user+tag@domain.tld" delivers to "user" mailbox
 recipient_delimiter = +
 
+# enable SMTPD auth. Dovecot will place an `auth` socket in postfix's
+# runtime directory that we will use for authentication.
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_path = private/auth
+smtpd_sasl_type = dovecot
+
+# don't allow plaintext auth methods on unencrypted connections
+smtpd_sasl_security_options = noanonymous, noplaintext
+# but plaintext auth is fine when using TLS
+smtpd_sasl_tls_security_options = noanonymous
+
 # add a message header when email was recieved over TLS
 smtpd_tls_received_header = yes
+
+# Give emails to dovecot.
+virtual_transport = lmtp:unix:private/dovecot-lmtp
+
+# Use LDAP
+virtual_mailbox_domains = greenweb.ca
+virtual_mailbox_maps = ldap:/etc/postfix/ldap/virtual_mailbox_maps.cf
+
+
+

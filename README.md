@@ -31,4 +31,11 @@ Now you should be able to visit the various external services:
 
 In the development environment, a number of tests are installed in
 /opt/test.  If you cd to this directory, you can run them with the
-`runtest` command (no arguments necessary).
+`runtest` command (no arguments necessary). Or this way (and then
+look in dbg.log).
+
+    runtest  --log_dialog --debug
+
+To run a single test...
+
+    runtest  --log_dialog test-successful-warren-send.exp

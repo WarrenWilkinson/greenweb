@@ -1,0 +1,15 @@
+server_host = ldap://{{ ldap_host }}
+start_tls = no
+version = 3
+# tls_ca_cert_file = /etc/ldap/tls/CA.pem
+# tls_require_cert = yes
+
+bind = yes
+bind_dn = {{ ldap_bind_dn }}
+bind_pw = {{ ldap_bind_password }}
+
+search_base = {{ ldap_base }}
+scope = sub
+
+query_filter = (&(objectclass=applicationProcess)(cn=%s))
+result_attribute = cn

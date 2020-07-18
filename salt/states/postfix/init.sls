@@ -13,7 +13,9 @@ include:
 
 postfix:
   pkg.installed:
-    - name: postfix
+    - pkgs:
+      - postfix
+      - postfix-ldap
   service.running:
     - enable: true
     - watch:
@@ -33,6 +35,33 @@ postfix:
         ssl_key: {{ ssl_key }}
         openvswitch_cidr: {{ pillar['openvswitch']['cidr'] }}
         external_ip: {{ pillar['external_ip'] }}
+
+/etc/postfix/ldap:
+  file.directory:
+    - user: root
+    - group: root
+    - mode: 755
+    - require:
+      - pkg: postfix
+
+{% for file in ['virtual_mailbox_maps'] %}
+/etc/postfix/ldap/{{ file }}.cf:
+  file.managed:
+    - source: salt://postfix/files/{{ file }}.cf.jinja
+    - user: postfix
+    - group: postfix
+    - mode: 100
+    - template: jinja
+    - defaults:
+        ldap_bind_dn: {{ pillar['postfix']['ldap']['dn'] }}
+        ldap_bind_password: {{ pillar['postfix']['ldap']['password'] }}
+        ldap_base: ou=email,dc=greenweb,dc=ca
+        ldap_host: ldap.greenweb.ca
+    - watch_in:
+      - service: postfix
+    - require:
+      - file: /etc/postfix/ldap
+{% endfor %}
 
 /etc/postfix/master.cf:
   file.managed:
