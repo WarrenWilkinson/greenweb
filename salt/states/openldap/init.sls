@@ -14,6 +14,56 @@ openldap:
 python3-ldap:
   pkg.installed
 
+# Install the postfix-book.schema
+/usr/local/etc/openldap:
+    file.directory:
+    - user: root
+    - group: root
+    - mode: 755
+
+/usr/local/etc/openldap/schema:
+    file.directory:
+    - user: root
+    - group: root
+    - mode: 755
+    - require:
+        - file: /usr/local/etc/openldap
+
+/usr/local/etc/openldap/schema/postfix-book.schema:
+  file.managed:
+    - source: salt://openldap/files/postfix-book.schema
+    - user: root
+    - group: root
+    - mode: 644
+    - watch_in:
+      - service: openldap
+    - require:
+        - file: /usr/local/etc/openldap/schema
+
+/usr/local/etc/openldap/schema/postfix-book.ldif:
+  file.managed:
+    - source: salt://openldap/files/postfix-book.ldif
+    - user: root
+    - group: root
+    - mode: 644
+    - watch_in:
+      - service: openldap
+    - require:
+        - file: /usr/local/etc/openldap/schema
+
+# This command generates something like the ldif from the
+# schema. It still requires manual tweaking though.
+# "slaptest -f postfix-book.schema -F .":
+#     cmd.wait:
+#     - watch:
+#         - file: /usr/local/etc/openldap/schema/postfix-book.schema
+#     - cwd: /usr/local/etc/openldap/schema/
+
+'ldapadd -Y EXTERNAL -H ldapi:// -f /usr/local/etc/openldap/schema/postfix-book.ldif':
+    cmd.wait:
+    - watch:
+        - file: /usr/local/etc/openldap/schema/postfix-book.ldif
+
 # Because this runs locally as root, then via SASL I should have write
 # access to the database and be able to change the password. But
 # later, in using the database, I use a DN and password to make
@@ -48,39 +98,32 @@ root_account:
 # in the database.
 #
 # Private Mailboxes:
-# To get a private email, there must be an applicationProcess in an "ou: email" organization
-# with a seeAlso that points to that user. So an email for joe@ilikebike.ca would look like this:
+#  Handled by having a simpleSecurityObject in the "ou: email" organization.
+#  The seeAlso should point to the owner. Aliases are supported. So an email for joe@ilikebike.ca,
+#  (with aliases joe@greenweb.ca joe@otherproject.ca) would look like this:
 #
 # cn=joe@ilikebike.ca,dc=greenweb,dc=ca
 #  ou=email
 #  seeAlso: uid=joesmoe,ou=people,dc=greenweb,dc=ca
 #  userpassword: thepasswordforthisprivatemailbox
+#  mail: joe@ilikebike.ca
+#  mailAlias: joe@greenweb.ca
+#  mailAlias: joe@otherproject.ca
+#  objectClass: PostfixBookMailAccount
 #  objectClass: applicationProcess
 #  objectClass: simpleSecurityObject
 #
-# Users log in with their email account name, not their username.  This is because a user might
-# have multiple private mailboxes, if they're a member of multiple different organizations.
-#
-# Aliased Mailboxes:
-# We also support mail aliases.  This is an email address that seeAlso's another
-# mail address.
-#
-# cn=postmaster@greenweb.ca,ou=email,dc=greenweb,dc=ca
-#  ou=email
-#  seeAlso: cn=warren@greenweb.ca,ou=email,dc=greenweb,dc=ca
-#  objectClass: applicationProcess
+# Users log in with their email account name, not their username,
+# because users might have multiple private mailboxes.
 #
 # Public Mailboxes:
 # A public mailbod is something like contact@ilikebike.ca whose
 # mailbox appears as a public subfolder so that people (logged in as a
 # different mailbox) have access to it and can respond to emails
-# therein.
+# therein.  It looks like a mailbox withouth simpleSecurityObject (and no password).
 #
-# cn=contact@ilikebike.ca,ou=email,dc=greenweb,dc=ca
-#  ou=email
-#  Member: joe@ilikebike.ca,ou=email,dc=greenweb,dc=ca
-#  Member: jane@ilikebike.ca,ou=email,dc=greenweb,dc=ca
-#  objectClass: groupOfUniqueNames
+# Users who are permitted to use it (e.g. joe) should have
+# mailGroupMember: contact@ilkebike.ca
 
 base_domain:
   ldap.managed:
@@ -151,27 +194,24 @@ base_domain:
             cn: warren@greenweb.ca
             ou: email
             seeAlso: uid=wwilkinson,ou=people,dc=greenweb,dc=ca
-            userPassword: []
+            mail: warren@greenweb.ca
+            mailAlias:
+              - postmaster@greenweb.ca
+            mailGroupMember:
+              - contact@greenweb.ca
+            userPassword: "weakpassword"
             objectClass:
-              - applicationProcess
+              - PostfixBookMailAccount
               - simpleSecurityObject
-      - cn=postmaster@greenweb.ca,ou=email,dc=greenweb,dc=ca:
-        - default:
-            cn: postmaster@greenweb.ca
-            ou: email
-            seeAlso: cn=warren@greenweb.ca,ou=email,dc=greenweb,dc=ca
-            objectClass:
               - applicationProcess
       - cn=contact@greenweb.ca,ou=email,dc=greenweb,dc=ca:
         - default:
             cn: contact@greenweb.ca
             ou: email
-            userPassword: []
-            member:
-              - cn=warren@greenweb.ca,ou=email,dc=greenweb,dc=ca
+            mail: contact@greenweb.ca
             objectClass:
-              - groupOfNames
-              - simpleSecurityObject
+              - PostfixBookMailAccount
+              - applicationProcess
 
 # Very locked down. I tend to use this logged into the computer by the root dn and
 # I'm not exporting ldap information as a service.  Ergo, lock it down hard.
