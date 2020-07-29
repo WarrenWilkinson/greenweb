@@ -121,7 +121,7 @@ scope = subtree
 #  password: Password, may optionally start with {type}, eg. {crypt}
 # There are also other special fields which can be returned, see
 # http://wiki2.dovecot.org/PasswordDatabase/ExtraFields
-pass_attrs = cn=user,userPassword=password
+pass_attrs = mail=user,userPassword=password
 
 # If you wish to avoid two LDAP lookups (passdb + userdb), you can use
 # userdb prefetch instead of userdb ldap in dovecot.conf. In that case you'll
@@ -131,7 +131,7 @@ pass_attrs = cn=user,userPassword=password
 #  homeDirectory=userdb_home,uidNumber=userdb_uid,gidNumber=userdb_gid
 
 # Filter for password lookups
-pass_filter = (&(objectClass=simpleSecurityObject)(cn=%u))
+pass_filter = (&(objectClass=simpleSecurityObject)(mail=%u))
 
 # Attributes and filter to get a list of all users
 #iterate_attrs = uid=user

@@ -44,7 +44,7 @@ postfix:
     - require:
       - pkg: postfix
 
-{% for file in ['virtual_mailbox_maps'] %}
+{% for file in ['virtual_mailbox_maps', 'virtual_alias_maps'] %}
 /etc/postfix/ldap/{{ file }}.cf:
   file.managed:
     - source: salt://postfix/files/{{ file }}.cf.jinja
