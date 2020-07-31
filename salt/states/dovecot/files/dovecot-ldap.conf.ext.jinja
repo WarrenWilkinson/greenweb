@@ -140,6 +140,7 @@ pass_filter = (&(objectClass=simpleSecurityObject)(mail=%u))
 # Default password scheme. "{scheme}" before password overrides this.
 # List of supported schemes is in: http://wiki2.dovecot.org/Authentication
 #default_pass_scheme = CRYPT
+default_pass_scheme = PLAIN
 
 # By default all LDAP lookups are performed by the auth master process.
 # If blocking=yes, auth worker processes are used to perform the lookups.
