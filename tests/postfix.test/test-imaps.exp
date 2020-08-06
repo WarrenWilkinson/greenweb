@@ -1,7 +1,7 @@
 set timeout 5
 spawn openssl s_client -connect postfix.greenweb.ca:993 -quiet
 expect "ready."
-send "a login warren@greenweb.ca weakpassword\r"
+send "a login test@greenweb.ca test\r"
 expect "a OK"
 send "b list \"\" \"*\"\r"
 expect "b OK"

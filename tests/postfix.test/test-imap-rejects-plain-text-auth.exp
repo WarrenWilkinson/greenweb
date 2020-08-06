@@ -1,6 +1,6 @@
 set timeout 5
 spawn telnet postfix.greenweb.ca imap
 expect "ready."
-send "a login warren@greenweb.ca weakpassword\r"
+send "a login test@greenweb.ca test\r"
 expect "Plaintext authentication disallowed on non-secure "
 send "b logout\r"

@@ -2,8 +2,8 @@
 set timeout 5
 spawn telnet postfix.greenweb.ca 25
 send "EHLO bob\r"
-send "MAIL FROM: <postmaster@bob.ca>\r"
-send "RCPT TO:<postmaster@greenweb.ca>\r"
+send "MAIL FROM: <testgroup@bob.ca>\r"
+send "RCPT TO:<testgroup@greenweb.ca>\r"
 expect "Helo command rejected" { pass "bob was rejected." } \
     timeout { fail "bob was accepted." }
 send "QUIT\r"

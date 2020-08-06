@@ -19,6 +19,7 @@ base:
       - libvirt
       - libvirt.focal-img
     'ldap':
+      - m4
       - openldap
     'influxdb':
       - influxdb

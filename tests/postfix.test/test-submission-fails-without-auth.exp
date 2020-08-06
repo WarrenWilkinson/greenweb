@@ -3,9 +3,9 @@ spawn openssl s_client -connect postfix.greenweb.ca:587 -starttls smtp
 send "EHLO postfix.greenweb.ca\r"
 # Wait with an expect, for pipelining reasons.
 expect "mail.greenweb.ca"
-send "MAIL FROM: <postmaster@greenweb.ca>\r"
+send "MAIL FROM: <testgroup@greenweb.ca>\r"
 # Needs to be lowercase for oppenssl to accept it.
-send "rcpt to:<postmaster@greenweb.ca>\r"
+send "rcpt to:<testgroup@greenweb.ca>\r"
 expect "Access denied" { pass "Access was denied. Auth required." } \
        timeout { fail "It seemed okay. Maybe AUTH not mandatory?" }
 send "QUIT\r"

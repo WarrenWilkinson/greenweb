@@ -4,7 +4,7 @@ set timeout 5
 spawn telnet postfix.greenweb.ca 25
 send "EHLO postfix.greenweb.ca\r"
 expect "mail.greenweb.ca"
-send "VRFY <postmaster@greenweb.ca>\r"
+send "VRFY <testgroup@greenweb.ca>\r"
 expect "VRFY command is disabled" { pass "Verify command disabled" } \
     timeout { fail "Verify command succeeded" }
 send "QUIT\r"

@@ -3,11 +3,11 @@ spawn telnet postfix.greenweb.ca 25
 send "EHLO postfix.greenweb.ca\r"
 # Wait with an expect, for pipelining reasons.
 expect "mail.greenweb.ca"
-send "MAIL FROM: <postmaster@greenweb.ca>\r"
+send "MAIL FROM: <testgroup@greenweb.ca>\r"
 expect "Ok" { } \
        "cannot find your hostname" { fail "Couldn't find your hostname..."; quit } \
        timeout { fail "timeout in mail from!"; quit }
-send "RCPT TO:<warren@greenweb.ca>\r"
+send "RCPT TO:<test@greenweb.ca>\r"
 expect "Ok" { } \
     "Unknown user" { fail "mail was rejected with unknown user."; quit } \
     "Temporary internal error" { fail "mail had internal error."; quit } \

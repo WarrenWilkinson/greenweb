@@ -84,6 +84,9 @@ root_account:
               - dc=greenweb,dc=ca
             olcRootPW:
               - {{ pillar['ldap']['admin']['password'] }}
+      - cn=config:
+        - replace:
+            olcPasswordCryptSaltFormat: $6$%.16s
 
 # Note:
 #
@@ -158,9 +161,6 @@ base_domain:
             objectClass:
               - applicationProcess
               - simpleSecurityObject
-        - replace:
-            userPassword:
-              - {{ pillar['dovecot']['ldap']['password'] }}
       - cn=postfix,ou=apps,dc=greenweb,dc=ca:
         - default:
             cn: postfix
@@ -168,9 +168,6 @@ base_domain:
             objectClass:
               - applicationProcess
               - simpleSecurityObject
-        - replace:
-            userPassword:
-              - {{ pillar['postfix']['ldap']['password'] }}
       - ou=people,dc=greenweb,dc=ca:
         - default:
             ou: people
@@ -189,6 +186,23 @@ base_domain:
             ou: email
             objectClass:
               - organizationalUnit
+      - cn=test@greenweb.ca,ou=email,dc=greenweb,dc=ca:
+        - replace:
+            mailEnabled: "FALSE"
+        - default:
+            cn: test@greenweb.ca
+            ou: email
+            seeAlso: uid=wwilkinson,ou=people,dc=greenweb,dc=ca
+            mail: test@greenweb.ca
+            userPassword: "{CRYPT}unset."
+            mailAlias:
+              - testalias@greenweb.ca
+            mailGroupMember:
+              - testgroup@greenweb.ca
+            objectClass:
+              - PostfixBookMailAccount
+              - simpleSecurityObject
+              - applicationProcess
       - cn=warren@greenweb.ca,ou=email,dc=greenweb,dc=ca:
         - default:
             cn: warren@greenweb.ca
@@ -199,7 +213,7 @@ base_domain:
               - postmaster@greenweb.ca
             mailGroupMember:
               - contact@greenweb.ca
-            userPassword: "weakpassword"
+            userPassword: "{CRYPT}unset."
             objectClass:
               - PostfixBookMailAccount
               - simpleSecurityObject
@@ -209,6 +223,16 @@ base_domain:
             cn: contact@greenweb.ca
             ou: email
             mail: contact@greenweb.ca
+            objectClass:
+              - PostfixBookMailAccount
+              - applicationProcess
+      - cn=testgroup@greenweb.ca,ou=email,dc=greenweb,dc=ca:
+        - replace:
+            mailEnabled: "FALSE"
+        - default:
+            cn: testgroup@greenweb.ca
+            ou: email
+            mail: testgroup@greenweb.ca
             objectClass:
               - PostfixBookMailAccount
               - applicationProcess
@@ -239,3 +263,34 @@ security:
               - to attrs=userPassword by self =xw by anonymous auth by * none
               - to dn.subtree="ou=email,dc=greenweb,dc=ca" by dn.base="cn=postfix,ou=apps,dc=greenweb,dc=ca" read by dn.base="cn=dovecot,ou=apps,dc=greenweb,dc=ca" read by * none
               - to * by self write by * none
+
+# Set a few passwords.
+# Use ldapmodify and slappassd to encode the passwords correctly. This is a bit tricky to do in fact.
+
+{% set lines = [] %}
+{% for (file, user, password) in [ ('test', 'cn=test@greenweb.ca,ou=email,dc=greenweb,dc=ca', 'test'),
+                                   ('dovecot', 'cn=dovecot,ou=apps,dc=greenweb,dc=ca', pillar['dovecot']['ldap']['password']),
+                                   ('postfix', 'cn=postfix,ou=apps,dc=greenweb,dc=ca', pillar['postfix']['ldap']['password'])] %}
+{{ lines.append("dn: " + user) or "" }}
+{{ lines.append('changetype: modify') or "" }}
+{{ lines.append('replace: userPassword') or "" }}
+{{ lines.append("userPassword: include(" + file + ".password)dnl") or "" }}
+{{ lines.append("__BLANK__") or "" }}
+encrypt_{{ user }}_password:
+  cmd.run:
+    - name: slappasswd -h {CRYPT} -c '$6$%.16s' -s '{{ password }}' > "/tmp/{{ file }}.password"
+{% endfor %}
+
+/tmp/update_passwords.m4:
+  file.managed:
+    - contents:
+        {% for line in lines %}
+        - '{{ line }}'
+        {% endfor %}
+
+'m4 -I /tmp/ -D __BLANK__= /tmp/update_passwords.m4 > /tmp/update_passwords.ldif; rm /tmp/*.password /tmp/update_passwords.m4':
+  cmd.run
+
+update_passwords:
+  cmd.run:
+    - name: ldapmodify -x -D cn=admin,dc=greenweb,dc=ca -H ldapi:/// -w {{ pillar['ldap']['admin']['password'] }} -f /tmp/update_passwords.ldif && rm /tmp/update_passwords.ldif

@@ -1,6 +1,6 @@
 set timeout 5
 spawn telnet postfix.greenweb.ca 110
 expect "ready."
-send "USER warren@greenweb.ca\r"
+send "USER test@greenweb.ca\r"
 expect "Plaintext authentication disallowed on non-secure "
 send "QUIT\r"
