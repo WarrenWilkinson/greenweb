@@ -55,7 +55,7 @@ vmail:
       - user: vmail
 
 {% for file in ['10-mail', '10-master', '10-ssl', '15-mailboxes',
-                '20-imap', '90-quota', '10-auth'] %}
+                '20-imap', '90-quota', '90-crypt', '10-auth'] %}
 /etc/dovecot/conf.d/{{ file }}.conf:
   file.managed:
     - source: salt://dovecot/files/{{ file }}.conf.jinja
@@ -68,6 +68,9 @@ vmail:
         ssl_key: {{ ssl_key }}
         user: vmail
         uid: {{ uid }}
+        crypt_public_key: /etc/dovecot/private/ecpubkey.pem
+        crypt_private_key: /etc/dovecot/private/ecprivkey.pem
+        crypt_save_version: 2
     - watch_in:
       - service: dovecot
 {% endfor %}
@@ -91,6 +94,24 @@ vmail:
     - user: root
     - group: root
     - mode: 644
+    - watch_in:
+      - service: dovecot
+
+/etc/dovecot/private/ecprivkey.pem:
+  file.managed:
+    - source: salt://dovecot/files/ecprivkey.pem
+    - user: root
+    - group: root
+    - mode: 600
+    - watch_in:
+      - service: dovecot
+
+/etc/dovecot/private/ecpubkey.pem:
+  file.managed:
+    - source: salt://dovecot/files/ecpubkey.pem
+    - user: root
+    - group: root
+    - mode: 600
     - watch_in:
       - service: dovecot
 

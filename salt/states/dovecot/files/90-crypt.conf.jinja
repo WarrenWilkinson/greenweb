@@ -1,0 +1,14 @@
+##
+## Plugin settings
+##
+
+# All wanted plugins must be listed in mail_plugins setting before any of the
+# settings take effect. See <doc/wiki/Plugins.txt> for list of plugins and
+# their configuration. Note that %variable expansion is done for all values.
+
+plugin {
+  #setting_name = value
+  mail_crypt_global_private_key = <{{ crypt_private_key }}
+  mail_crypt_global_public_key = <{{ crypt_public_key }}
+  mail_crypt_save_version = {{ crypt_save_version }}
+}
