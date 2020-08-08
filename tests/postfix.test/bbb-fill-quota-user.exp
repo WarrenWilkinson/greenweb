@@ -1,0 +1,50 @@
+set timeout 10
+spawn telnet postfix.greenweb.ca 25
+send "EHLO postfix.greenweb.ca\r"
+# Wait with an expect, for pipelining reasons.
+expect "mail.greenweb.ca"
+send "MAIL FROM: <testgroup@greenweb.ca>\r"
+expect "Ok" { } \
+       "cannot find your hostname" { fail "Couldn't find your hostname..."; quit } \
+       timeout { fail "timeout in mail from!"; quit }
+send "RCPT TO:<quotatest@greenweb.ca>\r"
+expect "Ok" { } \
+    "Unknown user" { fail "mail was rejected with unknown user."; quit } \
+    "Temporary internal error" { fail "mail had internal error."; quit } \
+    "User unknown" { fail "mail was rejected with User unknown."; quit } \
+    "Temporary lookup failure" { fail "Mail reject temp lookup fail."; quit } \
+    timeout { fail "Mail timed out."; quit }
+send "DATA\r"
+send "From: Bogus <bogus@bogus.com>\r"
+send "Subject: The Next Meeting\r"
+send "To: john@mail.com\r"
+send "\r"
+send "Hi John,\r"
+send "This email is designed to fill up your quota as much as possible.\r"
+send "This and prior is 100 characters.\r"
+send "This email is designed to fill up your quota as much as possible.\r"
+send "This and prior is 100 characters.\r"
+send "This email is designed to fill up your quota as much as possible.\r"
+send "This and prior is 100 characters.\r"
+send "This email is designed to fill up your quota as much as possible.\r"
+send "This and prior is 100 characters.\r"
+send "This email is designed to fill up your quota as much as possible.\r"
+send "This and prior is 100 characters.\r"
+send "This email is designed to fill up your quota as much as possible.\r"
+send "This and prior is 100 characters.\r"
+send "This email is designed to fill up your quota as much as possible.\r"
+send "This and prior is 100 characters.\r"
+send "This email is designed to fill up your quota as much as possible.\r"
+send "This and prior is 100 characters.\r"
+send "This email is designed to fill up your quota as much as possible.\r"
+send "This and prior is 100 characters.\r"
+send "This email is designed to fill up your quota as much as possible.\r"
+send "This and prior is 100 characters.\r"
+send "\r"
+send "Bye!\r"
+send "Bogus\r"
+send ".\r"
+expect "ueued" { pass "Mail was successfully queued." } \
+       timeout { fail "Mail timed out." }
+send "QUIT\r"
+expect "Bye"

@@ -18,6 +18,7 @@ base:
       - telegraf
       - libvirt
       - libvirt.focal-img
+      - openldap.utils
     'ldap':
       - m4
       - openldap

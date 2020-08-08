@@ -203,6 +203,20 @@ base_domain:
               - PostfixBookMailAccount
               - simpleSecurityObject
               - applicationProcess
+      - cn=quotatest@greenweb.ca,ou=email,dc=greenweb,dc=ca:
+        - replace:
+            mailEnabled: "FALSE"
+        - default:
+            cn: quotatest@greenweb.ca
+            ou: email
+            seeAlso: uid=wwilkinson,ou=people,dc=greenweb,dc=ca
+            mail: quotatest@greenweb.ca
+            mailQuota: 1
+            userPassword: "{CRYPT}unset."
+            objectClass:
+              - PostfixBookMailAccount
+              - simpleSecurityObject
+              - applicationProcess
       - cn=warren@greenweb.ca,ou=email,dc=greenweb,dc=ca:
         - default:
             cn: warren@greenweb.ca
@@ -269,6 +283,7 @@ security:
 
 {% set lines = [] %}
 {% for (file, user, password) in [ ('test', 'cn=test@greenweb.ca,ou=email,dc=greenweb,dc=ca', 'test'),
+                                   ('quotatest', 'cn=quotatest@greenweb.ca,ou=email,dc=greenweb,dc=ca', 'quotatest'),
                                    ('dovecot', 'cn=dovecot,ou=apps,dc=greenweb,dc=ca', pillar['dovecot']['ldap']['password']),
                                    ('postfix', 'cn=postfix,ou=apps,dc=greenweb,dc=ca', pillar['postfix']['ldap']['password'])] %}
 {{ lines.append("dn: " + user) or "" }}
