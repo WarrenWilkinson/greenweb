@@ -11,6 +11,8 @@ send_user "\n"
 stty echo
 set pass $expect_out(1,string)
 
+set timeout 5
+
 spawn ldapmodify -x -D cn=admin,dc=greenweb,dc=ca -H ldap://ldap.greenweb.ca -w "$pass"
 send "dn: cn=test@greenweb.ca,ou=email,dc=greenweb,dc=ca\r"
 send "changetype: modify\r"

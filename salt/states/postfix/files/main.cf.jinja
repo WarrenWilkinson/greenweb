@@ -103,7 +103,8 @@ smtpd_recipient_restrictions =
    # Note that this affects postmaster@greenweb.ca also.
    check_policy_service inet:127.0.0.1:12340,
    permit
-#   permit_mynetworks,
+
+smtpd_end_of_data_restrictions = check_policy_service inet:127.0.0.1:12340
 
 # don't give any helpful info when a mailbox doesn't exist
 show_user_unknown_table_name = no

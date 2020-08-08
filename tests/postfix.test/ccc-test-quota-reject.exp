@@ -15,6 +15,7 @@ expect "Ok" { } \
     "Temporary lookup failure" { fail "Mail reject temp lookup fail."; quit } \
     timeout { fail "Mail timed out."; quit }
 send "DATA\r"
+expect "354"
 send "From: Bogus <bogus@bogus.com>\r"
 send "Subject: The Next Meeting\r"
 send "To: john@mail.com\r"
@@ -36,15 +37,12 @@ send "This email is designed to fill up your quota as much as possible.\r"
 send "This and prior is 100 characters.\r"
 send "This email is designed to fill up your quota as much as possible.\r"
 send "This and prior is 100 characters.\r"
-send "This email is designed to fill up your quota as much as possible.\r"
-send "This and prior is 100 characters.\r"
-send "This email is designed to fill up your quota as much as possible.\r"
-send "This and prior is 100 characters.\r"
 send "\r"
 send "Bye!\r"
 send "Bogus\r"
 send ".\r"
-expect "ueued" { pass "Mail was successfully queued." } \
+expect "ailbox is full" { pass "Mail was rejected, mailbox full." } \
+       "ueued" { fail "Mail was queued, mailbox should be full." } \
        timeout { fail "Mail timed out." }
 send "QUIT\r"
 expect "Bye"
