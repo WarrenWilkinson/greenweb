@@ -55,7 +55,8 @@ vmail:
       - user: vmail
 
 {% for file in ['10-mail', '10-master', '10-ssl', '15-mailboxes',
-                '20-imap', '90-quota', '90-crypt', '10-auth'] %}
+                '20-imap', '90-quota', '90-crypt', '10-auth',
+                '95-trash'] %}
 /etc/dovecot/conf.d/{{ file }}.conf:
   file.managed:
     - source: salt://dovecot/files/{{ file }}.conf.jinja
@@ -91,6 +92,15 @@ vmail:
 /etc/dovecot/conf.d/auth-ldap.conf.ext:
   file.managed:
     - source: salt://dovecot/files/auth-ldap.conf.ext
+    - user: root
+    - group: root
+    - mode: 644
+    - watch_in:
+      - service: dovecot
+
+/etc/dovecot/conf.d/dovecot-trash.conf.ext:
+  file.managed:
+    - source: salt://dovecot/files/dovecot-trash.conf.ext
     - user: root
     - group: root
     - mode: 644
