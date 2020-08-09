@@ -1,4 +1,4 @@
-set timeout 5
+set timeout 10
 spawn openssl s_client -connect postfix.greenweb.ca:995 -quiet
 expect "ready."
 send "USER test@greenweb.ca\r"

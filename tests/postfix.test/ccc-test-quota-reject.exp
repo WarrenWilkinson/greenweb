@@ -9,6 +9,7 @@ expect "Ok" { } \
        timeout { fail "timeout in mail from!"; quit }
 send "RCPT TO:<quotatest@greenweb.ca>\r"
 expect "Ok" { } \
+    "ailbox is full" { fail "Mail recipient rejected, mailbox full."; quit } \
     "Unknown user" { fail "mail was rejected with unknown user."; quit } \
     "Temporary internal error" { fail "mail had internal error."; quit } \
     "User unknown" { fail "mail was rejected with User unknown."; quit } \

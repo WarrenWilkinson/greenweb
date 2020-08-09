@@ -68,8 +68,8 @@ vmail:
         ssl_key: {{ ssl_key }}
         user: vmail
         uid: {{ uid }}
-        crypt_public_key: /etc/dovecot/private/ecpubkey.pem
-        crypt_private_key: /etc/dovecot/private/ecprivkey.pem
+        crypt_public_key: /opt/dovecot/ecpubkey.pem
+        crypt_private_key: /opt/dovecot/ecprivkey.pem
         crypt_save_version: 2
     - watch_in:
       - service: dovecot
@@ -97,23 +97,35 @@ vmail:
     - watch_in:
       - service: dovecot
 
-/etc/dovecot/private/ecprivkey.pem:
+/opt/dovecot/:
+  file.directory:
+    - user: dovecot
+    - group: dovecot
+    - mode: 777
+    - require:
+      - pkg: dovecot
+
+/opt/dovecot/ecprivkey.pem:
   file.managed:
     - source: salt://dovecot/files/ecprivkey.pem
-    - user: root
-    - group: root
-    - mode: 600
+    - user: dovecot
+    - group: dovecot
+    - mode: 444
     - watch_in:
       - service: dovecot
+    - require:
+      - file: /opt/dovecot/
 
-/etc/dovecot/private/ecpubkey.pem:
+/opt/dovecot/ecpubkey.pem:
   file.managed:
     - source: salt://dovecot/files/ecpubkey.pem
-    - user: root
-    - group: root
-    - mode: 600
+    - user: dovecot
+    - group: dovecot
+    - mode: 444
     - watch_in:
       - service: dovecot
+    - require:
+      - file: /opt/dovecot/
 
 /usr/local/bin/quota-warning.sh:
   file.managed:
