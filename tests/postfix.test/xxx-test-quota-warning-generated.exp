@@ -1,0 +1,11 @@
+set timeout 5
+spawn openssl s_client -connect postfix.greenweb.ca:995 -quiet
+expect "ready."
+send "USER quotatest@greenweb.ca\r"
+expect "OK"
+send "PASS quotatest\r"
+expect "OK"
+send "RETR 2\r"
+expect "Subject: quota warning" { pass "Quota warning generated" } \
+       timeout { fail "Quota warning not detected." }
+send "QUIT\r"
