@@ -113,7 +113,7 @@ user_attrs = mail=user,mailQuota=quota_rule=*:storage=%$K
 #   %u - username
 #   %n - user part in user@domain, same as %u if there's no domain
 #   %d - domain part in user@domain, empty if user there's no domain
-user_filter = (&(objectClass=PostfixBookMailAccount)(|(mail=%u)(mailAlias=%u)))
+user_filter = (&(objectClass=PostfixBookMailAccount)(!(mailEnabled=FALSE))(|(mail=%u)(mailAlias=%u)))
 
 # Password checking attributes:
 #  user: Virtual user name (user@domain), if you wish to change the
@@ -131,7 +131,7 @@ pass_attrs = mail=user,userPassword=password
 #  homeDirectory=userdb_home,uidNumber=userdb_uid,gidNumber=userdb_gid
 
 # Filter for password lookups
-pass_filter = (&(objectClass=simpleSecurityObject)(mail=%u))
+pass_filter = (&(objectClass=simpleSecurityObject)(!(mailEnabled=FALSE))(mail=%u))
 
 # Attributes and filter to get a list of all users
 #iterate_attrs = uid=user

@@ -1,0 +1,9 @@
+set timeout 5
+spawn openssl s_client -connect postfix.greenweb.ca:993 -quiet
+expect "ready."
+send "a login test@greenweb.ca test\r"
+expect "Authentication failed" { pass "Authentication failed for disabled user." } \
+    "OK" { fail "Authentication passed for disabled user." } \
+    timeout { fail "Unsure about auth status for disabled user." }
+send "c logout\r"
+expect "c OK"

@@ -1,0 +1,32 @@
+proc base64url_encode {string} {
+    tailcall binary encode base64 $string
+}
+
+proc base64url_decode {string} {
+    tailcall binary decode base64 $string
+}
+
+set myusername [base64url_encode "test@greenweb.ca"]
+set mypassword [base64url_encode "test"]
+set serv_username [base64url_encode "Username:"]
+set serv_password [base64url_encode "Password:"]
+set timeout 10
+
+spawn openssl s_client -connect postfix.greenweb.ca:587 -starttls smtp
+expect "read R BLOCK"
+send "EHLO postfix.greenweb.ca\r"
+# Wait with an expect, for pipelining reasons.
+expect "mail.greenweb.ca"
+
+# Authenticate
+send "AUTH LOGIN\r"
+expect $serv_username
+send "$myusername\r"
+expect $serv_password
+send "$mypassword\r"
+expect "uthentication successful" { fail "Disabled user can login." } \
+       "uthentication failed" { pass "Disabled user can't login"; quit } \
+       timeout { fail "Mail timed out after auth."; quit }
+
+send "QUIT\r"
+expect "Bye"

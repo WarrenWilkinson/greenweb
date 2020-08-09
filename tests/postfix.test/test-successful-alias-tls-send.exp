@@ -5,7 +5,7 @@ send "EHLO postfix.greenweb.ca\r"
 expect "mail.greenweb.ca"
 send "MAIL FROM: <testgroup@greenweb.ca>\r"
 # Needs to be lowercase for oppenssl to accept it.
-send "rcpt to:<testgroup@greenweb.ca>\r"
+send "rcpt to:<testalias@greenweb.ca>\r"
 send "DATA\r"
 send "From: Bogus <bogus@bogus.com>\r"
 send "Subject: The Next Meeting\r"

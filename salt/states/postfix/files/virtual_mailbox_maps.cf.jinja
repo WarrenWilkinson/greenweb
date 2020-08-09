@@ -11,5 +11,5 @@ bind_pw = {{ ldap_bind_password }}
 search_base = {{ ldap_base }}
 scope = sub
 
-query_filter = (&(objectclass=PostfixBookMailAccount)(mail=%s))
+query_filter = (&(objectclass=PostfixBookMailAccount)(!(mailEnabled=FALSE))(mail=%s))
 result_attribute = mail

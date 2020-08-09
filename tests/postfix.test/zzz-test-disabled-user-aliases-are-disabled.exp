@@ -1,0 +1,23 @@
+set timeout 5
+spawn telnet postfix.greenweb.ca 25
+send "EHLO postfix.greenweb.ca\r"
+# Wait with an expect, for pipelining reasons.
+expect "mail.greenweb.ca"
+send "MAIL FROM: <testgroup@greenweb.ca>\r"
+send "RCPT TO:<testalias@greenweb.ca>\r"
+send "DATA\r"
+send "From: Bogus <bogus@bogus.com>\r"
+send "Subject: The Next Meeting\r"
+send "To: john@mail.com\r"
+send "\r"
+send "Hi John,\r"
+send "This message went to your alias.\r"
+send "\r"
+send "Bye!\r"
+send "Bogus\r"
+send ".\r"
+expect "queued" { fail "Disabled mail account alias received mail." } \
+        "Recipient address rejected" { pass "disabled account alias was rejected with unknown user." } \
+       timeout { fail "Mail was not sent." }
+send "QUIT\r"
+expect "Bye"

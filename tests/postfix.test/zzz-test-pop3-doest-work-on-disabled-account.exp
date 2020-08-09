@@ -1,0 +1,10 @@
+set timeout 5
+spawn openssl s_client -connect postfix.greenweb.ca:995 -quiet
+expect "ready."
+send "USER test@greenweb.ca\r"
+expect "OK"
+send "PASS test\r"
+expect "Authentication failed" { pass "Disabled user gets no pop3 access."; quit } \
+    "OK" { fail "Disabled user could login to pop3." } \
+    timeout { fail "Disabled user seems to be able to login." }
+send "QUIT\r"
