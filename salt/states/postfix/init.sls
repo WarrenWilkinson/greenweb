@@ -33,7 +33,7 @@ postfix:
     - defaults:
         ssl_cert: {{ ssl_cert }}
         ssl_key: {{ ssl_key }}
-        openvswitch_cidr: {{ pillar['openvswitch']['cidr'] }}
+        openvswitch_network: {{ pillar['openvswitch']['network'] }}
         external_ip: {{ pillar['external_ip'] }}
 
 /etc/postfix/ldap:
@@ -48,9 +48,9 @@ postfix:
 /etc/postfix/ldap/{{ file }}.cf:
   file.managed:
     - source: salt://postfix/files/{{ file }}.cf.jinja
-    - user: postfix
-    - group: postfix
-    - mode: 100
+    - user: root
+    - group: root
+    - mode: 440
     - template: jinja
     - defaults:
         ldap_bind_dn: {{ pillar['postfix']['ldap']['dn'] }}

@@ -17,8 +17,9 @@ influxdb:
       - pkg: influxdb
       - file: /etc/influxdb/influxdb.conf
 
-influxdb-client:
-  pkg.installed
+# Don't need this, it's already in package influxdb.
+# influxdb-client:
+#   pkg.installed
 
 influxdb_users:
   influxdb_user.present:

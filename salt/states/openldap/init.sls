@@ -158,6 +158,7 @@ base_domain:
         - default:
             cn: dovecot
             ou: apps
+            userPassword: "{CRYPT}unset."
             objectClass:
               - applicationProcess
               - simpleSecurityObject
@@ -165,6 +166,7 @@ base_domain:
         - default:
             cn: postfix
             ou: apps
+            userPassword: "{CRYPT}unset."
             objectClass:
               - applicationProcess
               - simpleSecurityObject

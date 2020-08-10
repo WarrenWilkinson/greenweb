@@ -3,5 +3,6 @@
 ---
 
 openvswitch:
-  cidr: 10.0.3.0/24
+  network: 10.0.3.0/24
+  gateway: 10.0.3.1/24
   nameserver: 10.0.3.2

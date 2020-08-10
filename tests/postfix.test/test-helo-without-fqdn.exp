@@ -5,5 +5,5 @@ send "EHLO bob\r"
 send "MAIL FROM: <testgroup@bob.ca>\r"
 send "RCPT TO:<testgroup@greenweb.ca>\r"
 expect "Helo command rejected" { pass "bob was rejected." } \
-    timeout { fail "bob was accepted." }
+    timeout { fail "timeout, bob may have been accepted." }
 send "QUIT\r"

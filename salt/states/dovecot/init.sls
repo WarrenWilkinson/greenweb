@@ -7,33 +7,19 @@
 {% if dev %}
 {% set ssl_cert = '/opt/cert/development.crt' %}
 {% set ssl_key = '/opt/cert/development.key' %}
-include:
-  - cert.dev
 {% endif %}
 
-{% set uid = 1001 %}
-{% set gid = 1001 %}
-
-dovecot:
-  pkg.installed:
-    - pkgs:
-      - dovecot-core
-      - dovecot-imapd
-      - dovecot-pop3d
-      - dovecot-ldap
-      - dovecot-lmtpd
-      - dovecot-sieve
-      - dovecot-managesieved
-  service.running:
-    - require:
-      - pkg: dovecot
+# Force postfix so we have the postfix user.
+include:
+  - postfix
+{% if dev %}
+  - cert.dev
+{% endif %}
 
 vmail:
   user.present:
     - shell: /usr/sbin/nologin
     - home: /var/mail/vhosts
-    - uid: {{ uid }}
-    - gid: {{ gid }}
     - createhome: True
     - groups:
       - shadow
@@ -54,6 +40,21 @@ vmail:
     - require:
       - user: vmail
 
+dovecot:
+  pkg.installed:
+    - pkgs:
+      - dovecot-core
+      - dovecot-imapd
+      - dovecot-pop3d
+      - dovecot-ldap
+      - dovecot-lmtpd
+      - dovecot-sieve
+      - dovecot-managesieved
+  service.running:
+    - require:
+      - pkg: dovecot
+      - user: vmail
+
 {% for file in ['10-mail', '10-master', '10-ssl', '15-mailboxes',
                 '20-imap', '90-quota', '90-crypt', '10-auth',
                 '95-trash'] %}
@@ -68,7 +69,6 @@ vmail:
         ssl_cert: {{ ssl_cert }}
         ssl_key: {{ ssl_key }}
         user: vmail
-        uid: {{ uid }}
         crypt_public_key: /opt/dovecot/ecpubkey.pem
         crypt_private_key: /opt/dovecot/ecprivkey.pem
         crypt_save_version: 2

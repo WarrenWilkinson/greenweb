@@ -18,6 +18,6 @@ send "Bogus\r"
 send ".\r"
 expect "queued" { pass "Mail was successfully queued." } \
         "Unknown user" { fail "mail was rejected with unknown user." } \
-       timeout { fail "Mail was not sent." }
+       timeout { fail "Timeout, mail may not have been sent." }
 send "QUIT\r"
 expect "Bye"

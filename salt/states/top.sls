@@ -19,6 +19,8 @@ base:
       - libvirt
       - libvirt.focal-img
       - openldap.utils
+      - fail2ban
+      - dejagnu
     'ldap':
       - m4
       - openldap

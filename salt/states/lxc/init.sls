@@ -97,7 +97,7 @@ switch0:
     - mode: 644
     - template: jinja
     - defaults:
-        cidr: {{ pillar['openvswitch']['cidr'] }}
+        gateway: {{ pillar['openvswitch']['gateway'] }}
         nameserver: {{ pillar['openvswitch']['nameserver'] }}
 
 'netplan apply':

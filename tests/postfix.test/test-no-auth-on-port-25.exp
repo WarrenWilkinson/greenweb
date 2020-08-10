@@ -5,6 +5,6 @@ send "EHLO postfix.greenweb.ca\r"
 expect "mail.greenweb.ca"
 send "AUTH LOGIN\r"
 expect "authentication not enabled" { pass "Authentication not enabled on 25." } \
-       timeout { fail "AUTH LOGIN understood on port 25." }
+       timeout { fail "Timeout, AUTH LOGIN may have been understood on port 25." }
 send "QUIT\r"
 expect "Bye"

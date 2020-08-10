@@ -7,6 +7,6 @@ send "MAIL FROM: <testgroup@greenweb.ca>\r"
 # Needs to be lowercase for oppenssl to accept it.
 send "rcpt to:<testgroup@greenweb.ca>\r"
 expect "Access denied" { pass "Access was denied. Auth required." } \
-       timeout { fail "It seemed okay. Maybe AUTH not mandatory?" }
+       timeout { fail "Timeout, auth may not have been mandatory?" }
 send "QUIT\r"
 expect "Bye"
