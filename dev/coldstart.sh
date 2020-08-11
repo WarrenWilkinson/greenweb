@@ -164,7 +164,25 @@ sudo systemctl restart salt-minion
 sleep 60
 $salt '*' test.ping
 
-echo "Bootstrap Phase 5: Orchestrating Cloud"
+echo "Bootstrap Phase 5: Set up Logging"
+echo "########################################"
+
+sudo mkdir /var/log/remote
+sudo chown syslog:syslog /var/log/remote
+
+$salt-cloud -p lxc-focal logging
+sudo lxc-attach --name=logging -- mkdir -p /var/log/remote
+sudo lxc-stop logging
+cat <<EOF | sudo tee -a /var/lib/lxc/logging/config
+
+# Logging Mounts
+lxc.mount.entry = /var/log/remote var/log/remote none rw,bind 0 0
+EOF
+
+sudo lxc-start logging
+$salt 'logging' state.highstate
+
+echo "Bootstrap Phase 6: Orchestrating Cloud"
 echo "########################################"
 
 # Spin up all the remaining servers
