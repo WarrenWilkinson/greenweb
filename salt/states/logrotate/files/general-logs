@@ -1,0 +1,10 @@
+# Rsyslog collects all logs into hostname/applicationname.log
+# I couldn't find a better way to send sig HUP to rsyslog than this...
+/var/log/remote/*/*.log {
+weekly
+rotate 2
+sharedscripts
+postrotate
+	ps aux | grep rsyslog | awk '/^syslog/ { print $2}' | xargs kill -s HUP
+endscript
+}

@@ -9,6 +9,7 @@ base:
       - netplan.static
     '*':
       - rsyslog
+      - logrotate
     'salt':
       - libvirt
     'vmhost':
