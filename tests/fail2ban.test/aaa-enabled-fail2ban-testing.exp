@@ -1,0 +1,53 @@
+# Do openldap modify to enable the test@greenweb.ca users.
+# Then delete all their emails.
+
+set timeout 60
+
+stty -echo
+send_user -- "Password for cn=admin,dc=greenweb,dc=ca: "
+expect_user -re "(.*)\n"
+send_user "\n"
+stty echo
+set pass $expect_out(1,string)
+
+set timeout 5
+
+spawn ldapmodify -x -D cn=admin,dc=greenweb,dc=ca -H ldap://ldap.greenweb.ca -w "$pass"
+send "dn: cn=test@greenweb.ca,ou=email,dc=greenweb,dc=ca\r"
+send "changetype: modify\r"
+send "replace: mailEnabled\r"
+send "mailEnabled: TRUE\r"
+send \x04
+
+expect "modifying entry \"cn=test@greenweb.ca,ou=email,dc=greenweb,dc=ca\""
+
+spawn openssl s_client -connect postfix.greenweb.ca:995 -quiet
+expect "ready."
+send "USER test@greenweb.ca\r"
+expect "OK"
+send "PASS test\r"
+expect "OK"
+send "STAT\r"
+expect "OK"
+expect -re "(\[0-9\]+) +\[0-9\]+\r"
+set messages $expect_out(1,string)
+send_user "Deleting quotatest's $messages messages.\r"
+for {set i 1} {$i <= $messages} {incr i 1} {
+    send "DELE $i\r"
+    expect "OK"
+}
+send "QUIT\r"
+
+# Perform a log rotation...
+spawn sudo lxc-attach --name=logging -- logrotate --force /etc/logrotate.d/
+
+# Tell fail2ban to use test@greenweb.ca.
+spawn sudo sed -i 's/^destemail =.*$/destemail = test@greenweb.ca/' /etc/fail2ban/jail.d/customizations.local
+spawn sudo systemctl restart fail2ban
+sleep 3
+# Clear all the jails
+spawn sudo fail2ban-client unban --all
+
+# Test for liveness...
+spawn sudo fail2ban-client ping
+expect pong

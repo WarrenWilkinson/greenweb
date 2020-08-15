@@ -4,6 +4,8 @@
 weekly
 rotate 2
 sharedscripts
+notifempty
+create 644 syslog syslog
 postrotate
 	ps aux | grep rsyslog | awk '/^syslog/ { print $2}' | xargs kill -s HUP
 endscript
