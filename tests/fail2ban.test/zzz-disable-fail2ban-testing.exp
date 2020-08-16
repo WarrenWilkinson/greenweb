@@ -45,6 +45,10 @@ spawn sudo lxc-attach --name=logging -- logrotate --force /etc/logrotate.d/
 
 # Tell fail2ban to use test@greenweb.ca.
 spawn sudo sed -i 's/^destemail =.*$/destemail = postmaster@greenweb.ca/' /etc/fail2ban/jail.d/customizations.local
+
+# Go back to the default bantime.
+spawn sudo rm /etc/fail2ban/jail.d/one-hour-ban.conf
+
 spawn sudo systemctl restart fail2ban
 sleep 3
 # Clear all the jails

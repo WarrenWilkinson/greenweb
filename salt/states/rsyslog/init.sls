@@ -18,3 +18,14 @@ rsyslog:
     - user: root
     - group: root
     - mode: 644
+
+# Do not suppress repeat messages, as fail2ban won't
+# see the failed attempts and correctly ban attackers.
+/etc/rsyslog.conf:
+  file.replace:
+    - pattern: '^\$RepeatedMsgReduction on$'
+    - repl: '$RepeatedMsgReduction off'
+    - require:
+      - pkg: rsyslog
+    - watch_in:
+      - service: rsyslog
