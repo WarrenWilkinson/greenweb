@@ -9,14 +9,19 @@ spawn logger --id=666 -t sshd "Failed password for root from $IP port 37940 ssh2
 spawn logger --id=666 -t sshd "Failed password for root from $IP port 37940 ssh2"
 sleep 2
 
-# Make sure it got banned by fail2ban.
+# Make sure it got jailed by fail2ban.
 spawn sudo fail2ban-client status sshd
 expect "Banned IP list:"
-expect $IP { pass "Fail2ban has blocked sshd user $IP." } \
-    timeout { fail "Fail2ban may not have blocked sshd user $IP." } \
-    eof { fail "Fail2ban may not have blocked sshd user $IP." }
+expect $IP { pass "Fail2ban has jailed sshd user $IP." } \
+    timeout { fail "Fail2ban may not have jailed sshd user $IP." } \
+    eof { fail "Fail2ban may not have jailed sshd user $IP." }
+
+# Make sure it got added to nftables firewall.
+spawn sudo nft list table inet f2b-table
+expect $IP { pass "Fail2ban has firewalled user $IP." } \
+    timeout { fail "Fail2ban may not have firewalled sshd user $IP." } \
+    eof { fail "Fail2ban may not have firewalled sshd user $IP." }
 
 # TODO Check that an email was received by test@greenweb.ca
-# TODO Check that NFTables were updated
-# TODO Figure out what this "Flush ticket(s) with iptables-multiport" is all about...
-# why does fail2ban only let me have one port banned?
+
+

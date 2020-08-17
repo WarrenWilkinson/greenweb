@@ -5,3 +5,8 @@ destemail = postmaster@greenweb.ca
 sender = fail2ban@greenweb.ca
 
 sshd_log = /var/log/remote/{{ vmhost_hostname }}/sshd.log
+
+# action    = %(action_mwl)s
+
+banaction = nftables-multiport
+chain = input

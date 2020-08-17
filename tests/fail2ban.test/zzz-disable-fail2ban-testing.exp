@@ -21,23 +21,6 @@ send \x04
 
 expect "modifying entry \"cn=test@greenweb.ca,ou=email,dc=greenweb,dc=ca\""
 
-spawn openssl s_client -connect postfix.greenweb.ca:995 -quiet
-expect "ready."
-send "USER test@greenweb.ca\r"
-expect "OK"
-send "PASS test\r"
-expect "OK"
-send "STAT\r"
-expect "OK"
-expect -re "(\[0-9\]+) +\[0-9\]+\r"
-set messages $expect_out(1,string)
-send_user "Deleting quotatest's $messages messages.\r"
-for {set i 1} {$i <= $messages} {incr i 1} {
-    send "DELE $i\r"
-    expect "OK"
-}
-send "QUIT\r"
-
 # Setup fail2ban back to it's usual state.
 
 # Perform a log rotation...
