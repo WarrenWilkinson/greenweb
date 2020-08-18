@@ -22,6 +22,7 @@ base:
       - openldap.utils
       - fail2ban
       - dejagnu
+      - postfix.null
     'ldap':
       - m4
       - openldap

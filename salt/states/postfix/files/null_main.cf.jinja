@@ -1,0 +1,41 @@
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+smtpd_banner = $mydomain ESMTP $mail_name
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
+readme_directory = no
+
+# See http://www.postfix.org/COMPATIBILITY_README.html -- default to 2 on
+# fresh installs.
+compatibility_level = 2
+
+smtpd_relay_restrictions =
+   permit_mynetworks
+   permit_sasl_authenticated
+   # This setting prevents being an open relay.
+   reject_unauth_destination
+
+myhostname = {{ hostname }}.greenweb.ca
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+# $myhostname, localhost, localhost.$mydomain, $mydomain
+mydestination = 
+relayhost = postfix.greenweb.ca
+# Restricted -- can send from itself, from the vswitch network
+# I don't think I need the docker network because of NATting... could be wrong.
+mynetworks = 127.0.0.0/8 [::1]/128
+recipient_delimiter = +
+inet_interfaces = loopback-only
+inet_protocols = all
+local_transport=error: local delivery disabled
+
+# Never forward any mail. I think this means I can only get mail from
+# trusted sources, like mail servers with a domain name... But not from
+# just anybody with a loptop.
+relay_domains =

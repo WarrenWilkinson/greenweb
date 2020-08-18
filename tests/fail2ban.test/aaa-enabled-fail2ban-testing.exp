@@ -42,15 +42,15 @@ send "QUIT\r"
 spawn sudo lxc-attach --name=logging -- logrotate --force /etc/logrotate.d/
 
 # Tell fail2ban to use test@greenweb.ca.
-spawn sudo sed -i 's/^destemail =.*$/destemail = test@greenweb.ca/' /etc/fail2ban/jail.d/customizations.local
+exec sudo sed -i "s/^destemail =.*\$/destemail = test@greenweb.ca/" /etc/fail2ban/jail.d/customizations.local
 
 # Use a 1 hour bantime during the tests.
 exec echo -e "\[DEFAULT\]\\nbantime = 1h\\n" | sudo tee /etc/fail2ban/jail.d/one-hour-ban.conf
 
-spawn sudo systemctl restart fail2ban
+exec sudo systemctl restart fail2ban
 sleep 3
 # Clear all the jails
-spawn sudo fail2ban-client unban --all
+exec sudo fail2ban-client unban --all
 
 # Test for liveness...
 spawn sudo fail2ban-client ping
