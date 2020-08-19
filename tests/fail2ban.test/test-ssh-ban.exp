@@ -1,5 +1,23 @@
 set timeout 5
 
+# First, delete all emails...
+spawn openssl s_client -connect postfix.greenweb.ca:995 -quiet
+expect "ready."
+send "USER test@greenweb.ca\r"
+expect "OK"
+send "PASS test\r"
+expect "OK"
+send "STAT\r"
+expect "OK"
+expect -re "(\[0-9\]+) +\[0-9\]+\r"
+set messages $expect_out(1,string)
+send_user "Deleting quotatest's $messages messages.\r"
+for {set i 1} {$i <= $messages} {incr i 1} {
+    send "DELE $i\r"
+    expect "OK"
+}
+send "QUIT\r"
+
 # Generate a randomish IP and attack with it.
 set IP "192.255.255.[expr {int(rand()*255)}]"
 spawn logger --id=666 -t sshd "Failed password for root from $IP port 37940 ssh2"
@@ -22,6 +40,23 @@ expect $IP { pass "Fail2ban has firewalled user $IP." } \
     timeout { fail "Fail2ban may not have firewalled sshd user $IP." } \
     eof { fail "Fail2ban may not have firewalled sshd user $IP." }
 
-# TODO Check that an email was received by test@greenweb.ca
+# Finally, check for a deletion email.
+spawn openssl s_client -connect postfix.greenweb.ca:995 -quiet
+expect "ready."
+send "USER test@greenweb.ca\r"
+expect "OK"
+send "PASS test\r"
+expect "OK"
+send "STAT\r"
+expect "OK"
+expect -re "(\[0-9\]+) +\[0-9\]+\r"
+set messages $expect_out(1,string)
+send_user "Deleting quotatest's $messages messages.\r"
+for {set i 1} {$i <= $messages} {incr i 1} {
+    send "RETR $i\r"
+}
+expect "The IP $IP has just been banned by Fail2Ban" { pass "Fail2ban generated an email about the ban of $IP." } \
+    timeout { fail "Fail2ban may not have generated an email about banning $IP (timeout)." } \
+    eof { fail "Fail2ban may not have generated an email about banning $IP (eof)." }
 
-
+send "QUIT\r"
