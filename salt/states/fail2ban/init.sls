@@ -30,5 +30,6 @@ fail2ban:
     - defaults:
         openvswitch_network: {{ pillar['openvswitch']['network'] }}
         vmhost_hostname: ubuntu2004
+        postfix_hostname: postfix
     - watch_in:
       - service: fail2ban

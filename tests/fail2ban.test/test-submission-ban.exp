@@ -1,0 +1,60 @@
+set timeout 5
+
+# First, delete all emails...
+spawn openssl s_client -connect postfix.greenweb.ca:995 -quiet
+expect "ready."
+send "USER test@greenweb.ca\r"
+expect "OK"
+send "PASS test\r"
+expect "OK"
+send "STAT\r"
+expect "OK"
+expect -re "(\[0-9\]+) +\[0-9\]+\r"
+set messages $expect_out(1,string)
+send_user "Deleting quotatest's $messages messages.\r"
+for {set i 1} {$i <= $messages} {incr i 1} {
+    send "DELE $i\r"
+    expect "OK"
+}
+send "QUIT\r"
+
+# Generate a randomish IP and attack with it.
+set IP "192.255.254.[expr {int(rand()*255)}]"
+for { set a 0}  {$a < 5} {incr a} {
+    exec sudo lxc-attach --name postfix -- logger --id=666 -t "postfix/submission/smtpd" "warning: _gateway\[$IP\]: SASL LOGIN authentication failed: UGFzc3dvcmQ6"
+}
+sleep 2
+
+# Make sure it got jailed by fail2ban.
+spawn sudo fail2ban-client status postfix-sasl
+expect "Banned IP list:"
+expect $IP { pass "Fail2ban has jailed postfix-sasl user $IP." } \
+    timeout { fail "Fail2ban may not have jailed postfix-sasl user $IP." } \
+    eof { fail "Fail2ban may not have jailed postfix-sasl user $IP." }
+
+# Make sure it got added to nftables firewall.
+spawn sudo nft list table inet f2b-table
+expect $IP { pass "Fail2ban has firewalled user $IP." } \
+    timeout { fail "Fail2ban may not have firewalled postfix-sasl user $IP." } \
+    eof { fail "Fail2ban may not have firewalled postfix-sasl user $IP." }
+
+# Finally, check for a deletion email.
+spawn openssl s_client -connect postfix.greenweb.ca:995 -quiet
+expect "ready."
+send "USER test@greenweb.ca\r"
+expect "OK"
+send "PASS test\r"
+expect "OK"
+send "STAT\r"
+expect "OK"
+expect -re "(\[0-9\]+) +\[0-9\]+\r"
+set messages $expect_out(1,string)
+send_user "Deleting quotatest's $messages messages.\r"
+for {set i 1} {$i <= $messages} {incr i 1} {
+    send "RETR $i\r"
+}
+expect "The IP $IP has just been banned by Fail2Ban" { pass "Fail2ban generated an email about the ban of $IP." } \
+    timeout { fail "Fail2ban may not have generated an email about banning $IP (timeout)." } \
+    eof { fail "Fail2ban may not have generated an email about banning $IP (eof)." }
+
+send "QUIT\r"
