@@ -28,3 +28,8 @@ send \x04
 
 expect "modifying entry \"cn=test@greenweb.ca,ou=email,dc=greenweb,dc=ca\""
 expect "modifying entry \"cn=quotatest@greenweb.ca,ou=email,dc=greenweb,dc=ca\""
+
+# Put back auto-acceptance of mynetwork helos.
+exec sudo lxc-attach --name=postfix -- sed -i "s/^#\\( *\\)permit_mynetworks # This must be commented out for vmhost's tests to work./ \\1permit_mynetworks # This must be commented out for vmhost's tests to work./" /etc/postfix/main.cf
+
+exec sudo lxc-attach --name=postfix -- systemctl restart postfix

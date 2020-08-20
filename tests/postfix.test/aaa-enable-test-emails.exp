@@ -62,3 +62,9 @@ for {set i 1} {$i <= $messages} {incr i 1} {
     expect "OK"
 }
 send "QUIT\r"
+
+# Don't automatically accept vmhost's helos...
+exec sudo lxc-attach --name=postfix -- sed -i "s/^ \\( *\\)permit_mynetworks # This must be commented out for vmhost's tests to work./#\\1permit_mynetworks # This must be commented out for vmhost's tests to work./" /etc/postfix/main.cf
+
+exec sudo lxc-attach --name=postfix -- systemctl restart postfix
+
