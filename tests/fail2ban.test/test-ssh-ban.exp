@@ -19,7 +19,7 @@ for {set i 1} {$i <= $messages} {incr i 1} {
 send "QUIT\r"
 
 # Generate a randomish IP and attack with it.
-set IP "192.255.255.[expr {int(rand()*255)}]"
+set IP "192.255.253.[expr {int(rand()*255)}]"
 spawn logger --id=666 -t sshd "Failed password for root from $IP port 37940 ssh2"
 spawn logger --id=666 -t sshd "Failed password for root from $IP port 37940 ssh2"
 spawn logger --id=666 -t sshd "Failed password for root from $IP port 37940 ssh2"

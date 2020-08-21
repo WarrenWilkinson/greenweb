@@ -19,14 +19,14 @@ for {set i 1} {$i <= $messages} {incr i 1} {
 send "QUIT\r"
 
 # Generate a randomish IP and attack with it.
-set IP "192.255.252.[expr {int(rand()*255)}]"
-for { set a 0}  {$a < 5} {incr a} {
-    exec sudo lxc-attach --name postfix -- logger --id=666 -t "postfix/submission/smtpd" "warning: _gateway\[$IP\]: SASL LOGIN authentication failed: UGFzc3dvcmQ6"
+set IP "192.255.254.[expr {int(rand()*255)}]"
+for { set a 1}  {$a < 6} {incr a} {
+    exec sudo lxc-attach --name postfix -- logger -t "dovecot" "pop3-login: Aborted login (auth failed, $a attempts in 4 secs): user=<test@greenweb.ca>, method=PLAIN, rip=$IP, lip=10.0.3.34, TLS, session=<njCfK2StVqsKAAMB>"
 }
 sleep 2
 
 # Make sure it got jailed by fail2ban.
-spawn sudo fail2ban-client status postfix-sasl
+spawn sudo fail2ban-client status dovecot
 expect "Banned IP list:"
 expect $IP { pass "Fail2ban has jailed postfix-sasl user $IP." } \
     timeout { fail "Fail2ban may not have jailed postfix-sasl user $IP." } \
