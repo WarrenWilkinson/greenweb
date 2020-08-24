@@ -20,7 +20,7 @@ server {
 
   # I also need some kind of proxy pass to handle non php files.
 
-  location ~* \.php$ {
+  location ~* \.php {
       # You can use something like this to not apply PHP handling to
       # specific files... e.g. user uploaded files if those get written
       # to disk.
@@ -32,5 +32,9 @@ server {
       fastcgi_index index.php;
       include       fastcgi_params;
       fastcgi_param SCRIPT_FILENAME /var/www/html$fastcgi_script_name;
+  }
+
+  location / {
+     root /opt/phpBB3/;
   }
 }

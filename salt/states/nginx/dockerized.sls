@@ -7,6 +7,8 @@
 include:
   - docker
   - grafana.dockerized
+  - phpBB.dockerized
+
 {% if dev %}
   - cert.dev 
 {% endif %}
@@ -86,6 +88,7 @@ nginx:
         - /opt/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
         - /opt/nginx/sites-available/:/etc/nginx/sites-available/:ro
         - /opt/nginx/sites-enabled/:/etc/nginx/sites-enabled/:ro
+        - /opt/phpbb/phpBB3:/opt/phpBB3:ro
     - port_bindings:
       - 80:80
       - 443:443
