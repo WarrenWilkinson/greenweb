@@ -21,10 +21,12 @@ include:
     - group: root
     - mode: 644
 
-greenweb/php:
+greenweb/phpbb:
   docker_image.present:
     - build: /opt/php
     - tag: latest
+    - watch:
+      - file: /opt/php/Dockerfile
     - require:
       - file: /opt/php/Dockerfile
     - require_in:
@@ -61,5 +63,7 @@ phpbb:
     - binds: /opt/phpbb/phpBB3:/var/www/html:rw
     - networks:
         - production
+    - watch:
+        - docker_image: greenweb/phpbb
     - require:
-        - docker_image: greenweb/php
+        - docker_image: greenweb/phpbb
