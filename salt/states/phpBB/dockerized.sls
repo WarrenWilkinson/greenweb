@@ -52,6 +52,7 @@ extract_phpBB-3.3.1:
     - source: /opt/phpbb/phpBB-3.3.1.tar.bz2
     - user: www-data
     - group: www-data
+    - if_missing: /opt/phpbb/phpBB3/
 
 # Run it with the stuff mounted read-only inside.
 phpbb:

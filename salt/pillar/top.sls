@@ -29,6 +29,8 @@ base:
     - hydra.secret
     - docker.ip
     - hydra.hydra_grafana_client_secret
+    - phpbb.database
+    - phpbb.admin
   'ldap':
     - ldap.rootpw
     - dovecot.ldap
@@ -40,3 +42,4 @@ base:
     - postfix.ldap
   'postgresql':
     - hydra.database
+    - phpbb.database

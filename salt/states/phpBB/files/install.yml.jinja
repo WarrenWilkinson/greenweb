@@ -1,0 +1,42 @@
+# -*- coding: utf-8; mode: yaml -*-
+# vim: ft=yaml
+---
+
+installer:
+    admin:
+        name: {{ admin_name }}
+        password: {{ admin_password }}
+        email: {{ admin_email }}
+
+    board:
+        lang: {{ board_lang }}
+        name: {{ board_name }}
+        description: {{ board_description }}
+
+    database:
+        dbms: {{ database_provider }}
+        dbhost: {{ database_host }}
+        dbport: {{ database_port }}
+        dbuser: {{ database_user }}
+        dbpasswd: {{ database_password }}
+        dbname: {{ database_name }}
+        table_prefix: {{ database_prefix }}
+
+    email:
+        enabled: {{ smtp_enabled }}
+        smtp_delivery: {{ smtp_delivery }}
+        smtp_host: {{ smtp_host }}
+        smtp_port: {{ smtp_port }}
+        smtp_auth: {{ smtp_auth }}
+        smtp_user: {{ smtp_user }}
+        smtp_pass: {{ smtp_pass }}
+
+    server:
+        cookie_secure: {{ server_cookie_secure }}
+        server_protocol: {{ server_protocol }}
+        force_server_vars: false
+        server_name: {{ server_name }}
+        server_port: {{ server_port }}
+        script_path: {{ server_script_path }}
+
+    extensions: {{ extensions }}
