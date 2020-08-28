@@ -29,6 +29,7 @@ base:
     - hydra.secret
     - docker.ip
     - hydra.hydra_grafana_client_secret
+    - hydra.hydra_phpbb_client_secret
     - phpbb.database
     - phpbb.admin
   'ldap':
