@@ -38,6 +38,7 @@ base:
       - identity.dockerized
       - hydra.dockerized
       - phpBB.dockerized
+      - postgresql.client
     'postfix':
       - dovecot
       - postfix

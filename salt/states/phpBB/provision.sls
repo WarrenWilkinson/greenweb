@@ -38,7 +38,7 @@ include:
         smtp_enabled: true
         smtp_delivery: true
         smtp_host: postfix.greenweb.ca
-        smtp_port: 25
+        smtp_port: 587
         smtp_auth: false
         smtp_user: ~
         smtp_pass: ~
@@ -66,3 +66,30 @@ provision:
   file.absent:
     - require:
         - docker_container: provision
+
+# Put in the greenweb oauth credentials
+# The values are stored in the database:
+# select * from phpbb_config where config_name like 'auth_oauth_greenweb%';
+#         config_name         | config_value | is_dynamic 
+# ----------------------------+--------------+------------
+#  auth_oauth_greenweb_key    | hello        |          0
+#  auth_oauth_greenweb_secret | goodbye      |          0
+# (2 rows)
+# Not sure where to enter this though.
+
+salt://phpBB/files/configure.sql:
+  cmd.script:
+    - template: jinja
+    - defaults:
+        prefix: phpbb_
+        oauth_secret: {{ pillar['hydra']['client_secret']['phpbb'] }}
+    - shell: /usr/bin/psql-exec
+    - env:
+        - PGUSER: {{ phpbb_dbuser }}
+        - PGDATABASE: {{ phpbb_database }}
+        - PGPORT: {{ phpbb_dbport }}
+        - PGPASSWORD: {{ phpbb_dbpassword }}
+        - PGHOST: postgresql.greenweb.ca
+    - args: "--single-transaction --no-password"
+
+
