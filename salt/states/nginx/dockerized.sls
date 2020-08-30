@@ -96,6 +96,8 @@ nginx:
         - production:
           - ipv4_address: {{ pillar['docker']['nginx'] }}
     - log_driver: syslog
+    - log_opt:
+        - tag: nginx
     - restart_policy: always
     - watch:
        - file: /opt/nginx/nginx.conf

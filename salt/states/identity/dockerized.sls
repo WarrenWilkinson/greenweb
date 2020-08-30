@@ -28,6 +28,8 @@ identity:
       - HYDRA_ADMIN_URL: http://hydra:4445/
       - MOCK_TLS_TERMINATION: True
     - log_driver: syslog
+    - log_opt:
+        - tag: identity
     - restart_policy: always
     - networks:
         - production

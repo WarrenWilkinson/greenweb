@@ -176,6 +176,8 @@ grafana:
       - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: True
       - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: role
     - log_driver: syslog
+    - log_opt:
+        - tag: grafana
     - restart_policy: always
     - networks:
         - production

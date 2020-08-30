@@ -26,6 +26,8 @@ hydra:
       - SERVE_TLS_ALLOW_TERMINATION_FROM: {{ pillar['docker']['subnet'] }}
       - OAUTH2_EXPOSE_INTERNAL_ERRORS: True
     - log_driver: syslog
+    - log_opt:
+        - tag: hydra
     - restart_policy: always
     - networks:
         - production

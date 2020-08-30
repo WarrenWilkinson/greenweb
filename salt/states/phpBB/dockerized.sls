@@ -86,6 +86,9 @@ phpbb:
     - log_driver: syslog
     - restart_policy: always
     - binds: /opt/phpbb/phpBB3:/var/www/html:rw
+    - log_driver: syslog
+    - log_opt:
+        - tag: phpbb
     - networks:
         - production
     - watch:
