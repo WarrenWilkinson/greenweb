@@ -54,13 +54,22 @@ extract_phpBB-3.3.1:
     - group: www-data
     - if_missing: /opt/phpbb/phpBB3/
 
-# Create oauth endpoind for greenweb.
-# The parameters will be 'auth_oauth_Greenweb_key', 'auth_oauth_Greenweb_secret'
-make_oauth_greenweb:
-  cmd.run:
-    - cwd: /opt/phpbb/phpBB3/phpbb/auth/provider/oauth/service/
-    - name: sed -e 's/bitly/greenweb/g' -e 's/Bitly/Greenweb/g' bitly.php > greenweb.php && chown www-data:www-data greenweb.php
-    - creates: /opt/phpbb/phpBB3/phpbb/auth/provider/oauth/service/greenweb.php
+# Add oauth code for greenweb.
+/opt/phpbb/phpBB3/phpbb/auth/provider/oauth/service/greenweb.php:
+  file.managed:
+    - source: salt://phpBB/files/greenweb.php
+    - user: www-data
+    - group: www-data
+    - mode: 644
+    - require:
+        - archive: extract_phpBB-3.3.1
+
+/opt/phpbb/phpBB3/phpbb/auth/provider/oauth/service/GreenwebOauth.php:
+  file.managed:
+    - source: salt://phpBB/files/GreenwebOauth.php
+    - user: www-data
+    - group: www-data
+    - mode: 644
     - require:
         - archive: extract_phpBB-3.3.1
 
@@ -95,5 +104,6 @@ phpbb:
         - docker_image: greenweb/phpbb
     - require:
         - docker_image: greenweb/phpbb
-        - cmd: make_oauth_greenweb
+        - file: /opt/phpbb/phpBB3/phpbb/auth/provider/oauth/service/greenweb.php
+        - file: /opt/phpbb/phpBB3/phpbb/auth/provider/oauth/service/GreenwebOauth.php
         - file: /opt/phpbb/phpBB3/config/default/container/services_auth.yml
