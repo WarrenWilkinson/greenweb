@@ -70,6 +70,10 @@ extract_phpBB-3.3.1:
     - user: www-data
     - group: www-data
     - mode: 644
+    - template: jinja
+    - defaults:
+        oauth_auth_url: https://hydra.greenweb.ca/oauth2/auth?login_challenge=phpbb
+        oauth_token_url: https://hydra.greenweb.ca/oauth2/token
     - require:
         - archive: extract_phpBB-3.3.1
 

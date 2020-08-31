@@ -44,8 +44,8 @@ class greenweb extends base
 	public function get_auth_scope()
 	{
 		return [
-			'userinfo_email',
-			'userinfo_profile',
+			'email',
+			'openid',
 		];
 	}
 
