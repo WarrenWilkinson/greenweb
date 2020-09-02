@@ -96,7 +96,7 @@ class greenweb extends base
 		try
 		{
 			// Send a request with it
-			error_log("requesting /userinfo:");
+			//error_log("requesting /userinfo:");
 			$result = (array) json_decode($this->service_provider->request('/userinfo'), true);
 		}
 		catch (\OAuth\Common\Exception\Exception $e)
@@ -105,8 +105,13 @@ class greenweb extends base
 			throw new exception('AUTH_PROVIDER_OAUTH_ERROR_REQUEST');
 		}
 
+		foreach($result as $key => $value)
+		{
+			error_log("auth: " . $key . " => " . $value);
+		}
+
 		// Return the unique identifier
-		return $result['id'];
+		return $result['email'];
 	}
 
 	/**
@@ -129,7 +134,12 @@ class greenweb extends base
 			throw new exception('AUTH_PROVIDER_OAUTH_ERROR_REQUEST');
 		}
 
+		foreach($result as $key => $value)
+		{
+			error_log("token: " . $key . " => " . $value);
+		}
+
 		// Return the unique identifier
-		return $result['id'];
+		return $result['email'];
 	}
 }
