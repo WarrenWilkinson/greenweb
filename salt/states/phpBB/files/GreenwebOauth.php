@@ -25,7 +25,6 @@ class Greenweb extends AbstractService
     const SCOPE_OPENID = 'openid';
     const SCOPE_EMAIL = 'email';
 
-
     public function __construct(
         CredentialsInterface $credentials,
         ClientInterface $httpClient,
@@ -39,6 +38,14 @@ class Greenweb extends AbstractService
         if (null === $baseApiUri) {
             $this->baseApiUri = new Uri('{{ oauth_base_uri }}');
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getAuthorizationMethod()
+    {
+        return static::AUTHORIZATION_METHOD_HEADER_BEARER;
     }
 
     /**
@@ -82,6 +89,44 @@ class Greenweb extends AbstractService
         unset($data['access_token'], $data['expires_in']);
 
         $token->setExtraParams($data);
+
+        return $token;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function requestAccessToken($code, $state = null)
+    {
+        if (null !== $state) {
+            $this->validateAuthorizationState($state);
+        }
+
+        $bodyParams = [
+            'code' => $code,
+            'client_id' => $this->credentials->getConsumerId(),
+            'client_secret' => $this->credentials->getConsumerSecret(),
+            'redirect_uri' => $this->credentials->getCallbackUrl(),
+            'grant_type' => 'authorization_code',
+        ];
+
+        // error_log('Calling retrieveResponse with..');
+        // error_log('ep: ' . $this->getAccessTokenEndpoint());
+        // error_log('bp: ' . implode(',', $bodyParams));
+        // error_log('ah: ' . implode(',', $this->getExtraOAuthHeaders()));
+
+        $responseBody = $this->httpClient->retrieveResponse(
+            $this->getAccessTokenEndpoint(),
+            $bodyParams,
+            $this->getExtraOAuthHeaders()
+        );
+
+        // error_log('got response body!');
+
+        $token = $this->parseAccessTokenResponse($responseBody);
+        $this->storage->storeAccessToken($this->service(), $token);
+
+        // error_log('got token!');
 
         return $token;
     }

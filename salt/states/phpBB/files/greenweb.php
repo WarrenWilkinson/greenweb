@@ -60,15 +60,15 @@ class greenweb extends base
 		];
 	}
 
-    /**
-     * Override the php oauth service class. We need a custom one
-     * because the underlying library is coupled to each service provider
-     * rather than just providing a generic interface.
-     */
-    public function get_external_service_class()
-    {
-        return "OAuth\OAuth2\Service\Greenweb";
-    }
+	/**
+	 * Override the php oauth service class. We need a custom one
+	 * because the underlying library is coupled to each service provider
+	 * rather than just providing a generic interface.
+	 */
+	public function get_external_service_class()
+	{
+		return "OAuth\OAuth2\Service\Greenweb";
+	}
 
 	/**
 	 * {@inheritdoc}
@@ -87,16 +87,21 @@ class greenweb extends base
 		}
 		catch (\OAuth\Common\Http\Exception\TokenResponseException $e)
 		{
+			// error_log("Endpoint was:");
+			// error_log($this->service_provider->getAccessTokenEndpoint());
+			// throw $e;
 			throw new exception('AUTH_PROVIDER_OAUTH_ERROR_REQUEST');
 		}
 
 		try
 		{
 			// Send a request with it
-			$result = (array) json_decode($this->service_provider->request('userinfo'), true);
+			error_log("requesting /userinfo:");
+			$result = (array) json_decode($this->service_provider->request('/userinfo'), true);
 		}
 		catch (\OAuth\Common\Exception\Exception $e)
 		{
+			// throw $e;
 			throw new exception('AUTH_PROVIDER_OAUTH_ERROR_REQUEST');
 		}
 
@@ -117,7 +122,7 @@ class greenweb extends base
 		try
 		{
 			// Send a request with it
-			$result = (array) json_decode($this->service_provider->request('userinfo'), true);
+			$result = (array) json_decode($this->service_provider->request('/userinfo'), true);
 		}
 		catch (\OAuth\Common\Exception\Exception $e)
 		{
