@@ -35,6 +35,10 @@ class Greenweb extends AbstractService
     ) {
         parent::__construct($credentials, $httpClient, $storage, $scopes, $baseApiUri);
         $this->stateParameterInAuthUrl = true;
+
+        if (null === $baseApiUri) {
+            $this->baseApiUri = new Uri('{{ oauth_base_uri }}');
+        }
     }
 
     /**

@@ -85,6 +85,7 @@ extract_phpBB-3.3.1:
     - defaults:
         oauth_auth_url: https://hydra.greenweb.ca/oauth2/auth?login_challenge=phpbb
         oauth_token_url: https://hydra.greenweb.ca/oauth2/token
+        oauth_base_uri: https://hydra.greenweb.ca/
     - require:
         - archive: extract_phpBB-3.3.1
 

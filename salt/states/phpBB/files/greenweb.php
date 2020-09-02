@@ -93,7 +93,7 @@ class greenweb extends base
 		try
 		{
 			// Send a request with it
-			$result = (array) json_decode($this->service_provider->request('https://www.greenwebapis.com/oauth2/v1/userinfo'), true);
+			$result = (array) json_decode($this->service_provider->request('userinfo'), true);
 		}
 		catch (\OAuth\Common\Exception\Exception $e)
 		{
@@ -117,7 +117,7 @@ class greenweb extends base
 		try
 		{
 			// Send a request with it
-			$result = (array) json_decode($this->service_provider->request('https://www.greenwebapis.com/oauth2/v1/userinfo'), true);
+			$result = (array) json_decode($this->service_provider->request('userinfo'), true);
 		}
 		catch (\OAuth\Common\Exception\Exception $e)
 		{
