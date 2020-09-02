@@ -21,14 +21,25 @@ include:
     - group: root
     - mode: 644
 
+/opt/php/development.crt:
+  file.managed:
+    - source: salt://cert/files/development.crt
+    - user: root
+    - group: root
+    - mode: 755
+    - require:
+        - file: /opt/php
+
 greenweb/phpbb:
   docker_image.present:
     - build: /opt/php
     - tag: latest
     - watch:
       - file: /opt/php/Dockerfile
+      - file: /opt/php/development.crt
     - require:
       - file: /opt/php/Dockerfile
+      - file: /opt/php/development.crt
     - require_in:
       - docker_container: phpbb
 
@@ -96,6 +107,7 @@ phpbb:
   docker_container.running:
     - name: phpbb
     - image: greenweb/phpbb:latest
+    - extra_hosts: hydra.greenweb.ca:{{ pillar['docker']['static_ip'] }}
     - log_driver: syslog
     - restart_policy: always
     - binds: /opt/phpbb/phpBB3:/var/www/html:rw
