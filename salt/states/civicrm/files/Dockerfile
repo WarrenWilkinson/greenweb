@@ -4,9 +4,9 @@ FROM drupal:8.9.4-fpm-buster
 RUN docker-php-source extract \
     && apt-get update \
     && apt-get install -y ca-certificates git libmagickwand-dev libpq-dev libzip-dev libwebp-dev libpng-dev libonig-dev --no-install-recommends \
-    && pecl install imagick \
+    && pecl install imagick uploadprogress \
     && docker-php-ext-configure gd --with-jpeg --with-webp \
-    && docker-php-ext-install pdo pgsql pdo_pgsql gd intl mbstring zip \
+    && docker-php-ext-install pdo pgsql pdo_pgsql gd intl mbstring zip acpu \
     && docker-php-ext-enable imagick \
     && docker-php-source delete \
     && apt-get clean \
