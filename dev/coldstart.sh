@@ -180,6 +180,10 @@ lxc.mount.entry = /var/log/remote var/log/remote none rw,bind 0 0
 EOF
 
 sudo lxc-start logging
+sleep 10
+set +e
+$salt 'logging' state.highstate
+set -e
 $salt 'logging' state.highstate
 
 echo "Bootstrap Phase 6: Orchestrating Cloud"
