@@ -28,6 +28,10 @@ postgresql:
 {% set phpbb_password = pillar['phpbb']['database']['password'] %}
 {% set phpbb_database = pillar['phpbb']['database']['database'] %}
 
+{% set civicrm_user = pillar['civicrm']['database']['username'] %}
+{% set civicrm_password = pillar['civicrm']['database']['password'] %}
+{% set civicrm_database = pillar['civicrm']['database']['database'] %}
+
 /etc/postgresql/12/main/pg_hba.conf:
   file.managed:
     - source: salt://postgresql/files/pg_hba.conf.jinja
@@ -38,6 +42,7 @@ postgresql:
     - defaults:
         hydra_user: {{ hydra_user }}
         phpbb_user: {{ phpbb_user }}
+        civicrm_user: {{ civicrm_user }}
 
 hydra_user:
   postgres_user.present:
@@ -71,4 +76,21 @@ phpbb_database:
   postgres_database.present:
     - name: {{ phpbb_database }}
     - owner: {{ phpbb_user }}
+    - user: postgres
+
+civicrm_user:
+  postgres_user.present:
+    - name: {{ civicrm_user }}
+    - password: {{ civicrm_password }}
+    - createdb: false
+    - createroles: false
+    - encrypted: true
+    - login: true
+    - superuser: false
+    - user: postgres
+
+civicrm_database:
+  postgres_database.present:
+    - name: {{ civicrm_database }}
+    - owner: {{ civicrm_user }}
     - user: postgres

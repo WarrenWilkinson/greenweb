@@ -8,6 +8,7 @@ include:
   - docker
   - grafana.dockerized
   - phpBB.dockerized
+  - civicrm.dockerized
 
 {% if dev %}
   - cert.dev 
@@ -47,9 +48,9 @@ include:
     - require:
         - file: /opt/nginx
 
-# NOTE: In production, I don't need to normally expose
-# hydra.
-{% for site in ['grafana', 'identity', 'hydra', 'phpbb'] %}
+# NOTE: I wouldn't need to expose hydra if I had a backend network
+# with nginx. But I don't, so I need to expose it.
+{% for site in ['grafana', 'identity', 'hydra', 'phpbb', 'civicrm'] %}
 /opt/nginx/sites-available/{{ site }}.conf:
   file.managed:
     - source: salt://nginx/config/nginx_{{ site }}.conf.jinja
@@ -89,6 +90,7 @@ nginx:
         - /opt/nginx/sites-available/:/etc/nginx/sites-available/:ro
         - /opt/nginx/sites-enabled/:/etc/nginx/sites-enabled/:ro
         - /opt/phpbb/phpBB3:/opt/phpBB3:ro
+        - /opt/civicrm/webroot:/opt/civicrm:ro
     - port_bindings:
       - 80:80
       - 443:443

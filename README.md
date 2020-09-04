@@ -20,7 +20,7 @@ This will create a virtual machine (VM) and bootstrap it, installing
 all the necessary software.  When it's done, it exists at 172.30.1.5. Modify
 your /etc/hosts file to contain this line:
 
-    172.30.1.5             greenweb.ca forum.greenweb.ca mail.greenweb.ca identity.greenweb.ca grafana.greenweb.ca
+    172.30.1.5             greenweb.ca forum.greenweb.ca mail.greenweb.ca identity.greenweb.ca grafana.greenweb.ca civicrm.greenweb.ca
 
 Now you should be able to visit the various external services:
 
