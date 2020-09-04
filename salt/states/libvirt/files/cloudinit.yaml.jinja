@@ -14,3 +14,7 @@ mounts:
   - [ {{ label }}, {{ mounts[label] }}, 9p, "trans=virtio", "0", "0" ]
 {% endfor -%}
 {%- endif -%}
+swap:
+    filename: /swapfile
+    size: auto
+    maxsize: 2147483648

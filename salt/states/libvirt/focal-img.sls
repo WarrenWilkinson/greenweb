@@ -16,7 +16,7 @@ focal-img:
 
 focal-resized-img:
   cmd.wait:
-    - name: cp "*focal-server-cloudimg-amd64.img" "focal-server-cloudimg-amd64.img" && qemu-img resize focal-server-cloudimg-amd64.img +8G
+    - name: cp "*focal-server-cloudimg-amd64.img" "focal-server-cloudimg-amd64.img" && qemu-img resize focal-server-cloudimg-amd64.img +12G
     - cwd: /opt/libvirt_images/
     - watch:
         - file: /opt/libvirt_images/*focal-server-cloudimg-amd64.img
