@@ -1,12 +1,18 @@
 FROM drupal:8.9.4-fpm-buster
 
+ENV EXT_APCU_VERSION=5.1.18
+ENV EXT_UPLOADPROGRESS_VERSION=1.1.3
 
 RUN docker-php-source extract \
     && apt-get update \
-    && apt-get install -y ca-certificates git libmagickwand-dev libpq-dev libzip-dev libwebp-dev libpng-dev libonig-dev --no-install-recommends \
-    && pecl install imagick uploadprogress \
+    && apt-get install -y ca-certificates git libmagickwand-dev libpq-dev libzip-dev libwebp-dev libpng-dev libonig-dev curl --no-install-recommends \
+    && pecl install imagick \
+    && mkdir -p /usr/src/php/ext/apcu \
+    && mkdir -p /usr/src/php/ext/uploadprogress \
+    && curl -fsSL https://github.com/krakjoe/apcu/archive/v$EXT_APCU_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/apcu --strip 1 \
+    && curl -fsSL https://github.com/php/pecl-php-uploadprogress/archive/uploadprogress-$EXT_UPLOADPROGRESS_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/uploadprogress --strip 1 \
     && docker-php-ext-configure gd --with-jpeg --with-webp \
-    && docker-php-ext-install pdo pgsql pdo_pgsql gd intl mbstring zip acpu \
+    && docker-php-ext-install pdo pgsql pdo_pgsql gd intl mbstring zip apcu uploadprogress \
     && docker-php-ext-enable imagick \
     && docker-php-source delete \
     && apt-get clean \
