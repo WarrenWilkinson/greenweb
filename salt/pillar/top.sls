@@ -32,7 +32,7 @@ base:
     - hydra.hydra_phpbb_client_secret
     - phpbb.database
     - phpbb.admin
-    - civicrm.database
+    - drupal.database
   'ldap':
     - ldap.rootpw
     - dovecot.ldap
@@ -45,4 +45,4 @@ base:
   'postgresql':
     - hydra.database
     - phpbb.database
-    - civicrm.database
+    - drupal.database

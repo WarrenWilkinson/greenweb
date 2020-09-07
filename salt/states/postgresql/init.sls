@@ -28,9 +28,9 @@ postgresql:
 {% set phpbb_password = pillar['phpbb']['database']['password'] %}
 {% set phpbb_database = pillar['phpbb']['database']['database'] %}
 
-{% set civicrm_user = pillar['civicrm']['database']['username'] %}
-{% set civicrm_password = pillar['civicrm']['database']['password'] %}
-{% set civicrm_database = pillar['civicrm']['database']['database'] %}
+{% set drupal_user = pillar['drupal']['database']['username'] %}
+{% set drupal_password = pillar['drupal']['database']['password'] %}
+{% set drupal_database = pillar['drupal']['database']['database'] %}
 
 /etc/postgresql/12/main/pg_hba.conf:
   file.managed:
@@ -42,7 +42,7 @@ postgresql:
     - defaults:
         hydra_user: {{ hydra_user }}
         phpbb_user: {{ phpbb_user }}
-        civicrm_user: {{ civicrm_user }}
+        drupal_user: {{ drupal_user }}
 
 hydra_user:
   postgres_user.present:
@@ -78,10 +78,10 @@ phpbb_database:
     - owner: {{ phpbb_user }}
     - user: postgres
 
-civicrm_user:
+drupal_user:
   postgres_user.present:
-    - name: {{ civicrm_user }}
-    - password: {{ civicrm_password }}
+    - name: {{ drupal_user }}
+    - password: {{ drupal_password }}
     - createdb: false
     - createroles: false
     - encrypted: true
@@ -89,8 +89,8 @@ civicrm_user:
     - superuser: false
     - user: postgres
 
-civicrm_database:
+drupal_database:
   postgres_database.present:
-    - name: {{ civicrm_database }}
-    - owner: {{ civicrm_user }}
+    - name: {{ drupal_database }}
+    - owner: {{ drupal_user }}
     - user: postgres

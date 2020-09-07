@@ -1,12 +1,12 @@
 server {
   listen 80;
-  server_name civicrm.greenweb.ca;
+  server_name drupal.greenweb.ca;
   return 301 https://$host$request_uri;
 }
 
 server {
   listen 443 ssl;
-  server_name civicrm.greenweb.ca;
+  server_name drupal.greenweb.ca;
 
   ssl_certificate           {{ ssl_cert }};
   ssl_certificate_key       {{ ssl_key }};
@@ -21,7 +21,7 @@ server {
   # I also need some kind of proxy pass to handle non php files
 
   # Taken from: https://www.nginx.com/resources/wiki/start/topics/recipes/drupal/
-  root /opt/civicrm; ## <-- Your only path reference.
+  root /opt/drupal; ## <-- Your only path reference.
   location = /favicon.ico {
        log_not_found off;
        access_log off;
@@ -116,7 +116,7 @@ server {
        # PHP 7 socket location.
        #fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
 
-       fastcgi_pass  civicrm:9000;
+       fastcgi_pass  drupal:9000;
        #  fastcgi_index index.php;
        #  include       fastcgi_params;
        # fastcgi_param SCRIPT_FILENAME /var/www/html$fastcgi_script_name;
@@ -155,13 +155,13 @@ server {
  #     #   fastcgi_pass unix:/run/php/php7.0-fpm.sock;
  #     # }
 
- #     fastcgi_pass  civicrm:9000;
+ #     fastcgi_pass  drupal:9000;
  #     fastcgi_index index.php;
  #     include       fastcgi_params;
  #     fastcgi_param SCRIPT_FILENAME /var/www/html$fastcgi_script_name;
  #  }
 
  #  location / {
- #     root /opt/civicrm/;
+ #     root /opt/drupal/;
  #  }
 }

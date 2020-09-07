@@ -5,7 +5,7 @@ ENV EXT_UPLOADPROGRESS_VERSION=1.1.3
 
 RUN docker-php-source extract \
     && apt-get update \
-    && apt-get install -y ca-certificates git libmagickwand-dev libpq-dev libzip-dev libwebp-dev libpng-dev libonig-dev curl --no-install-recommends \
+    && apt-get install -y ca-certificates git zip unzip libmagickwand-dev libpq-dev libzip-dev libwebp-dev libpng-dev libonig-dev curl --no-install-recommends \
     && pecl install imagick \
     && mkdir -p /usr/src/php/ext/apcu \
     && mkdir -p /usr/src/php/ext/uploadprogress \
@@ -20,11 +20,7 @@ RUN docker-php-source extract \
     && apt-get autoremove --purge -y \
     && rm -rf /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
 
-RUN COMPOSER_MEMORY_LIMIT=-1 composer require civicrm/civicrm-asset-plugin:1.0.1 civicrm/civicrm-core:5.29 civicrm/civicrm-packages:5.29 civicrm/civicrm-drupal-8:5.29
-
-## No composer, it's not up to date and causes issues.
-## RUN COMPOSER_MEMORY_LIMIT=-1 composer require civicrm/cv:0.3.3
-## RUN cv core:install -vv --db="pgsql:host={{ dbhost }};port={{ dbport }};dbname={{ dbname }};user={{ dbuser }};password={{ dbpassword }}" --cms-base-url="{{ base_url }}" --lang="en_US"
+RUN COMPOSER_MEMORY_LIMIT=-1 composer require drupal/redhen:1.x-dev drupal/entity:^1.1 drupal/smtp:^1.0 drupal/video_embed_field:^2.4 drupal/scheduler:^1.3 drupal/simple_gmap:^3.0 drupal/addtoany:^1.14 drupal/pathauto:^1.8 drupal/token:^1.7 drupal/devel:^4.0 drupal/ctools:^3.4 drush/drush:^10.3
 
 WORKDIR /usr/local/share/ca-certificates
 ADD development.crt /usr/local/share/ca-certificates/development.crt

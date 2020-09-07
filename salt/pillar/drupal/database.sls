@@ -2,10 +2,10 @@
 # vim: ft=yaml
 ---
 
-civicrm:
+drupal:
   database:
-    username: civicrm
-    password: civicrm
+    username: drupal
+    password: drupal
     hostname: postgresql
     port: 5432
-    database: civicrm
+    database: drupal
