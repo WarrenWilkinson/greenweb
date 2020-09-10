@@ -8,7 +8,7 @@ include:
 # Need to add commands to import json files that define the clients...
 # NOTE: In production, I don't need to normally expose
 # hydra.
-{% for site in ['grafana', 'phpbb'] %}
+{% for site in ['grafana', 'phpbb', 'drupal'] %}
 /tmp/{{ site }}.json:
   file.managed:
     - source: salt://hydra/clients/hydra_{{ site }}.json.jinja

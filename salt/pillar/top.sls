@@ -30,6 +30,7 @@ base:
     - docker.ip
     - hydra.hydra_grafana_client_secret
     - hydra.hydra_phpbb_client_secret
+    - hydra.hydra_drupal_client_secret
     - phpbb.database
     - phpbb.admin
     - drupal.database
