@@ -8,7 +8,9 @@ include:
   - docker
   - grafana.dockerized
   - phpBB.dockerized
-  - drupal.dockerized
+  - drupal.demo
+  - hydra.dockerized
+  - identity.dockerized
 
 {% if dev %}
   - cert.dev 
@@ -90,7 +92,7 @@ nginx:
         - /opt/nginx/sites-available/:/etc/nginx/sites-available/:ro
         - /opt/nginx/sites-enabled/:/etc/nginx/sites-enabled/:ro
         - /opt/phpbb/phpBB3:/opt/phpBB3:ro
-        - /opt/drupal/webroot:/opt/drupal:ro
+        - /opt/drupal/demo/web:/opt/drupal:ro
     - port_bindings:
       - 80:80
       - 443:443
@@ -101,8 +103,12 @@ nginx:
     - log_opt:
         - tag: nginx
     - restart_policy: always
+    - require:
+        - docker_container: grafana
+        - docker_container: phpbb
+        - docker_container: drupaldemo
+        - docker_container: identity
+        - docker_container: hydra
     - watch:
-       - file: /opt/nginx/nginx.conf
-       - file: /opt/nginx/sites-available/grafana.conf
-       - file: /opt/nginx/sites-enabled/grafana.conf
+        - file: /opt/nginx/nginx.conf
 

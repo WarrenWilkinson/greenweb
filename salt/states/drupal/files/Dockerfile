@@ -5,7 +5,7 @@ ENV EXT_UPLOADPROGRESS_VERSION=1.1.3
 
 RUN docker-php-source extract \
     && apt-get update \
-    && apt-get install -y ca-certificates git zip unzip libmagickwand-dev libpq-dev libzip-dev libwebp-dev libpng-dev libonig-dev curl --no-install-recommends \
+    && apt-get install -y ca-certificates git zip unzip libmagickwand-dev libpq-dev libzip-dev libwebp-dev libpng-dev libonig-dev curl python sudo --no-install-recommends \
     && pecl install imagick \
     && mkdir -p /usr/src/php/ext/apcu \
     && mkdir -p /usr/src/php/ext/uploadprogress \
@@ -26,7 +26,6 @@ WORKDIR /usr/local/share/ca-certificates
 ADD development.crt /usr/local/share/ca-certificates/development.crt
 RUN /usr/sbin/update-ca-certificates
 
-VOLUME /var/www/html
 WORKDIR /var/www
 EXPOSE 9000
 CMD ["php-fpm"]

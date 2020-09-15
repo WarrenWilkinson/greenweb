@@ -200,6 +200,11 @@ sleep 120
 sudo virsh autostart docker
 $salt '*' test.ping
 $salt 'postgresql' state.highstate
+$salt 'influxdb' state.highstate
+$salt 'influxdb' state.sls influxdb.provision-users
+sleep 5
+$salt 'influxdb' state.sls influxdb.provision-telegraf
+
 $salt 'docker' state.sls hydra.migrate
 $salt '*' state.highstate
 $salt 'docker' state.sls hydra.provision
