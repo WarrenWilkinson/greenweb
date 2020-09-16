@@ -56,7 +56,8 @@ provision:
     - image: greenweb/phpbb:latest
     - binds: /opt/phpbb/phpBB3:/var/www/html:rw
     - command: /bin/sh -c 'cd /var/www/html/; php install/phpbbcli.php install install/install-config.yml && chown www-data:www-data -R /var/www/html'
-    - creates: /opt/phpbb/phpBB3/config.php
+# this file seems to already exist, which stops this from running.
+#    - creates: /opt/phpbb/phpBB3/config.php
     - replace: True
     - require:
         - file: /opt/phpbb/phpBB3/install/install-config.yml
@@ -91,5 +92,8 @@ salt://phpBB/files/configure.sql:
         - PGPASSWORD: {{ phpbb_dbpassword }}
         - PGHOST: postgresql.greenweb.ca
     - args: "--single-transaction --no-password"
+    - require:
+        - file: /opt/phpbb/phpBB3/install/
+        - docker_container: provision
 
 
