@@ -16,7 +16,7 @@ include:
 
 /opt/php/Dockerfile:
   file.managed:
-    - source: salt://phpBB/files/Dockerfile
+    - source: salt://phpbb/files/Dockerfile
     - user: root
     - group: root
     - mode: 644
@@ -68,7 +68,7 @@ extract_phpBB-3.3.1:
 # Add oauth code for greenweb.
 /opt/phpbb/phpBB3/phpbb/auth/provider/oauth/service/greenweb.php:
   file.managed:
-    - source: salt://phpBB/files/greenweb.php
+    - source: salt://phpbb/files/greenweb.php
     - user: www-data
     - group: www-data
     - mode: 644
@@ -77,7 +77,7 @@ extract_phpBB-3.3.1:
 
 /opt/phpbb/phpBB3/phpbb/auth/provider/oauth/service/GreenwebOauth.php:
   file.managed:
-    - source: salt://phpBB/files/GreenwebOauth.php
+    - source: salt://phpbb/files/GreenwebOauth.php
     - user: www-data
     - group: www-data
     - mode: 644

@@ -3,7 +3,7 @@
 ---
 
 include:
-  - phpBB.dockerized
+  - phpbb.dockerized
 
 # Add configuration file
 {% set phpbb_dbuser = pillar['phpbb']['database']['username'] %}
@@ -16,7 +16,7 @@ include:
 
 /opt/phpbb/phpBB3/install/install-config.yml:
   file.managed:
-    - source: salt://phpBB/files/install.yml.jinja
+    - source: salt://phpbb/files/install.yml.jinja
     - user: www-data
     - group: www-data
     - mode: 644
@@ -78,7 +78,7 @@ provision:
 # (2 rows)
 # Not sure where to enter this though.
 
-salt://phpBB/files/configure.sql:
+salt://phpbb/files/configure.sql:
   cmd.script:
     - template: jinja
     - defaults:

@@ -7,7 +7,7 @@
 include:
   - docker
   - grafana.dockerized
-  - phpBB.dockerized
+  - phpbb.dockerized
   - drupal.demo
   - hydra.dockerized
   - identity.dockerized
