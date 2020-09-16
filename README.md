@@ -22,10 +22,12 @@ your /etc/hosts file to contain this line:
 
     172.30.1.5             greenweb.ca forum.greenweb.ca mail.greenweb.ca identity.greenweb.ca grafana.greenweb.ca drupal.greenweb.ca
 
-Now you should be able to visit the various external services:
+Once you're running the virtual machine, and have modified your hosts
+file, you can visit the various external services:
 
-  - http://grafana.greenweb.ca (TODO move this internal).
-
+  - http://grafana.greenweb.ca
+  - http://forum.greenweb.ca
+  - http://drupal.greenweb.ca
 
 ## Tests
 
