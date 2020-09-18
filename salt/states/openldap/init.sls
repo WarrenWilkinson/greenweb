@@ -88,13 +88,26 @@ root_account:
         - replace:
             olcPasswordCryptSaltFormat: $6$%.16s
 
-# Note:
-#
+##
 # People:
+#
 # people belong to ou=people,o=greenweb, not to their respective
 # organizations. Why? Because people aren't employees, but volunteers
-# who work across groups frequently.
+# who work across groups frequently.  They are simpleSecurityObjects
+# with passwords. If a user is expelled, delete the person.
 #
+# Fields to populate
+#   givenName: The persons true first name
+#   displayName: The persons full displayed name "nickname/truename surname" (their preference).
+#   cn: The persons commonly referred to first name (e.g. the nickname)
+#   sn: The persons surname
+#   mail: The persons email address
+#   uid: The preferred username in applications.
+#   employeeNumber: "America/Vancouver" -- this field is used for a zoneinfo preferences.
+#   preferredLanguage: "en-US"
+#   jpegPhoto:  An optional photo
+
+##
 # Email:
 #
 # A person doesn't automatically get an email address just because they're a person
@@ -170,6 +183,14 @@ base_domain:
             objectClass:
               - applicationProcess
               - simpleSecurityObject
+      - cn=werther,ou=apps,dc=greenweb,dc=ca:
+        - default:
+            cn: werther
+            ou: apps
+            userPassword: "{CRYPT}unset."
+            objectClass:
+              - applicationProcess
+              - simpleSecurityObject
       - ou=people,dc=greenweb,dc=ca:
         - default:
             ou: people
@@ -177,12 +198,18 @@ base_domain:
               - organizationalUnit
       - uid=wwilkinson,ou=people,dc=greenweb,dc=ca:
         - default:
+            givenName: Warren
+            displayName: Warren Wilkinson
             cn: Warren
             sn: Wilkinson
+            mail: warrenwilkinson@gmail.com
             uid: wwilkinson
-            userPassword: []
+            employeeNumber: "America/Vancouver"
+            preferredLanguage: "en-US"
+            userPassword: "{CRYPT}unset."
             objectClass:
               - inetOrgPerson
+              - simpleSecurityObject
       - ou=email,dc=greenweb,dc=ca:
         - default:
             ou: email
@@ -263,6 +290,7 @@ base_domain:
 # 0. Dovecot can read everything related to emails, including email passwords. Must be subtree, not children.
 # 1. Users can update, but not read password. Anonymous can auth against a password. Everyone else has no access to userPasswords.
 # 2. Postfix is like dovecot, but doesn't see passwords.
+# 3. Werther can search user uid to get a DN. (It then binds as that DN and should be able read attributes).
 # 3. You can read/write your own entry (but not read password), otherwise no access.
 
 security:
@@ -278,6 +306,9 @@ security:
               - to dn.subtree="ou=email,dc=greenweb,dc=ca" attrs=userPassword by dn.base="cn=dovecot,ou=apps,dc=greenweb,dc=ca" read by * none
               - to attrs=userPassword by self =xw by anonymous auth by * none
               - to dn.subtree="ou=email,dc=greenweb,dc=ca" by dn.base="cn=postfix,ou=apps,dc=greenweb,dc=ca" read by dn.base="cn=dovecot,ou=apps,dc=greenweb,dc=ca" read by * none
+              - to dn.base="ou=people,dc=greenweb,dc=ca" by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" search by * none
+              - to dn.children="ou=people,dc=greenweb,dc=ca" attrs=uid by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" search by self read by * none
+              - to dn.children="ou=people,dc=greenweb,dc=ca" attrs=entry by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" read by self read by * none
               - to * by self write by * none
 
 # Set a few passwords.
@@ -287,7 +318,8 @@ security:
 {% for (file, user, password) in [ ('test', 'cn=test@greenweb.ca,ou=email,dc=greenweb,dc=ca', 'test'),
                                    ('quotatest', 'cn=quotatest@greenweb.ca,ou=email,dc=greenweb,dc=ca', 'quotatest'),
                                    ('dovecot', 'cn=dovecot,ou=apps,dc=greenweb,dc=ca', pillar['dovecot']['ldap']['password']),
-                                   ('postfix', 'cn=postfix,ou=apps,dc=greenweb,dc=ca', pillar['postfix']['ldap']['password'])] %}
+                                   ('postfix', 'cn=postfix,ou=apps,dc=greenweb,dc=ca', pillar['postfix']['ldap']['password']),
+                                   ('werther', 'cn=werther,ou=apps,dc=greenweb,dc=ca', pillar['werther']['ldap']['password'])] %}
 {{ lines.append("dn: " + user) or "" }}
 {{ lines.append('changetype: modify') or "" }}
 {{ lines.append('replace: userPassword') or "" }}

@@ -34,10 +34,12 @@ base:
     - phpbb.database
     - phpbb.admin
     - drupal.database
+    - werther.ldap
   'ldap':
     - ldap.rootpw
     - dovecot.ldap
     - postfix.ldap
+    - werther.ldap
   'postfix':
     - openvswitch
     - external_ip
