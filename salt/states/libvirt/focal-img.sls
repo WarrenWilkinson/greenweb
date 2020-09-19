@@ -38,7 +38,7 @@ focal-definition:
     - template: jinja
     - defaults:
         mounts:
-          greenwebauth: /opt/greenwebauth
+          werther: /opt/werther
 
 'virsh undefine base-focal-64':
   cmd.wait:

@@ -10,7 +10,7 @@ include:
   - phpbb.dockerized
   - drupal.demo
   - hydra.dockerized
-  - identity.dockerized
+  - werther.dockerized
 
 {% if dev %}
   - cert.dev 
@@ -52,7 +52,7 @@ include:
 
 # NOTE: I wouldn't need to expose hydra if I had a backend network
 # with nginx. But I don't, so I need to expose it.
-{% for site in ['grafana', 'identity', 'hydra', 'phpbb', 'drupal'] %}
+{% for site in ['grafana', 'werther', 'hydra', 'phpbb', 'drupal'] %}
 /opt/nginx/sites-available/{{ site }}.conf:
   file.managed:
     - source: salt://nginx/config/nginx_{{ site }}.conf.jinja
@@ -107,7 +107,7 @@ nginx:
         - docker_container: grafana
         - docker_container: phpbb
         - docker_container: drupaldemo
-        - docker_container: identity
+        - docker_container: werther
         - docker_container: hydra
     - watch:
         - file: /opt/nginx/nginx.conf

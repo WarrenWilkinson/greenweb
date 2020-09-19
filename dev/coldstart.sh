@@ -208,6 +208,6 @@ $salt 'influxdb' state.sls influxdb.provision-telegraf
 $salt 'docker' state.sls hydra.migrate
 $salt '*' state.highstate
 $salt 'docker' state.sls hydra.provision
-$salt 'docker' state.sls phpBB.provision
+$salt 'docker' state.sls phpbb.provision
 
 #$salt-run state.orchestrate _orchestrate.monitoring

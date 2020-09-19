@@ -21,8 +21,11 @@ hydra:
       - SECRETS_SYSTEM: {{ secret }}
       - DSN: {{ dsn }}
       - URLS_SELF_ISSUER: https://hydra.greenweb.ca/
-      - URLS_CONSENT: https://identity.greenweb.ca/consent
-      - URLS_LOGIN: https://identity.greenweb.ca/login
+      - URLS_CONSENT: https://identity.greenweb.ca/auth/consent
+      - URLS_LOGIN: https://identity.greenweb.ca/auth/login
+      - URLS_LOGOUT: https://identity.greenweb.ca/auth/logout
+      - WEBFINGER_OIDC_DISCOVERY_SUPPORTED_SCOPES: profile,email,roles
+      - WEBFINGER_OIDC_DISCOVERY_SUPPORTED_CLAIMS: name,given_name,nickname,family_name,preferred_username,zoneinfo,locale,email,https://greenweb.ca/claims/roles
       - SERVE_TLS_ALLOW_TERMINATION_FROM: {{ pillar['docker']['subnet'] }}
       - OAUTH2_EXPOSE_INTERNAL_ERRORS: True
     - log_driver: syslog

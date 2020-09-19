@@ -1,6 +1,6 @@
 server {
   listen 80;
-  server_name identity.greenweb.ca;  
+  server_name identity.greenweb.ca;
   return 301 https://$host$request_uri;
 }
 
@@ -22,6 +22,6 @@ server {
       proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header        X-Forwarded-Proto $scheme;
 
-      proxy_pass http://identity:3000/;
+      proxy_pass http://werther:8080/;
   }
 }

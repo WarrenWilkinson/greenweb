@@ -1,3 +1,3 @@
-[submodule "greenwebauth"]
-	path = greenwebauth
-	url = git@github.com:WarrenWilkinson/greenwebauth.git
+[submodule "werther"]
+	path = werther
+	url = git@github.com:WarrenWilkinson/werther.git

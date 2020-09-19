@@ -210,6 +210,24 @@ base_domain:
             objectClass:
               - inetOrgPerson
               - simpleSecurityObject
+      - ou=grants,dc=greenweb,dc=ca:
+        - default:
+            ou: grants
+            objectClass:
+              - organizationalUnit
+      - ou=testApp,ou=grants,dc=greenweb,dc=ca:
+        - default:
+            ou: testApp
+            objectClass:
+              - organizationalUnit
+      - cn=testApp_testRole,ou=testApp,ou=grants,dc=greenweb,dc=ca:
+        - default:
+            cn: testApp_testRole
+            # Group name froms from description
+            description: test
+            member: uid=wwilkinson,ou=people,dc=greenweb,dc=ca
+            objectClass:
+              - groupofnames
       - ou=email,dc=greenweb,dc=ca:
         - default:
             ou: email
@@ -306,9 +324,15 @@ security:
               - to dn.subtree="ou=email,dc=greenweb,dc=ca" attrs=userPassword by dn.base="cn=dovecot,ou=apps,dc=greenweb,dc=ca" read by * none
               - to attrs=userPassword by self =xw by anonymous auth by * none
               - to dn.subtree="ou=email,dc=greenweb,dc=ca" by dn.base="cn=postfix,ou=apps,dc=greenweb,dc=ca" read by dn.base="cn=dovecot,ou=apps,dc=greenweb,dc=ca" read by * none
+              - to dn.subtree="ou=grants,dc=greenweb,dc=ca" by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" read by * none
               - to dn.base="ou=people,dc=greenweb,dc=ca" by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" search by * none
-              - to dn.children="ou=people,dc=greenweb,dc=ca" attrs=uid by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" search by self read by * none
-              - to dn.children="ou=people,dc=greenweb,dc=ca" attrs=entry by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" read by self read by * none
+
+              # This was enough to make werther only able to read uid and type.  Werther requires access to everything due to how it's implemented.
+              # - to dn.children="ou=people,dc=greenweb,dc=ca" attrs=uid,objectClass by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" search by self read by * none
+              # - to dn.children="ou=people,dc=greenweb,dc=ca" attrs=entry by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" read by self read by * none
+              # This variation should let them read everything but password.
+              - to dn.children="ou=people,dc=greenweb,dc=ca" attrs=userPassword by anonymous auth by * none
+              - to dn.children="ou=people,dc=greenweb,dc=ca" by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" read by self read by * none
               - to * by self write by * none
 
 # Set a few passwords.
@@ -317,6 +341,7 @@ security:
 {% set lines = [] %}
 {% for (file, user, password) in [ ('test', 'cn=test@greenweb.ca,ou=email,dc=greenweb,dc=ca', 'test'),
                                    ('quotatest', 'cn=quotatest@greenweb.ca,ou=email,dc=greenweb,dc=ca', 'quotatest'),
+                                   ('wwilkinson', 'uid=wwilkinson,ou=people,dc=greenweb,dc=ca', 'wwilkinson'),
                                    ('dovecot', 'cn=dovecot,ou=apps,dc=greenweb,dc=ca', pillar['dovecot']['ldap']['password']),
                                    ('postfix', 'cn=postfix,ou=apps,dc=greenweb,dc=ca', pillar['postfix']['ldap']['password']),
                                    ('werther', 'cn=werther,ou=apps,dc=greenweb,dc=ca', pillar['werther']['ldap']['password'])] %}

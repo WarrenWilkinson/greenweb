@@ -35,7 +35,7 @@ base:
       - telegraf
       - grafana.dockerized
       - nginx.dockerized
-      - identity.dockerized
+      - werther.dockerized
       - hydra.dockerized
       - phpbb.dockerized
       - postgresql.client

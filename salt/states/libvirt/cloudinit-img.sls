@@ -11,7 +11,7 @@
     - template: jinja
     - defaults:
         mounts:
-          greenwebauth: /opt/greenwebauth
+          werther: /opt/werther
 
 cloud-image-utils:
   pkg.installed
