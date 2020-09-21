@@ -1,4 +1,4 @@
-FROM drupal:8.9.4-fpm-buster
+FROM drupal:8.9.6-fpm-buster
 
 ENV EXT_APCU_VERSION=5.1.18
 ENV EXT_UPLOADPROGRESS_VERSION=1.1.3
