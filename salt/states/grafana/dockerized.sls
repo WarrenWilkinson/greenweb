@@ -173,12 +173,12 @@ grafana:
       - GF_AUTH_GENERIC_OAUTH_ENABLED: True
       - GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
       - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: {{ pillar['hydra']['client_secret']['grafana'] }}
-      - GF_AUTH_GENERIC_OAUTH_SCOPES: openid email profile
+      - GF_AUTH_GENERIC_OAUTH_SCOPES: openid email profile roles
       - GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://hydra.greenweb.ca/oauth2/auth?login_challenge=grafana
       - GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://hydra.greenweb.ca/oauth2/token
       - GF_AUTH_GENERIC_OAUTH_API_URL: https://hydra.greenweb.ca/userinfo
       - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: True
-      - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: role
+      - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: contains("https://greenweb.ca/claims/roles".grafana[*], 'admin') && 'Admin' || contains("https://greenweb.ca/claims/roles".grafana[*], 'editor') && 'Editor' || 'Viewer'
     - log_driver: syslog
     - log_opt:
         - tag: grafana

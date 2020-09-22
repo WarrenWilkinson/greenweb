@@ -215,16 +215,16 @@ base_domain:
             ou: grants
             objectClass:
               - organizationalUnit
-      - ou=testApp,ou=grants,dc=greenweb,dc=ca:
+      - ou=grafana,ou=grants,dc=greenweb,dc=ca:
         - default:
-            ou: testApp
+            ou: grafana
             objectClass:
               - organizationalUnit
-      - cn=testApp_testRole,ou=testApp,ou=grants,dc=greenweb,dc=ca:
+      - cn=grafana_admin,ou=grafana,ou=grants,dc=greenweb,dc=ca:
         - default:
-            cn: testApp_testRole
+            cn: grafana_admin
             # Group name froms from description
-            description: test
+            description: admin
             member: uid=wwilkinson,ou=people,dc=greenweb,dc=ca
             objectClass:
               - groupofnames
