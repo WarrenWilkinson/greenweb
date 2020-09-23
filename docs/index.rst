@@ -6,6 +6,16 @@
 Welcome to GreenWeb's documentation!
 ====================================
 
+Greenweb is a collection of scripts that setup, install and configure
+infrastructure for hosting the IT, internet, and telephony needs of
+grass roots organizations.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Getting Started:
+
+   cantrips/runit
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
