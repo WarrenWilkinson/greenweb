@@ -8,6 +8,8 @@ Video Pitch: https://www.youtube.com/watch?v=G41NQj-6Sv0
 This repository contains deployment scripts for software
 side of this project.
 
+Documentation: http://www.warrenwilkinson.ca/greenweb/
+
 ## Getting Started
 
 Development starts in the 'dev' environment, which is a local vagrant
