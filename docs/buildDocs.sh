@@ -16,6 +16,8 @@ set -x
 # INSTALL DEPENDS #
 ###################
 
+mkdir -p /usr/share/man/man1/ # Needed to install default-jre-headless.
+
 apt-get update
 apt-get -y install git rsync python3-sphinx python3-sphinx-rtd-theme python3-sphinxcontrib.plantuml default-jre-headless
 
