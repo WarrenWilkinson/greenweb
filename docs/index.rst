@@ -20,6 +20,12 @@ grass roots organizations.
    :maxdepth: 2
    :caption: Contents:
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Developer Information:
+
+   developers/documentation
+   developers/architecture
 
 
 Indices and tables
