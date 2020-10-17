@@ -18,7 +18,10 @@ grass roots organizations.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Running Your Greenweb:
+
+   setup/overview
+   setup/pillars
 
 .. toctree::
    :maxdepth: 2
