@@ -38,7 +38,7 @@ The virtual machine will us the IP Address 172.30.1.5. Modify your
 
    172.30.1.5             greenweb.ca forum.greenweb.ca mail.greenweb.ca identity.greenweb.ca grafana.greenweb.ca drupal.greenweb.ca
 
-Once you're virtual machine is running, and you have modified your
+Once your virtual machine is running, and you have modified your
 hosts file, you should be able to visit the various services:
 
 * `<http://grafana.greenweb.ca>`_
