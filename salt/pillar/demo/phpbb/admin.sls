@@ -1,4 +1,4 @@
-# -*- coding: utf-8; mode: yaml -*-
+#!yaml|gpg -*- coding: utf-8; mode: yaml -*-
 # vim: ft=yaml
 ---
 
