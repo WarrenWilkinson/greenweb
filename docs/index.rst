@@ -22,6 +22,7 @@ grass roots organizations.
 
    setup/overview
    setup/pillars
+   setup/localprod
 
 .. toctree::
    :maxdepth: 2

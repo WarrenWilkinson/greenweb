@@ -11,6 +11,9 @@
 {% set clientid = 'drupal' %}
 {% set clientsecret = salt['pillar.get']('hydra:client_secret:drupal', 'secret-not-set') %}
 
+{% set admin_user = salt['pillar.get']('drupal:admin:username') %}
+{% set admin_password = salt['pillar.get']('drupal:admin:password') %}
+
 setup:
   cmd.script:
     - cwd: /var/www/html
@@ -22,8 +25,8 @@ setup:
         dbpassword: {{ dbpassword }}
         database: {{ database }}
         dbhost: {{ dbhost }}
-        account_name: drupal
-        account_pass: drupal
+        account_name: {{ admin_user }}
+        account_pass: {{ admin_password }}
         account_mail: postmaster@greenweb.ca
         site_name: Drupal
         site_mail: drupal@greenweb.ca

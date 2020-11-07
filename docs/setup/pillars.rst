@@ -27,8 +27,8 @@ have to do it once.
    user@host:~/$ gpg --full-generate-key
    user@host:~/$ gpg --list-keys
    user@host:~/$ cd ~/greenweb/dev/
-   user@host:greenweb/dev/$ gpg --armor --export-secret-key <KEY-NAME> > exported_greenweb_privkey.gpg
-   user@host:greenweb/dev/$ gpg --armor --export <KEY-NAME> > exported_greenweb_pubkey.gpg
+   user@host:greenweb/dev/$ gpg --armor --export-secret-key <KEY-NAME> > prod_privkey.gpg
+   user@host:greenweb/dev/$ gpg --armor --export <KEY-NAME> > prod_pubkey.gpg
 
 The :code:`<KEY-NAME>` name was printed when you ran :code:`gpg
 --list-keys`. It resembles `E6FC8A182A156E9E16209DE6C6CF6DC6DDCB8906`.
@@ -43,7 +43,7 @@ With the public key you can encrypt a password:
    user@host:~/$ echo -n "supersecret" | gpg --armor --batch --trust-model always --encrypt -r <KEY-NAME>
    
    # Or on another computer, first import the public key
-   user@othercomputer:~/$ gpg --import exported_greenweb_pubkey.gpg
+   user@othercomputer:~/$ gpg --import prod_pubkey.gpg
    user@othercomputer:~/$ echo -n "supersecret" | gpg --armor --batch --trust-model always --encrypt -r <KEY-NAME>
 
 Now that you can encrypt passwords, here is how you'd update Grafana's

@@ -2,7 +2,9 @@
 # vim: ft=yaml
 ---
 
-base:
+{% from 'global_vars.jinja' import env with context %}
+{% if env != '' %}
+{{env}}:
   '*':
     - telegraf.account
   'vmhost':
@@ -34,6 +36,7 @@ base:
     - phpbb.database
     - phpbb.admin
     - drupal.database
+    - drupal.admin
     - werther.ldap
   'ldap':
     - ldap.rootpw
@@ -49,3 +52,4 @@ base:
     - hydra.database
     - phpbb.database
     - drupal.database
+{% endif %}

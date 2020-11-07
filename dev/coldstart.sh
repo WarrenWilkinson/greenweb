@@ -1,8 +1,25 @@
 #!/bin/bash
 # Bootstrap a basic machine into a salt master
 
-set -x
+MODE=${1:-base}
+echo "Bootstrapping ${MODE}"
+
 set -e
+set -x
+
+set +x
+sudo sed -i "s/{% set env = '.*' %}/{% set env = '${MODE}' %}/" /srv/pillar/base/global_vars.jinja
+sudo sed -i "s/^\\(.*\\)pillarenv:.*$/\\1pillarenv: ${MODE}/" /etc/salt/cloud.profiles.d/lxc-focal.conf
+sudo sed -i "s/^\\(.*\\)pillarenv:.*$/\\1pillarenv: ${MODE}/" /etc/salt/cloud.profiles.d/kvm-focal.conf
+sudo mkdir -p /etc/salt/gpgkeys
+sudo chmod 700 /etc/salt/gpgkeys
+if [ $MODE != "base" ]; then
+    echo "Importing private key /vagrant/${MODE}_privkey.gpg"
+    sudo gpg --homedir /etc/salt/gpgkeys --import "/vagrant/${MODE}_privkey.gpg"
+    echo "Importing public key /vagrant/${MODE}_pubkey.gpg"
+    sudo gpg --homedir /etc/salt/gpgkeys --import "/vagrant/${MODE}_pubkey.gpg"
+fi
+set -x
 
 # echo "Installing a few dependencies..."
 # Install some dependencies
@@ -14,7 +31,7 @@ echo "########################################"
 # Install salt master software with salt-cloud support
 cd /tmp
 wget -O bootstrap-salt.sh https://bootstrap.saltstack.com
-sudo sh bootstrap-salt.sh -L -M -A 127.0.0.1 -i vmhost -x python3
+sudo sh bootstrap-salt.sh -L -M -A 127.0.0.1 -i vmhost -x python3 -j "{ \"pillarenv\": \"${MODE}\" }"
 
 # 'Fix' Salt.
 # https://github.com/saltstack/salt/issues/50679
@@ -83,7 +100,7 @@ sudo lxc-attach bootdns -- systemctl restart dnsmasq
 echo "Bootstrap Phase 3: Initialize the New Salt Master"
 echo "########################################"
 
-sudo salt 'vmhost' lxc.init salt profile=standard_focal network_profile=standard_net bootstrap_args="-L -M -A salt -x python3"
+sudo salt 'vmhost' lxc.init salt profile=standard_focal network_profile=standard_net config="{ \"pillarenv\": \"${MODE}\"}" bootstrap_args="-L -M -A salt -x python3"
 
 # Create a space to mount libvirt into it.
 sudo lxc-attach --name=salt -- mkdir /opt/libvirt
@@ -95,6 +112,7 @@ sudo lxc-attach --name=salt -- mkdir /opt/libvirt
 sudo lxc-attach --name=salt -- mkdir -p /etc/salt/cloud.profiles.d
 sudo lxc-attach --name=salt -- mkdir -p /etc/salt/cloud.providers.d
 sudo lxc-attach --name=salt -- mkdir -p /etc/salt/master.d
+sudo lxc-attach --name=salt -- mkdir -p /etc/salt/gpgkeys
 sudo lxc-attach --name=salt -- mkdir /srv/salt
 sudo lxc-attach --name=salt -- mkdir /srv/pillar
 sudo lxc-stop salt
@@ -107,6 +125,7 @@ lxc.mount.entry = /var/run/libvirt opt/libvirt none ro,bind 0 0
 lxc.mount.entry = /etc/salt/cloud.profiles.d etc/salt/cloud.profiles.d none ro,bind 0 0
 lxc.mount.entry = /etc/salt/cloud.providers.d etc/salt/cloud.providers.d none ro,bind 0 0
 lxc.mount.entry = /etc/salt/master.d etc/salt/master.d none ro,bind 0 0
+lxc.mount.entry = /etc/salt/gpgkeys etc/salt/gpgkeys none ro,bind 0 0
 lxc.mount.entry = /srv/salt srv/salt none ro,bind 0 0
 lxc.mount.entry = /srv/pillar srv/pillar none ro,bind 0 0
 EOF
