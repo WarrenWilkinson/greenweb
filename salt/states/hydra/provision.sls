@@ -2,6 +2,8 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
 include:
   - hydra.dockerized
 
@@ -19,6 +21,7 @@ include:
     - defaults:
         client_id: {{ site }}
         client_secret: {{ pillar['hydra']['client_secret'][site] }}
+        domain: {{ config.internal_domain }}
 
 remove_{{ site }}:
   docker_container.run:

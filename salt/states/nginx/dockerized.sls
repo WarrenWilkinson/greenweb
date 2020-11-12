@@ -2,6 +2,10 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
+{% set domain = config.internal_domain %}
+
 {% set dev = true %}
 
 include:
@@ -16,8 +20,8 @@ include:
   - cert.dev 
 {% endif %}
 
-{% set ssl_cert = '/opt/cert/development.crt' %}
-{% set ssl_key = '/opt/cert/development.key' %}
+{% set ssl_cert = '/opt/cert/' + domain + '.crt' %}
+{% set ssl_key = '/opt/cert/' + domain + '.key' %}
 
 /opt/nginx:
   file.directory:
@@ -63,6 +67,7 @@ include:
     - defaults:
         ssl_cert: {{ ssl_cert }}
         ssl_key: {{ ssl_key }}
+        domain: {{ domain }}
     - require:
       - file: /opt/nginx/sites-available
 
@@ -76,6 +81,7 @@ include:
     - defaults:
         ssl_cert: {{ ssl_cert }}
         ssl_key: {{ ssl_key }}
+        domain: {{ domain }}
     - require:
       - file: /opt/nginx/sites-enabled
     - watch_in:
@@ -98,7 +104,7 @@ nginx:
       - 443:443
     - networks:
         - production:
-          - ipv4_address: {{ pillar['docker']['nginx'] }}
+          - ipv4_address: {{ config.docker.nginx }}
     - log_driver: syslog
     - log_opt:
         - tag: nginx

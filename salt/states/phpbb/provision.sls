@@ -2,6 +2,11 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
+{% set domain = config.internal_domain %}
+{% set organization = config.internal_organization %}
+
 include:
   - phpbb.dockerized
 
@@ -24,12 +29,12 @@ include:
     - defaults:
         admin_name: {{ phpbb_admin_username }}
         admin_password: {{ phpbb_admin_password }}
-        admin_email: postmaster@greenweb.ca
+        admin_email: postmaster@{{ domain }}
         board_lang: en
-        board_name: Greenweb Forum
-        board_description: Forum for Tri-Cities Greenweb
+        board_name: {{ organization }} Forum
+        board_description: Forum for {{ organization }}
         database_provider: postgres
-        database_host: postgresql.greenweb.ca
+        database_host: postgresql.{{ domain }}
         database_port: {{ phpbb_dbport }}
         database_user: {{ phpbb_dbuser }}
         database_password: {{ phpbb_dbpassword }}
@@ -37,14 +42,14 @@ include:
         database_prefix: phpbb_
         smtp_enabled: true
         smtp_delivery: true
-        smtp_host: postfix.greenweb.ca
+        smtp_host: postfix.{{ domain }}
         smtp_port: 587
         smtp_auth: false
         smtp_user: ~
         smtp_pass: ~
         server_cookie_secure: true
         server_protocol: https://
-        server_name: forum.greenweb.ca
+        server_name: forum.{{ domain }}
         server_port: 443
         server_script_path: /
         extensions: [] # ['phpbb/viglink']
@@ -90,7 +95,7 @@ salt://phpbb/files/configure.sql:
         - PGDATABASE: {{ phpbb_database }}
         - PGPORT: {{ phpbb_dbport }}
         - PGPASSWORD: {{ phpbb_dbpassword }}
-        - PGHOST: postgresql.greenweb.ca
+        - PGHOST: postgresql.{{ domain }}
     - args: "--single-transaction --no-password"
     - require:
         - file: /opt/phpbb/phpBB3/install/

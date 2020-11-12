@@ -19,6 +19,18 @@ if [ $MODE != "base" ]; then
     echo "Importing public key /vagrant/${MODE}_pubkey.gpg"
     sudo gpg --homedir /etc/salt/gpgkeys --import "/vagrant/${MODE}_pubkey.gpg"
 fi
+
+echo "Checking that configuration.yaml exists..."
+CONFIG_FILE="/srv/salt/configuration.yaml"
+if [ ! -f "${CONFIG_FILE}" ]; then
+   if [ ! -f "${CONFIG_FILE}.template" ]; then
+       echo "${CONFIG_FILE} does not exist, and nor does ${CONFIG_FILE}.template to create it from."
+      exit 1
+   else
+       echo "Creating ${CONFIG_FILE} based on ${CONFIG_FILE}.template."
+       sudo cp "${CONFIG_FILE}.template" "${CONFIG_FILE}"
+   fi
+fi
 set -x
 
 # echo "Installing a few dependencies..."
@@ -47,6 +59,34 @@ sudo systemctl restart salt-minion
 sleep 60
 sudo salt-key -y -a vmhost
 sleep 60
+
+set +x
+INTERNAL_DOMAIN=`sudo salt-call slsutil.renderer salt://configuration.yaml --out key | awk '/internal_domain/ { print $2 }'`
+echo "Detected internal_domain is \"${INTERNAL_DOMAIN}\"."
+KEY_FILE="/vagrant/${INTERNAL_DOMAIN}.key"
+CERT_FILE="/vagrant/${INTERNAL_DOMAIN}.crt"
+KEY_DEST="/srv/salt/cert/files/${INTERNAL_DOMAIN}.key"
+CERT_DEST="/srv/salt/cert/files/${INTERNAL_DOMAIN}.crt"
+
+echo "Checking \"${KEY_FILE}\" exists..."
+if [ ! -f "${KEY_FILE}" ]; then
+    echo "${KEY_FILE} does not exist."
+    exit 1
+else
+    echo "Copying ${KEY_FILE} to ${KEY_DEST}."
+    sudo cp "${KEY_FILE}" "${KEY_DEST}"
+fi
+
+echo "Checking \"${CERT_FILE}\" exists..."
+if [ ! -f "${CERT_FILE}" ]; then
+    echo "${CERT_FILE} does not exist."
+    exit 1
+else
+    echo "Copying ${CERT_FILE} to ${CERT_DEST}."
+    sudo cp "${CERT_FILE}" "${CERT_DEST}"
+fi
+
+set -x
 
 echo "Bootstrap Phase 1: Preparing Host"
 echo "########################################"
@@ -89,8 +129,8 @@ sudo lxc-attach bootdns -- rm -f /etc/resolv.conf
 sudo lxc-attach bootdns -- sh -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf'
 sudo lxc-attach bootdns -- apt-get update
 sudo lxc-attach bootdns -- apt-get install -y dnsmasq
-sudo lxc-attach bootdns -- sh -c 'echo "domain=greenweb.ca" >> /etc/dnsmasq.conf'
-sudo lxc-attach bootdns -- sh -c 'echo "local=/greenweb.ca/" >> /etc/dnsmasq.conf'
+sudo lxc-attach bootdns -- sh -c "echo "domain=${INTERNAL_DOMAIN}" >> /etc/dnsmasq.conf"
+sudo lxc-attach bootdns -- sh -c "echo "local=/${INTERNAL_DOMAIN}/" >> /etc/dnsmasq.conf"
 sudo lxc-attach bootdns -- sh -c 'echo "expand-hosts" >> /etc/dnsmasq.conf'
 sudo lxc-attach bootdns -- sh -c 'echo "dhcp-range=10.0.3.70,10.0.3.100,12h" >> /etc/dnsmasq.conf'
 sudo lxc-attach bootdns -- sh -c 'echo "dhcp-authoritative" >> /etc/dnsmasq.conf'

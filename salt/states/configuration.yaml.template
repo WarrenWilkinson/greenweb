@@ -1,0 +1,23 @@
+# -*- coding: utf-8; mode: yaml -*-
+# vim: ft=yaml
+---
+
+{% set internal_organization = 'greenweb' %}
+{% set internal_toplevel_domain = 'ca' %}
+
+internal_organization: {{ internal_organization }}
+internal_toplevel_domain: {{ internal_toplevel_domain }}
+internal_domain: {{ internal_organization }}.{{ internal_toplevel_domain }}
+
+docker:
+  internal_ip: 10.0.3.14
+  subnet: 172.29.0.0/24
+  ip_range: 172.29.0.128/25
+  gateway: 172.29.0.1
+  nginx: 172.29.0.2
+
+postfix:
+  internal_ip: 10.0.3.34
+
+werther:
+  bind_dn: cn=werther,ou=apps,dc={{ internal_organization }},dc=ca

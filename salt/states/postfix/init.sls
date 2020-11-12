@@ -2,11 +2,17 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
+{% set org = config.internal_organization %}
+{% set domain = config.internal_domain %}
+{% set tl = config.internal_toplevel_domain %}
+
 {% set dev = true %}
 
 {% if dev %}
-{% set ssl_cert = '/opt/cert/development.crt' %}
-{% set ssl_key = '/opt/cert/development.key' %}
+{% set ssl_cert = '/opt/cert/' + domain + '.crt' %}
+{% set ssl_key = '/opt/cert/' + domain + '.key' %}
 include:
   - cert.dev
 {% endif %}
@@ -55,8 +61,8 @@ postfix:
     - defaults:
         ldap_bind_dn: {{ pillar['postfix']['ldap']['dn'] }}
         ldap_bind_password: {{ pillar['postfix']['ldap']['password'] }}
-        ldap_base: ou=email,dc=greenweb,dc=ca
-        ldap_host: ldap.greenweb.ca
+        ldap_base: ou=email,dc={{ org }},dc={{ tl }}
+        ldap_host: ldap.{{ domain }}
     - watch_in:
       - service: postfix
     - require:

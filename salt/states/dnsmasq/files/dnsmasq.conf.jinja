@@ -251,8 +251,9 @@ dhcp-range={{ dhcp_range_min }},{{ dhcp_range_max }},{{ dhcp_duration }}
 # Give the machine which says its name is "bert" IP address
 # 192.168.0.70 and an infinite lease
 #dhcp-host=bert,192.168.0.70,infinite
-dhcp-host=docker,{{ docker_static_ip }},infinite
-dhcp-host=postfix,{{ postfix_static_ip }},infinite
+{% for hostname in static_ips %}
+dhcp-host={{ hostname }},{{ static_ips[hostname] }},infinite
+{% endfor %}
 
 # Always give the host with client identifier 01:02:02:04
 # the IP address 192.168.0.60

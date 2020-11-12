@@ -2,6 +2,10 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
+{% set domain = config.internal_domain %}
+
 grafana:
   pkgrepo.managed:
     - humanname: Grafana Upstream Repository
@@ -60,8 +64,8 @@ grafana:
     - template: jinja
     - defaults:
         port: 3000
-        domain: grafana.greenweb.ca
-        root_url: http://grafana.greenweb.ca/ # because of proxy
+        domain: grafana.{{ domain }}
+        root_url: http://grafana.{{ domain }}/ # because of proxy
         admin_user: {{ pillar['grafana']['admin']['user'] }}
         admin_password: {{ pillar['grafana']['admin']['password'] }}
         secret_key: {{ pillar['grafana']['secret_key'] }}

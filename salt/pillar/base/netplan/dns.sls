@@ -9,5 +9,5 @@ netplan:
   gateway4: 10.0.3.1
   file: /etc/netplan/10-lxc.yaml
   nameservers:
-    search: [greenweb.ca]
+    # search: [greenweb.ca] # Now in by configuration.yaml, just config.internal_domain.
     addresses: [127.0.0.1]

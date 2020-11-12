@@ -6,5 +6,5 @@ network:
       addresses:
         - {{ gateway }}
       nameservers:
-        search: [greenweb.ca]
+        search: [{{ domain }}]
         addresses: [{{ nameserver }}]

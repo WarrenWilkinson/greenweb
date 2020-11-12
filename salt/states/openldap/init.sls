@@ -2,6 +2,12 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
+{% set org = config.internal_organization %}
+{% set domain = config.internal_domain %}
+{% set tl = config.internal_toplevel_domain %}
+
 openldap:
   pkg.installed:
     - pkgs:
@@ -79,9 +85,9 @@ root_account:
       - olcDatabase={1}mdb,cn=config:
         - replace:
             olcRootDN:
-              - cn=admin,dc=greenweb,dc=ca
+              - cn=admin,dc={{ org }},dc={{ tl }}
             olcSuffix:
-              - dc=greenweb,dc=ca
+              - dc={{ org }},dc={{ tl }}
             olcRootPW:
               - {{ pillar['ldap']['admin']['password'] }}
       - cn=config:
@@ -147,27 +153,27 @@ base_domain:
         url: ldapi:///
         bind:
           method: simple
-          dn: cn=admin,dc=greenweb,dc=ca
+          dn: cn=admin,dc={{ org }},dc={{ tl }}
           password: {{ pillar['ldap']['admin']['password'] }}
     - entries:
-      - dc=greenweb,dc=ca:
+      - dc={{ org }},dc={{ tl }}:
         - default:
-            dc: greenweb
-            o: greenweb
+            dc: {{ org }}
+            o: {{ org }}
             objectClass:
               - dcObject
               - organization
-      - cn=admin,dc=greenweb,dc=ca:
+      - cn=admin,dc={{ org }},dc={{ tl }}:
         - default:
             cn: admin
             objectClass:
               - organizationalRole
-      - ou=apps,dc=greenweb,dc=ca:
+      - ou=apps,dc={{ org }},dc={{ tl }}:
         - default:
             ou: apps
             objectClass:
               - organizationalUnit
-      - cn=dovecot,ou=apps,dc=greenweb,dc=ca:
+      - cn=dovecot,ou=apps,dc={{ org }},dc={{ tl }}:
         - default:
             cn: dovecot
             ou: apps
@@ -175,7 +181,7 @@ base_domain:
             objectClass:
               - applicationProcess
               - simpleSecurityObject
-      - cn=postfix,ou=apps,dc=greenweb,dc=ca:
+      - cn=postfix,ou=apps,dc={{ org }},dc={{ tl }}:
         - default:
             cn: postfix
             ou: apps
@@ -183,7 +189,7 @@ base_domain:
             objectClass:
               - applicationProcess
               - simpleSecurityObject
-      - cn=werther,ou=apps,dc=greenweb,dc=ca:
+      - cn=werther,ou=apps,dc={{ org }},dc={{ tl }}:
         - default:
             cn: werther
             ou: apps
@@ -191,12 +197,12 @@ base_domain:
             objectClass:
               - applicationProcess
               - simpleSecurityObject
-      - ou=people,dc=greenweb,dc=ca:
+      - ou=people,dc={{ org }},dc={{ tl }}:
         - default:
             ou: people
             objectClass:
               - organizationalUnit
-      - uid=wwilkinson,ou=people,dc=greenweb,dc=ca:
+      - uid=wwilkinson,ou=people,dc={{ org }},dc={{ tl }}:
         - default:
             givenName: Warren
             displayName: Warren Wilkinson
@@ -210,90 +216,90 @@ base_domain:
             objectClass:
               - inetOrgPerson
               - simpleSecurityObject
-      - ou=grants,dc=greenweb,dc=ca:
+      - ou=grants,dc={{ org }},dc={{ tl }}:
         - default:
             ou: grants
             objectClass:
               - organizationalUnit
-      - ou=grafana,ou=grants,dc=greenweb,dc=ca:
+      - ou=grafana,ou=grants,dc={{ org }},dc={{ tl }}:
         - default:
             ou: grafana
             objectClass:
               - organizationalUnit
-      - cn=grafana_admin,ou=grafana,ou=grants,dc=greenweb,dc=ca:
+      - cn=grafana_admin,ou=grafana,ou=grants,dc={{ org }},dc={{ tl }}:
         - default:
             cn: grafana_admin
             # Group name froms from description
             description: admin
-            member: uid=wwilkinson,ou=people,dc=greenweb,dc=ca
+            member: uid=wwilkinson,ou=people,dc={{ org }},dc={{ tl }}
             objectClass:
               - groupofnames
-      - ou=email,dc=greenweb,dc=ca:
+      - ou=email,dc={{ org }},dc={{ tl }}:
         - default:
             ou: email
             objectClass:
               - organizationalUnit
-      - cn=test@greenweb.ca,ou=email,dc=greenweb,dc=ca:
+      - cn=test@{{ domain }},ou=email,dc={{ org }},dc={{ tl }}:
         - replace:
             mailEnabled: "FALSE"
         - default:
-            cn: test@greenweb.ca
+            cn: test@{{ domain }}
             ou: email
-            seeAlso: uid=wwilkinson,ou=people,dc=greenweb,dc=ca
-            mail: test@greenweb.ca
+            seeAlso: uid=wwilkinson,ou=people,dc={{ org }},dc={{ tl }}
+            mail: test@{{ domain }}
             userPassword: "{CRYPT}unset."
             mailAlias:
-              - testalias@greenweb.ca
+              - testalias@{{ domain }}
             mailGroupMember:
-              - testgroup@greenweb.ca
+              - testgroup@{{ domain }}
             objectClass:
               - PostfixBookMailAccount
               - simpleSecurityObject
               - applicationProcess
-      - cn=quotatest@greenweb.ca,ou=email,dc=greenweb,dc=ca:
+      - cn=quotatest@{{ domain }},ou=email,dc={{ org }},dc={{ tl }}:
         - replace:
             mailEnabled: "FALSE"
         - default:
-            cn: quotatest@greenweb.ca
+            cn: quotatest@{{ domain }}
             ou: email
-            seeAlso: uid=wwilkinson,ou=people,dc=greenweb,dc=ca
-            mail: quotatest@greenweb.ca
+            seeAlso: uid=wwilkinson,ou=people,dc={{ org }},dc={{ tl }}
+            mail: quotatest@{{ domain }}
             mailQuota: 1
             userPassword: "{CRYPT}unset."
             objectClass:
               - PostfixBookMailAccount
               - simpleSecurityObject
               - applicationProcess
-      - cn=warren@greenweb.ca,ou=email,dc=greenweb,dc=ca:
+      - cn=warren@{{ domain }},ou=email,dc={{ org }},dc={{ tl }}:
         - default:
-            cn: warren@greenweb.ca
+            cn: warren@{{ domain }}
             ou: email
-            seeAlso: uid=wwilkinson,ou=people,dc=greenweb,dc=ca
-            mail: warren@greenweb.ca
+            seeAlso: uid=wwilkinson,ou=people,dc={{ org }},dc={{ tl }}
+            mail: warren@{{ domain }}
             mailAlias:
-              - postmaster@greenweb.ca
+              - postmaster@{{ domain }}
             mailGroupMember:
-              - contact@greenweb.ca
+              - contact@{{ domain }}
             userPassword: "{CRYPT}unset."
             objectClass:
               - PostfixBookMailAccount
               - simpleSecurityObject
               - applicationProcess
-      - cn=contact@greenweb.ca,ou=email,dc=greenweb,dc=ca:
+      - cn=contact@{{ domain }},ou=email,dc={{ org }},dc={{ tl }}:
         - default:
-            cn: contact@greenweb.ca
+            cn: contact@{{ domain }}
             ou: email
-            mail: contact@greenweb.ca
+            mail: contact@{{ domain }}
             objectClass:
               - PostfixBookMailAccount
               - applicationProcess
-      - cn=testgroup@greenweb.ca,ou=email,dc=greenweb,dc=ca:
+      - cn=testgroup@{{ domain }},ou=email,dc={{ org }},dc={{ tl }}:
         - replace:
             mailEnabled: "FALSE"
         - default:
-            cn: testgroup@greenweb.ca
+            cn: testgroup@{{ domain }}
             ou: email
-            mail: testgroup@greenweb.ca
+            mail: testgroup@{{ domain }}
             objectClass:
               - PostfixBookMailAccount
               - applicationProcess
@@ -321,30 +327,30 @@ security:
       - olcDatabase={1}mdb,cn=config:
         - replace:
             olcAccess:
-              - to dn.subtree="ou=email,dc=greenweb,dc=ca" attrs=userPassword by dn.base="cn=dovecot,ou=apps,dc=greenweb,dc=ca" read by * none
+              - to dn.subtree="ou=email,dc={{ org }},dc={{ tl }}" attrs=userPassword by dn.base="cn=dovecot,ou=apps,dc={{ org }},dc={{ tl }}" read by * none
               - to attrs=userPassword by self =xw by anonymous auth by * none
-              - to dn.subtree="ou=email,dc=greenweb,dc=ca" by dn.base="cn=postfix,ou=apps,dc=greenweb,dc=ca" read by dn.base="cn=dovecot,ou=apps,dc=greenweb,dc=ca" read by * none
-              - to dn.subtree="ou=grants,dc=greenweb,dc=ca" by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" read by * none
-              - to dn.base="ou=people,dc=greenweb,dc=ca" by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" search by * none
+              - to dn.subtree="ou=email,dc={{ org }},dc={{ tl }}" by dn.base="cn=postfix,ou=apps,dc={{ org }},dc={{ tl }}" read by dn.base="cn=dovecot,ou=apps,dc={{ org }},dc={{ tl }}" read by * none
+              - to dn.subtree="ou=grants,dc={{ org }},dc={{ tl }}" by dn.base="cn=werther,ou=apps,dc={{ org }},dc={{ tl }}" read by * none
+              - to dn.base="ou=people,dc={{ org }},dc={{ tl }}" by dn.base="cn=werther,ou=apps,dc={{ org }},dc={{ tl }}" search by * none
 
               # This was enough to make werther only able to read uid and type.  Werther requires access to everything due to how it's implemented.
-              # - to dn.children="ou=people,dc=greenweb,dc=ca" attrs=uid,objectClass by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" search by self read by * none
-              # - to dn.children="ou=people,dc=greenweb,dc=ca" attrs=entry by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" read by self read by * none
+              # - to dn.children="ou=people,dc={{ org }},dc={{ tl }}" attrs=uid,objectClass by dn.base="cn=werther,ou=apps,dc={{ org }},dc={{ tl }}" search by self read by * none
+              # - to dn.children="ou=people,dc={{ org }},dc={{ tl }}" attrs=entry by dn.base="cn=werther,ou=apps,dc={{ org }},dc={{ tl }}" read by self read by * none
               # This variation should let them read everything but password.
-              - to dn.children="ou=people,dc=greenweb,dc=ca" attrs=userPassword by anonymous auth by * none
-              - to dn.children="ou=people,dc=greenweb,dc=ca" by dn.base="cn=werther,ou=apps,dc=greenweb,dc=ca" read by self read by * none
+              - to dn.children="ou=people,dc={{ org }},dc={{ tl }}" attrs=userPassword by anonymous auth by * none
+              - to dn.children="ou=people,dc={{ org }},dc={{ tl }}" by dn.base="cn=werther,ou=apps,dc={{ org }},dc={{ tl }}" read by self read by * none
               - to * by self write by * none
 
 # Set a few passwords.
 # Use ldapmodify and slappassd to encode the passwords correctly. This is a bit tricky to do in fact.
 
 {% set lines = [] %}
-{% for (file, user, password) in [ ('test', 'cn=test@greenweb.ca,ou=email,dc=greenweb,dc=ca', 'test'),
-                                   ('quotatest', 'cn=quotatest@greenweb.ca,ou=email,dc=greenweb,dc=ca', 'quotatest'),
-                                   ('wwilkinson', 'uid=wwilkinson,ou=people,dc=greenweb,dc=ca', 'wwilkinson'),
-                                   ('dovecot', 'cn=dovecot,ou=apps,dc=greenweb,dc=ca', pillar['dovecot']['ldap']['password']),
-                                   ('postfix', 'cn=postfix,ou=apps,dc=greenweb,dc=ca', pillar['postfix']['ldap']['password']),
-                                   ('werther', 'cn=werther,ou=apps,dc=greenweb,dc=ca', pillar['werther']['ldap']['password'])] %}
+{% for (file, user, password) in [ ('test', 'cn=test@' + domain + ',ou=email,dc=' + org + ',dc=' +  tl, 'test'),
+                                   ('quotatest', 'cn=quotatest@' + domain + ',ou=email,dc=' + org + ',dc=' +  tl, 'quotatest'),
+                                   ('wwilkinson', 'uid=wwilkinson,ou=people,dc=' + org + ',dc=' + tl, 'wwilkinson'),
+                                   ('dovecot', 'cn=dovecot,ou=apps,dc=' + org + ',dc=' + tl, pillar['dovecot']['ldap']['password']),
+                                   ('postfix', 'cn=postfix,ou=apps,dc=' + org + ',dc=' + tl, pillar['postfix']['ldap']['password']),
+                                   ('werther', 'cn=werther,ou=apps,dc=' + org + ',dc=' + tl, pillar['werther']['ldap']['password'])] %}
 {{ lines.append("dn: " + user) or "" }}
 {{ lines.append('changetype: modify') or "" }}
 {{ lines.append('replace: userPassword') or "" }}
@@ -367,4 +373,4 @@ encrypt_{{ user }}_password:
 
 update_passwords:
   cmd.run:
-    - name: ldapmodify -x -D cn=admin,dc=greenweb,dc=ca -H ldapi:/// -w {{ pillar['ldap']['admin']['password'] }} -f /tmp/update_passwords.ldif && rm /tmp/update_passwords.ldif
+    - name: ldapmodify -x -D cn=admin,dc={{ org }},dc={{ tl }} -H ldapi:/// -w {{ pillar['ldap']['admin']['password'] }} -f /tmp/update_passwords.ldif && rm /tmp/update_passwords.ldif

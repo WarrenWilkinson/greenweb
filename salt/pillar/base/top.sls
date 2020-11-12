@@ -11,8 +11,6 @@
     - openvswitch
     - lxc
     - nft
-    - docker.ip
-    - postfix.ip
     - telegraf.memory
     - telegraf.cpu
     - telegraf.disk
@@ -20,8 +18,6 @@
     - influxdb_account
   'dns':
     - netplan.dns
-    - docker.ip
-    - postfix.ip
   'docker':
     - grafana
     - telegraf.memory
@@ -29,7 +25,6 @@
     - telegraf.docker
     - hydra.database
     - hydra.secret
-    - docker.ip
     - hydra.hydra_grafana_client_secret
     - hydra.hydra_phpbb_client_secret
     - hydra.hydra_drupal_client_secret

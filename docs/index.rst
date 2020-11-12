@@ -23,6 +23,7 @@ grass roots organizations.
    setup/overview
    setup/pillars
    setup/localprod
+   setup/domainnames
 
 .. toctree::
    :maxdepth: 2

@@ -2,6 +2,10 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
+{% set domain = config.internal_domain %}
+
 include:
   - docker
 
@@ -16,14 +20,17 @@ include:
 
 /opt/php/Dockerfile:
   file.managed:
-    - source: salt://phpbb/files/Dockerfile
+    - source: salt://phpbb/files/Dockerfile.jinja
     - user: root
     - group: root
     - mode: 644
+    - template: jinja
+    - defaults:
+        domain: {{ domain }}
 
-/opt/php/development.crt:
+/opt/php/{{ domain }}.crt:
   file.managed:
-    - source: salt://cert/files/development.crt
+    - source: salt://cert/files/{{ domain }}.crt
     - user: root
     - group: root
     - mode: 755
@@ -36,10 +43,10 @@ greenweb/phpbb:
     - tag: latest
     - watch:
       - file: /opt/php/Dockerfile
-      - file: /opt/php/development.crt
+      - file: /opt/php/{{ domain }}.crt
     - require:
       - file: /opt/php/Dockerfile
-      - file: /opt/php/development.crt
+      - file: /opt/php/{{ domain }}.crt
     - require_in:
       - docker_container: phpbb
 
@@ -83,9 +90,9 @@ extract_phpBB-3.3.1:
     - mode: 644
     - template: jinja
     - defaults:
-        oauth_auth_url: https://hydra.greenweb.ca/oauth2/auth?login_challenge=phpbb
-        oauth_token_url: https://hydra.greenweb.ca/oauth2/token
-        oauth_base_uri: https://hydra.greenweb.ca/
+        oauth_auth_url: https://hydra.{{ domain }}/oauth2/auth?login_challenge=phpbb
+        oauth_token_url: https://hydra.{{ domain }}/oauth2/token
+        oauth_base_uri: https://hydra.{{ domain }}/
     - require:
         - archive: extract_phpBB-3.3.1
 
@@ -108,7 +115,7 @@ phpbb:
   docker_container.running:
     - name: phpbb
     - image: greenweb/phpbb:latest
-    - extra_hosts: hydra.greenweb.ca:{{ pillar['docker']['static_ip'] }}
+    - extra_hosts: hydra.{{ domain }}:{{ config.docker.internal_ip }}
     - log_driver: syslog
     - restart_policy: always
     - binds: /opt/phpbb/phpBB3:/var/www/html:rw

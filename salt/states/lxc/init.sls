@@ -2,6 +2,8 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
 # Note that we turn off lxc-net in order
 # to not depend on iptables.  We're using
 # nftables instead, which is Linux's more
@@ -97,6 +99,7 @@ switch0:
     - mode: 644
     - template: jinja
     - defaults:
+        domain: {{ config.internal_domain }}
         gateway: {{ pillar['openvswitch']['gateway'] }}
         nameserver: {{ pillar['openvswitch']['nameserver'] }}
 

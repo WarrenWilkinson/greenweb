@@ -1,5 +1,5 @@
-Testing Production Locally
-==========================
+Testing Production Passwords
+============================
 
 You can locally test greenweb with your production passwords. Which is
 a good idea, if only to check that your passwords were applied.

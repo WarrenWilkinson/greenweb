@@ -1,12 +1,12 @@
 server {
   listen 80;
-  server_name identity.greenweb.ca;
+  server_name identity.{{ domain }};
   return 301 https://$host$request_uri;
 }
 
 server {
   listen 443 ssl;
-  server_name identity.greenweb.ca;
+  server_name identity.{{ domain }};
 
   ssl_certificate           {{ ssl_cert }};
   ssl_certificate_key       {{ ssl_key }};

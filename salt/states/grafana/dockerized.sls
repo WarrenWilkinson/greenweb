@@ -2,6 +2,10 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
+{% set domain = config.internal_domain %}
+
 include:
   - docker
 
@@ -80,9 +84,9 @@ include:
     - group: root
     - mode: 755
 
-/opt/grafana-dev/development.crt:
+/opt/grafana-dev/{{ domain }}.crt:
   file.managed:
-    - source: salt://cert/files/development.crt
+    - source: salt://cert/files/{{ domain }}.crt
     - user: root
     - group: root
     - mode: 755
@@ -91,12 +95,15 @@ include:
 
 /opt/grafana-dev/Dockerfile:
   file.managed:
-    - source: salt://grafana/files/Dockerfile
+    - source: salt://grafana/files/Dockerfile.jinja
     - user: root
     - group: root
     - mode: 755
+    - template: jinja
+    - defaults:
+        domain: {{ domain }}
     - require:
-        - file: /opt/grafana-dev/development.crt
+        - file: /opt/grafana-dev/{{ domain }}.crt
         - file: /opt/grafana-dev
 
 grafana/grafana:
@@ -106,7 +113,7 @@ grafana/grafana:
     - require_in:
       - docker_container: grafana
     - watch:
-        - file: /opt/grafana-dev/development.crt
+        - file: /opt/grafana-dev/{{ domain }}.crt
         - file: /opt/grafana-dev/Dockerfile
 
 # grafana/grafana:
@@ -134,8 +141,8 @@ grafana/grafana:
 #     - template: jinja
 #     - defaults:
 #         port: 3000
-#         domain: grafana.greenweb.ca
-#         root_url: http://grafana.greenweb.ca/ # because of proxy
+#         domain: grafana.{{ domain }}
+#         root_url: http://grafana.{{ domain }}/ # because of proxy
 #         admin_user: {{ pillar['grafana']['admin']['user'] }}
 #         admin_password: {{ pillar['grafana']['admin']['password'] }}
 #         secret_key: {{ pillar['grafana']['secret_key'] }}
@@ -163,8 +170,8 @@ grafana:
     # - port_bindings:
     #   - 3000:3000
     - environment:
-      - GF_SERVER_DOMAIN: grafana.greenweb.ca
-      - GF_SERVER_ROOT_URL: https://grafana.greenweb.ca/
+      - GF_SERVER_DOMAIN: grafana.{{ domain }}
+      - GF_SERVER_ROOT_URL: https://grafana.{{ domain }}/
       - GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION: True
       - GF_SECURITY_DISABLE_GRAVATAR: True
       - GF_USERS_ALLOW_SIGN_UP: False
@@ -174,11 +181,11 @@ grafana:
       - GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
       - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: {{ pillar['hydra']['client_secret']['grafana'] }}
       - GF_AUTH_GENERIC_OAUTH_SCOPES: openid email profile roles
-      - GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://hydra.greenweb.ca/oauth2/auth?login_challenge=grafana
-      - GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://hydra.greenweb.ca/oauth2/token
-      - GF_AUTH_GENERIC_OAUTH_API_URL: https://hydra.greenweb.ca/userinfo
+      - GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://hydra.{{ domain }}/oauth2/auth?login_challenge=grafana
+      - GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://hydra.{{ domain }}/oauth2/token
+      - GF_AUTH_GENERIC_OAUTH_API_URL: https://hydra.{{ domain }}/userinfo
       - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: True
-      - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: contains("https://greenweb.ca/claims/roles".grafana[*], 'admin') && 'Admin' || contains("https://greenweb.ca/claims/roles".grafana[*], 'editor') && 'Editor' || 'Viewer'
+      - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: contains("https://{{ domain }}/claims/roles".grafana[*], 'admin') && 'Admin' || contains("https://{{ domain }}/claims/roles".grafana[*], 'editor') && 'Editor' || 'Viewer'
     - log_driver: syslog
     - log_opt:
         - tag: grafana
@@ -186,7 +193,7 @@ grafana:
     - networks:
         - production
     - extra_hosts:
-      - hydra.greenweb.ca:{{ pillar['docker']['static_ip'] }}
+      - hydra.{{ domain }}:{{ config.docker.internal_ip }}
     - watch:
         - file: /opt/grafana/provisioning/json/system.json
         - file: /opt/grafana/provisioning/dashboards/system.yaml

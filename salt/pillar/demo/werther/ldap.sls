@@ -5,4 +5,3 @@
 werther:
   ldap:
     password: password
-    dn: cn=werther,ou=apps,dc=greenweb,dc=ca

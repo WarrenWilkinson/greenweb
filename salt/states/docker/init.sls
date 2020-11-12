@@ -2,6 +2,8 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
 docker.io:
   pkg.installed
 
@@ -19,6 +21,6 @@ add-ubuntu-to-docker:
 network_production:
   docker_network.present:
     - name: production
-    - subnet: {{ pillar['docker']['subnet'] }}
-    - gateway: {{ pillar['docker']['gateway'] }}
-    - iprange: {{ pillar['docker']['iprange'] }}
+    - subnet: {{ config.docker.subnet }}
+    - gateway: {{ config.docker.gateway }}
+    - iprange: {{ config.docker.ip_range }}

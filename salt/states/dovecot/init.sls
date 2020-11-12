@@ -2,11 +2,15 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
+{% set domain = config.internal_domain %}
+
 {% set dev = true %}
 
 {% if dev %}
-{% set ssl_cert = '/opt/cert/development.crt' %}
-{% set ssl_key = '/opt/cert/development.key' %}
+{% set ssl_cert = '/opt/cert/' + domain + '.crt' %}
+{% set ssl_key = '/opt/cert/' + domain + '.key' %}
 {% endif %}
 
 # Force postfix so we have the postfix user.

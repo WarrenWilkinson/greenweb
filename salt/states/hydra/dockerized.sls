@@ -2,6 +2,10 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
+{% set domain = config.internal_domain %}
+
 include:
   - docker
 
@@ -20,13 +24,13 @@ hydra:
     - environment:
       - SECRETS_SYSTEM: {{ secret }}
       - DSN: {{ dsn }}
-      - URLS_SELF_ISSUER: https://hydra.greenweb.ca/
-      - URLS_CONSENT: https://identity.greenweb.ca/auth/consent
-      - URLS_LOGIN: https://identity.greenweb.ca/auth/login
-      - URLS_LOGOUT: https://identity.greenweb.ca/auth/logout
+      - URLS_SELF_ISSUER: https://hydra.{{ domain }}/
+      - URLS_CONSENT: https://identity.{{ domain }}/auth/consent
+      - URLS_LOGIN: https://identity.{{ domain }}/auth/login
+      - URLS_LOGOUT: https://identity.{{ domain }}/auth/logout
       - WEBFINGER_OIDC_DISCOVERY_SUPPORTED_SCOPES: profile,email,roles
-      - WEBFINGER_OIDC_DISCOVERY_SUPPORTED_CLAIMS: name,given_name,nickname,family_name,preferred_username,zoneinfo,locale,email,https://greenweb.ca/claims/roles
-      - SERVE_TLS_ALLOW_TERMINATION_FROM: {{ pillar['docker']['subnet'] }}
+      - WEBFINGER_OIDC_DISCOVERY_SUPPORTED_CLAIMS: name,given_name,nickname,family_name,preferred_username,zoneinfo,locale,email,https://{{ domain }}/claims/roles
+      - SERVE_TLS_ALLOW_TERMINATION_FROM: {{ config.docker.subnet }}
       - OAUTH2_EXPOSE_INTERNAL_ERRORS: True
     - log_driver: syslog
     - log_opt:

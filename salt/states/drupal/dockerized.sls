@@ -2,6 +2,10 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
+{% set domain = config.internal_domain %}
+
 include:
   - docker
 
@@ -13,17 +17,19 @@ include:
 
 /opt/drupal/Dockerfile:
   file.managed:
-    - source: salt://drupal/files/Dockerfile
+    - source: salt://drupal/files/Dockerfile.jinja
     - user: root
     - group: root
     - mode: 644
     - template: jinja
+    - defaults:
+        domain: {{ domain }}
     - require:
         - file: /opt/drupal
 
-/opt/drupal/development.crt:
+/opt/drupal/{{ domain }}.crt:
   file.managed:
-    - source: salt://cert/files/development.crt
+    - source: salt://cert/files/{{ domain }}.crt
     - user: root
     - group: root
     - mode: 755
@@ -36,10 +42,10 @@ greenweb/drupal:
     - tag: latest
     - watch:
       - file: /opt/drupal/Dockerfile
-      - file: /opt/drupal/development.crt
+      - file: /opt/drupal/{{ domain }}.crt
     - require:
       - file: /opt/drupal/Dockerfile
-      - file: /opt/drupal/development.crt
+      - file: /opt/drupal/{{ domain }}.crt
 
 # # Copy the basic Drupal files out.
 # /opt/drupal/base:
@@ -94,7 +100,7 @@ greenweb/drupal:
 #   docker_container.running:
 #     - name: drupaldemo
 #     - image: greenweb/drupaldemo:latest
-#     - extra_hosts: hydra.greenweb.ca:{{ pillar['docker']['static_ip'] }}
+#     - extra_hosts: hydra.greenweb.ca:{{ config.docker.internal_ip }}
 #     - restart_policy: always
 #     - log_driver: syslog
 #     - log_opt:

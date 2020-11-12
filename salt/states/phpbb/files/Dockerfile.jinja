@@ -15,7 +15,7 @@ RUN docker-php-source extract \
     && rm -rf /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
 
 WORKDIR /usr/local/share/ca-certificates
-ADD development.crt /usr/local/share/ca-certificates/development.crt
+ADD {{ domain }}.crt /usr/local/share/ca-certificates/{{ domain }}.crt
 RUN /usr/sbin/update-ca-certificates
 
 WORKDIR /var/www

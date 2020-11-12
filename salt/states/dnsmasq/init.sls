@@ -2,6 +2,8 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
 dnsmasq:
   pkg.installed:
     - refresh: True
@@ -35,12 +37,13 @@ systemd-resolved:
     - mode: 644
     - template: jinja
     - defaults:
-        domain: greenweb.ca
+        domain: {{ config.internal_domain }}
         gateway: 10.0.3.1
         dhcp_range_min: 10.0.3.120
         dhcp_range_max: 10.0.3.200
         dhcp_duration: infinite
-        docker_static_ip: {{ pillar['docker']['static_ip'] }}
-        postfix_static_ip: {{ pillar['postfix']['static_ip'] }}
+        static_ips:
+          docker: {{ config.docker.internal_ip }}
+          postfix: {{ config.postfix.internal_ip }}
     - require:
       - pkg: dnsmasq

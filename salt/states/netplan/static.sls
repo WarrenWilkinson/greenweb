@@ -2,6 +2,8 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
 {% set outputfile = pillar['netplan']['file'] %}
 
 {{ outputfile }}:
@@ -15,5 +17,5 @@
         interface: {{ pillar['netplan']['interface'] }}
         gateway4: {{ pillar['netplan']['gateway4'] }}
         ip4: {{ pillar['netplan']['ip4'] }}
-        search: {{ pillar['netplan']['nameservers']['search'] }}
+        search: {{ config.internal_domain }}
         addresses: {{ pillar['netplan']['nameservers']['addresses'] }}

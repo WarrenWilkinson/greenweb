@@ -2,6 +2,10 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
+
+{% set domain = config.internal_domain %}
+
 include:
   - drupal.dockerized
 
@@ -56,7 +60,7 @@ drupaldemo:
   docker_container.running:
     - name: drupaldemo
     - image: greenweb/drupaldemo:latest
-    - extra_hosts: hydra.greenweb.ca:{{ pillar['docker']['static_ip'] }}
+    - extra_hosts: hydra.{{ domain }}:{{ config.docker.internal_ip }}
     - restart_policy: always
     - log_driver: syslog
     - log_opt:
