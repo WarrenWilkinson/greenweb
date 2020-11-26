@@ -37,6 +37,9 @@ postfix:
     - mode: 644
     - template: jinja
     - defaults:
+        relay_domains:
+          {{ config.postfix.relay_domains }}
+        domain: {{ domain }}
         ssl_cert: {{ ssl_cert }}
         ssl_key: {{ ssl_key }}
         openvswitch_network: {{ pillar['openvswitch']['network'] }}

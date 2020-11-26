@@ -19,6 +19,7 @@ docker:
 
 postfix:
   internal_ip: 10.0.3.34
+  relay_domains: []
 
 dnsmasq:
   # Add a MX record to DNSMasq so internal computers

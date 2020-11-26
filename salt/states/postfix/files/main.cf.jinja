@@ -57,8 +57,8 @@ inet_protocols = all
 
 # Never forward any mail. I think this means I can only get mail from
 # trusted sources, like mail servers with a domain name... But not from
-# just anybody with a loptop.
-relay_domains =
+# just anybody with a laptop.
+relay_domains = $mydestination{% for hostname in relay_domains %},{{ hostname }}{% endfor %}
 
 proxy_interfaces = {{ external_ip }}
 
@@ -140,7 +140,7 @@ smtpd_tls_received_header = yes
 virtual_transport = lmtp:unix:private/dovecot-lmtp
 
 # Use LDAP
-virtual_mailbox_domains = greenweb.ca
+virtual_mailbox_domains = {{ domain }}
 virtual_mailbox_maps = ldap:/etc/postfix/ldap/virtual_mailbox_maps.cf
 virtual_alias_maps = ldap:/etc/postfix/ldap/virtual_alias_maps.cf
 
