@@ -4,10 +4,11 @@
 
 {% set internal_organization = 'greenweb' %}
 {% set internal_toplevel_domain = 'ca' %}
+{% set internal_domain = internal_organization + '.' + internal_toplevel_domain %}
 
 internal_organization: {{ internal_organization }}
 internal_toplevel_domain: {{ internal_toplevel_domain }}
-internal_domain: {{ internal_organization }}.{{ internal_toplevel_domain }}
+internal_domain: {{ internal_domain }}
 
 docker:
   internal_ip: 10.0.3.14
@@ -18,6 +19,12 @@ docker:
 
 postfix:
   internal_ip: 10.0.3.34
+
+dnsmasq:
+  # Add a MX record to DNSMasq so internal computers
+  # can resolve internal mail address.
+  mx_records:
+    {{ internal_domain }}: postfix.{{ internal_domain }}
 
 werther:
   bind_dn: cn=werther,ou=apps,dc={{ internal_organization }},dc=ca

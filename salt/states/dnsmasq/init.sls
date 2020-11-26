@@ -42,6 +42,8 @@ systemd-resolved:
         dhcp_range_min: 10.0.3.120
         dhcp_range_max: 10.0.3.200
         dhcp_duration: infinite
+        mx_records:
+          {{ config.dnsmasq.mx_records }}
         static_ips:
           docker: {{ config.docker.internal_ip }}
           postfix: {{ config.postfix.internal_ip }}

@@ -595,6 +595,9 @@ dhcp-authoritative
 # Return an MX record named "maildomain.com" with target
 # servermachine.com and preference 50
 #mx-host=maildomain.com,servermachine.com,50
+{% for hostname in mx_records %}
+mx-host={{ hostname }},{{ mx_records[hostname] }},50
+{% endfor %}
 
 # Set the default target for MX records created using the localmx option.
 #mx-target=servermachine.com
