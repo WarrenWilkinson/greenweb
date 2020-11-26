@@ -344,10 +344,11 @@ security:
 # Set a few passwords.
 # Use ldapmodify and slappassd to encode the passwords correctly. This is a bit tricky to do in fact.
 
+# Add users like this: ('wwilkinson', 'uid=wwilkinson,ou=people,dc=' + org + ',dc=' + tl, 'wwilkinson'),
+
 {% set lines = [] %}
 {% for (file, user, password) in [ ('test', 'cn=test@' + domain + ',ou=email,dc=' + org + ',dc=' +  tl, 'test'),
                                    ('quotatest', 'cn=quotatest@' + domain + ',ou=email,dc=' + org + ',dc=' +  tl, 'quotatest'),
-                                   ('wwilkinson', 'uid=wwilkinson,ou=people,dc=' + org + ',dc=' + tl, 'wwilkinson'),
                                    ('dovecot', 'cn=dovecot,ou=apps,dc=' + org + ',dc=' + tl, pillar['dovecot']['ldap']['password']),
                                    ('postfix', 'cn=postfix,ou=apps,dc=' + org + ',dc=' + tl, pillar['postfix']['ldap']['password']),
                                    ('werther', 'cn=werther,ou=apps,dc=' + org + ',dc=' + tl, pillar['werther']['ldap']['password'])] %}
