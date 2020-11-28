@@ -42,11 +42,11 @@ smtpd_relay_restrictions =
    # This setting prevents being an open relay.
    reject_unauth_destination
 
-myhostname = mail.greenweb.ca
+myhostname = mail.{{ domain }}
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
 # $myhostname, localhost, localhost.$mydomain, $mydomain
-mydestination = localhost
+mydestination = $myhostname, $mydomain
 relayhost =
 # Restricted -- can send from itself, from the vswitch network
 # I don't think I need the docker network because of NATting... could be wrong.
@@ -93,6 +93,8 @@ strict_rfc821_envelopes = yes
 biff = no
 
 smtpd_recipient_restrictions =
+   permit_mynetworks,
+   permit_sasl_authenticated,
    reject_unauth_pipelining,
    reject_non_fqdn_recipient,
    reject_unknown_recipient_domain,

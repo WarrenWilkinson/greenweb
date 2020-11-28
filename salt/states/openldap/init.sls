@@ -239,6 +239,16 @@ base_domain:
             ou: email
             objectClass:
               - organizationalUnit
+      - cn=drupal@{{ domain }},ou=email,dc={{ org }},dc={{ tl }}:
+        - default:
+            cn: drupal@{{ domain }}
+            ou: email
+            mail: drupal@{{ domain }}
+            userPassword: "{CRYPT}unset."
+            objectClass:
+              - PostfixBookMailAccount
+              - simpleSecurityObject
+              - applicationProcess
       - cn=test@{{ domain }},ou=email,dc={{ org }},dc={{ tl }}:
         - replace:
             mailEnabled: "FALSE"
@@ -349,6 +359,7 @@ security:
 {% set lines = [] %}
 {% for (file, user, password) in [ ('test', 'cn=test@' + domain + ',ou=email,dc=' + org + ',dc=' +  tl, 'test'),
                                    ('quotatest', 'cn=quotatest@' + domain + ',ou=email,dc=' + org + ',dc=' +  tl, 'quotatest'),
+                                   ('drupal', 'cn=drupal@' + domain + ',ou=email,dc=' + org + ',dc=' +  tl, pillar['drupal']['smtp']['password']),
                                    ('dovecot', 'cn=dovecot,ou=apps,dc=' + org + ',dc=' + tl, pillar['dovecot']['ldap']['password']),
                                    ('postfix', 'cn=postfix,ou=apps,dc=' + org + ',dc=' + tl, pillar['postfix']['ldap']['password']),
                                    ('werther', 'cn=werther,ou=apps,dc=' + org + ',dc=' + tl, pillar['werther']['ldap']['password'])] %}

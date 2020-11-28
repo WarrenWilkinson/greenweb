@@ -29,3 +29,7 @@ dnsmasq:
 
 werther:
   bind_dn: cn=werther,ou=apps,dc={{ internal_organization }},dc=ca
+
+drupal:
+  smtp:
+    username: drupal@{{ internal_domain }}

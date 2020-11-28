@@ -32,12 +32,14 @@
     - phpbb.admin
     - drupal.database
     - drupal.admin
+    - drupal.smtp
     - werther.ldap
   'ldap':
     - ldap.rootpw
     - dovecot.ldap
     - postfix.ldap
     - werther.ldap
+    - drupal.smtp
   'postfix':
     - openvswitch
     - external_ip

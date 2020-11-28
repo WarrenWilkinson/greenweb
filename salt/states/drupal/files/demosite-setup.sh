@@ -37,8 +37,8 @@ $DRUSH config:set smtp.settings smtp_hostbackup ''
 $DRUSH config:set smtp.settings smtp_port {{ smtp_port }}
 $DRUSH config:set smtp.settings smtp_protocol standard
 $DRUSH config:set smtp.settings smtp_timeout 30
-$DRUSH config:set smtp.settings smtp_username ''
-$DRUSH config:set smtp.settings smtp_password ''
+$DRUSH config:set smtp.settings smtp_username '{{ smtp_username }}'
+$DRUSH config:set smtp.settings smtp_password '{{ smtp_password }}'
 $DRUSH config:set smtp.settings smtp_from '{{ site_mail }}'
 $DRUSH config:set smtp.settings smtp_fromname '{{ site_name }}'
 $DRUSH config:set smtp.settings smtp_client_hostname ''

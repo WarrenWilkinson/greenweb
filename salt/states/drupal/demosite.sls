@@ -17,6 +17,8 @@
 
 {% set admin_user = salt['pillar.get']('drupal:admin:username') %}
 {% set admin_password = salt['pillar.get']('drupal:admin:password') %}
+{% set smtp_user = config.drupal.smtp.username %}
+{% set smtp_password = salt['pillar.get']('drupal:smtp:password') %}
 
 setup:
   cmd.script:
@@ -36,7 +38,9 @@ setup:
         site_mail: drupal@{{ domain }}
         log_name: drupal_demo
         smtp_host: postfix.{{ domain }}
-        smtp_port: 25
+        smtp_port: 587
+        smtp_username: {{ smtp_user }}
+        smtp_password: {{ smtp_password }}
         oauth_client_id: {{ clientid }}
         oauth_secret: {{ clientsecret }}
         oauth_auth_endpoint: https://hydra.{{ domain }}/oauth2/auth?login_challenge=drupal
