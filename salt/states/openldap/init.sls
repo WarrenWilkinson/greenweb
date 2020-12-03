@@ -386,3 +386,14 @@ encrypt_{{ user }}_password:
 update_passwords:
   cmd.run:
     - name: ldapmodify -x -D cn=admin,dc={{ org }},dc={{ tl }} -H ldapi:/// -w {{ pillar['ldap']['admin']['password'] }} -f /tmp/update_passwords.ldif && rm /tmp/update_passwords.ldif
+
+/usr/local/sbin/change-ldap-password:
+  file.managed:
+    - source: salt://openldap/files/change-ldap-password.jinja
+    - user: root
+    - group: root
+    - mode: 755
+    - template: jinja
+    - defaults:
+        org: {{ org }}
+        tl: {{ tl }}

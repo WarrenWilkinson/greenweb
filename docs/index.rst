@@ -24,6 +24,7 @@ grass roots organizations.
    setup/pillars
    setup/localprod
    setup/domainnames
+   setup/ldappasswords
 
 .. toctree::
    :maxdepth: 2
