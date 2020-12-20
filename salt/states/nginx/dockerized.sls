@@ -6,8 +6,6 @@
 
 {% set domain = config.internal_domain %}
 
-{% set dev = true %}
-
 include:
   - docker
   - grafana.dockerized
@@ -15,13 +13,13 @@ include:
   - drupal.demo
   - hydra.dockerized
   - werther.dockerized
-
-{% if dev %}
-  - cert.dev 
+{% if config.letsencrypt.use_pebble == true %}
+  - cert.pebble
+  - pebble.dockerized
 {% endif %}
 
-{% set ssl_cert = '/opt/cert/' + domain + '.crt' %}
-{% set ssl_key = '/opt/cert/' + domain + '.key' %}
+certbot:
+  pkg.installed
 
 /opt/nginx:
   file.directory:
@@ -29,15 +27,7 @@ include:
     - group: root
     - mode: 755
 
-/opt/nginx/sites-available:
-  file.directory:
-    - user: root
-    - group: root
-    - mode: 755
-    - require:
-        - file: /opt/nginx
-
-/opt/nginx/sites-enabled:
+/opt/nginx/conf:
   file.directory:
     - user: root
     - group: root
@@ -54,24 +44,22 @@ include:
     - require:
         - file: /opt/nginx
 
-# NOTE: I wouldn't need to expose hydra if I had a backend network
-# with nginx. But I don't, so I need to expose it.
-{% for site in ['grafana', 'werther', 'hydra', 'phpbb', 'drupal'] %}
-/opt/nginx/sites-available/{{ site }}.conf:
-  file.managed:
-    - source: salt://nginx/config/nginx_{{ site }}.conf.jinja
-    - user: root
-    - group: root
-    - mode: 644
-    - template: jinja
-    - defaults:
-        ssl_cert: {{ ssl_cert }}
-        ssl_key: {{ ssl_key }}
-        domain: {{ domain }}
-    - require:
-      - file: /opt/nginx/sites-available
+{% for (site, prefix) in [('mail', none), ('grafana', 'grafana'), ('werther', 'identity'),
+                          ('hydra', 'hydra'), ('phpbb', 'forum'), ('drupal', 'drupal')] %}
 
-/opt/nginx/sites-enabled/{{ site }}.conf:
+{% if prefix is not none %}
+{{ prefix }}.{{ domain }}:
+  acme.cert:
+{% if config.letsencrypt.use_pebble == true %}
+    - server: https://pebble:14000/dir
+{% endif %}
+    - email: {{ config.letsencrypt.email }}
+    - renew: 60
+    - require_in:
+      - docker_container: nginx
+{% endif %}
+
+/opt/nginx/conf/{{ site }}.conf:
   file.managed:
     - source: salt://nginx/config/nginx_{{ site }}.conf.jinja
     - user: root
@@ -79,13 +67,13 @@ include:
     - mode: 644
     - template: jinja
     - defaults:
-        ssl_cert: {{ ssl_cert }}
-        ssl_key: {{ ssl_key }}
+{% if prefix is not none %}
+        ssl_cert: /etc/letsencrypt/live/{{ prefix }}.{{ domain}}/fullchain.pem
+        ssl_key: /etc/letsencrypt/live/{{ prefix }}.{{ domain}}/privkey.pem
+{% endif %}
         domain: {{ domain }}
     - require:
-      - file: /opt/nginx/sites-enabled
-    - watch_in:
-      - docker_container: nginx
+      - file: /opt/nginx/conf
 {% endfor %}
 
 nginx:
@@ -93,10 +81,9 @@ nginx:
     - name: nginx
     - image: nginx:1.19.0
     - binds:
-        - /opt/cert/:/opt/cert/:ro
+        - /etc/letsencrypt/:/etc/letsencrypt/:ro
         - /opt/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-        - /opt/nginx/sites-available/:/etc/nginx/sites-available/:ro
-        - /opt/nginx/sites-enabled/:/etc/nginx/sites-enabled/:ro
+        - /opt/nginx/conf/:/etc/nginx/user.conf.d/:ro
         - /opt/phpbb/phpBB3:/opt/phpBB3:ro
         - /opt/drupal/demo/web:/opt/drupal:ro
     - port_bindings:

@@ -20,12 +20,22 @@ docker:
 postfix:
   internal_ip: 10.0.3.34
   relay_domains: []
+  ssl_primary_domain: postfix.{{ internal_domain }}
+  ssl_cert: /etc/letsencrypt/live/postfix.{{ internal_domain }}/fullchain.pem
+  ssl_key: /etc/letsencrypt/live/postfix.{{ internal_domain }}/privkey.pem
 
 dnsmasq:
   # Add a MX record to DNSMasq so internal computers
   # can resolve internal mail address.
   mx_records:
     {{ internal_domain }}: postfix.{{ internal_domain }}
+  cnames:
+    pebble.{{ internal_domain }}: docker.{{ internal_domain }}
+    drupal.{{ internal_domain }}: docker.{{ internal_domain }}
+    forum.{{ internal_domain }}: docker.{{ internal_domain }}
+    grafana.{{ internal_domain }}: docker.{{ internal_domain }}
+    identity.{{ internal_domain }}: docker.{{ internal_domain }}
+    hydra.{{ internal_domain }}: docker.{{ internal_domain }}
 
 werther:
   bind_dn: cn=werther,ou=apps,dc={{ internal_organization }},dc=ca
@@ -33,3 +43,11 @@ werther:
 drupal:
   smtp:
     username: drupal@{{ internal_domain }}
+
+letsencrypt:
+  # Pebble is a ACME compatible test server that gets
+  # installed locally with testing certificates. Then we
+  # can use certbot in development. You do not want this
+  # in production! Set it to false for production!
+  use_pebble: true
+  email: postmaster@{{ internal_domain }}

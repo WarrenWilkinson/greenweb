@@ -5,20 +5,13 @@
 {% import_yaml 'configuration.yaml' as config %}
 
 {% set domain = config.internal_domain %}
-
-{% set dev = true %}
-
-{% if dev %}
-{% set ssl_cert = '/opt/cert/' + domain + '.crt' %}
-{% set ssl_key = '/opt/cert/' + domain + '.key' %}
-{% endif %}
+{% set ssl_primary_domain = config.postfix.ssl_primary_domain %}
+{% set ssl_cert = config.postfix.ssl_cert %}
+{% set ssl_key = config.postfix.ssl_key %}
 
 # Force postfix so we have the postfix user.
 include:
   - postfix
-{% if dev %}
-  - cert.dev
-{% endif %}
 
 vmail:
   user.present:

@@ -15,7 +15,7 @@ RUN docker-php-source extract \
     && rm -rf /var/lib/{apt,dpkg,cache,log}/ /tmp/* /var/tmp/*
 
 WORKDIR /usr/local/share/ca-certificates
-ADD {{ domain }}.crt /usr/local/share/ca-certificates/{{ domain }}.crt
+ADD pebble.ca-root.crt /usr/local/share/ca-certificates/pebble.crt
 RUN /usr/sbin/update-ca-certificates
 
 WORKDIR /var/www

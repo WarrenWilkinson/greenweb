@@ -8,6 +8,9 @@
 
 include:
   - docker
+{% if config.letsencrypt.use_pebble == true %}
+  - cert.pebble
+{% endif %}
 
 /opt/drupal:
   file.directory:
@@ -17,19 +20,18 @@ include:
 
 /opt/drupal/Dockerfile:
   file.managed:
-    - source: salt://drupal/files/Dockerfile.jinja
+    - source: salt://drupal/files/Dockerfile
     - user: root
     - group: root
     - mode: 644
-    - template: jinja
-    - defaults:
-        domain: {{ domain }}
     - require:
         - file: /opt/drupal
 
-/opt/drupal/{{ domain }}.crt:
-  file.managed:
-    - source: salt://cert/files/{{ domain }}.crt
+/opt/drupal/pebble.ca-root.crt:
+   file.managed:
+    - source: https://pebble:15000/roots/0
+    - skip_verify: true
+    - replace: false
     - user: root
     - group: root
     - mode: 755
@@ -42,10 +44,10 @@ greenweb/drupal:
     - tag: latest
     - watch:
       - file: /opt/drupal/Dockerfile
-      - file: /opt/drupal/{{ domain }}.crt
+      - file: /opt/drupal/pebble.ca-root.crt
     - require:
       - file: /opt/drupal/Dockerfile
-      - file: /opt/drupal/{{ domain }}.crt
+      - file: /opt/drupal/pebble.ca-root.crt
 
 # # Copy the basic Drupal files out.
 # /opt/drupal/base:

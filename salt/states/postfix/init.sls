@@ -8,14 +8,27 @@
 {% set domain = config.internal_domain %}
 {% set tl = config.internal_toplevel_domain %}
 
-{% set dev = true %}
+{% set ssl_primary_domain = config.postfix.ssl_primary_domain %}
+{% set ssl_cert = config.postfix.ssl_cert %}
+{% set ssl_key = config.postfix.ssl_key %}
 
-{% if dev %}
-{% set ssl_cert = '/opt/cert/' + domain + '.crt' %}
-{% set ssl_key = '/opt/cert/' + domain + '.key' %}
+{% if config.letsencrypt.use_pebble == true %}
 include:
-  - cert.dev
+  - cert.pebble
 {% endif %}
+
+certbot:
+  pkg.installed
+
+{{ ssl_primary_domain }}:
+  acme.cert:
+{% if config.letsencrypt.use_pebble == true %}
+    - server: https://pebble:14000/dir
+{% endif %}
+    # - aliases:
+    #   - gitlab.example.com
+    - email: {{ config.letsencrypt.email }}
+    - renew: 60
 
 postfix:
   pkg.installed:
@@ -24,6 +37,8 @@ postfix:
       - postfix-ldap
   service.running:
     - enable: true
+    - require:
+      - acme: postfix.{{ domain }}
     - watch:
       - pkg: postfix
       - file: /etc/postfix/main.cf

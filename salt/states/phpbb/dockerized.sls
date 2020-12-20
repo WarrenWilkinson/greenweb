@@ -8,6 +8,9 @@
 
 include:
   - docker
+{% if config.letsencrypt.use_pebble == true %}
+  - cert.pebble
+{% endif %}
 
 # Build a generic php-fpm image This can probably be extracted out and
 # used for other projects. Wordpress for example.
@@ -20,17 +23,16 @@ include:
 
 /opt/php/Dockerfile:
   file.managed:
-    - source: salt://phpbb/files/Dockerfile.jinja
+    - source: salt://phpbb/files/Dockerfile
     - user: root
     - group: root
     - mode: 644
-    - template: jinja
-    - defaults:
-        domain: {{ domain }}
 
-/opt/php/{{ domain }}.crt:
+/opt/php/pebble.ca-root.crt:
   file.managed:
-    - source: salt://cert/files/{{ domain }}.crt
+    - source: https://pebble:15000/roots/0
+    - skip_verify: true
+    - replace: false
     - user: root
     - group: root
     - mode: 755
@@ -43,10 +45,10 @@ greenweb/phpbb:
     - tag: latest
     - watch:
       - file: /opt/php/Dockerfile
-      - file: /opt/php/{{ domain }}.crt
+      - file: /opt/php/pebble.ca-root.crt
     - require:
       - file: /opt/php/Dockerfile
-      - file: /opt/php/{{ domain }}.crt
+      - file: /opt/php/pebble.ca-root.crt
     - require_in:
       - docker_container: phpbb
 

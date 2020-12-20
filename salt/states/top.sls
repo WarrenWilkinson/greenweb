@@ -2,6 +2,7 @@
 # vim: ft=yaml
 ---
 
+{% import_yaml 'configuration.yaml' as config %}
 
 base:
     'netplan:static:true':
@@ -39,6 +40,9 @@ base:
       - hydra.dockerized
       - phpbb.dockerized
       - postgresql.client
+{% if config.letsencrypt.use_pebble == true %}
+      - pebble.dockerized
+{% endif %}
     'postfix':
       - dovecot
       - postfix

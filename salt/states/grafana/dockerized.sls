@@ -8,6 +8,9 @@
 
 include:
   - docker
+{% if config.letsencrypt.use_pebble == true %}
+  - cert.pebble
+{% endif %}
 
 # Setup the provisioning stuff
 
@@ -69,9 +72,7 @@ include:
     - group: root
     - mode: 644
 
-
-{% set dev = true %}
-{% if dev %}
+{% if config.letsencrypt.use_pebble == true %}
 
 # docker run --name temp grafana/grafana:7.0.5 bash -c 'apk add python':
 #   cmd.run:
@@ -84,9 +85,11 @@ include:
     - group: root
     - mode: 755
 
-/opt/grafana-dev/{{ domain }}.crt:
+/opt/grafana-dev/pebble.ca-root.crt:
   file.managed:
-    - source: salt://cert/files/{{ domain }}.crt
+    - source: https://pebble:15000/roots/0
+    - skip_verify: true
+    - replace: false
     - user: root
     - group: root
     - mode: 755
@@ -95,15 +98,11 @@ include:
 
 /opt/grafana-dev/Dockerfile:
   file.managed:
-    - source: salt://grafana/files/Dockerfile.jinja
+    - source: salt://grafana/files/Dockerfile
     - user: root
     - group: root
     - mode: 755
-    - template: jinja
-    - defaults:
-        domain: {{ domain }}
     - require:
-        - file: /opt/grafana-dev/{{ domain }}.crt
         - file: /opt/grafana-dev
 
 grafana/grafana:
@@ -113,19 +112,12 @@ grafana/grafana:
     - require_in:
       - docker_container: grafana
     - watch:
-        - file: /opt/grafana-dev/{{ domain }}.crt
+        - file: /opt/grafana-dev/pebble.ca-root.crt
         - file: /opt/grafana-dev/Dockerfile
 
-# grafana/grafana:
-#   docker_image.present:
-#     - tag: dev
-#     - require_in:
-#       - docker_container: grafana
-#     - sls: cert.alpine-trust
-#     - base: temp
-#     - saltenv: base
-
 {% set grafana_image = 'grafana/grafana:dev' %}
+{% else %}
+{% set grafana_image = 'grafana/grafana:7.0.5' %}
 {% endif %}
 
 # For now lock it down. Later, perhaps public facing so users can see

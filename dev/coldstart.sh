@@ -63,29 +63,8 @@ sleep 60
 set +x
 INTERNAL_DOMAIN=`sudo salt-call slsutil.renderer salt://configuration.yaml --out key | awk '/internal_domain/ { print $2 }'`
 echo "Detected internal_domain is \"${INTERNAL_DOMAIN}\"."
-KEY_FILE="/vagrant/${INTERNAL_DOMAIN}.key"
-CERT_FILE="/vagrant/${INTERNAL_DOMAIN}.crt"
-KEY_DEST="/srv/salt/cert/files/${INTERNAL_DOMAIN}.key"
-CERT_DEST="/srv/salt/cert/files/${INTERNAL_DOMAIN}.crt"
-
-echo "Checking \"${KEY_FILE}\" exists..."
-if [ ! -f "${KEY_FILE}" ]; then
-    echo "${KEY_FILE} does not exist."
-    exit 1
-else
-    echo "Copying ${KEY_FILE} to ${KEY_DEST}."
-    sudo cp "${KEY_FILE}" "${KEY_DEST}"
-fi
-
-echo "Checking \"${CERT_FILE}\" exists..."
-if [ ! -f "${CERT_FILE}" ]; then
-    echo "${CERT_FILE} does not exist."
-    exit 1
-else
-    echo "Copying ${CERT_FILE} to ${CERT_DEST}."
-    sudo cp "${CERT_FILE}" "${CERT_DEST}"
-fi
-
+USE_PEBBLE=`sudo salt-call slsutil.renderer salt://configuration.yaml --out yaml | awk '/use_pebble/ { print ($2 == "true") }'`
+echo "USE_PEBBLE is ${USE_PEBBLE}."
 set -x
 
 echo "Bootstrap Phase 1: Preparing Host"
@@ -264,7 +243,23 @@ $salt 'influxdb' state.sls influxdb.provision-users
 sleep 5
 $salt 'influxdb' state.sls influxdb.provision-telegraf
 
+# Prep PEBBLE server early so other services can
+# get their SSL certificates.
+if [ $USE_PEBBLE ]; then
+    $salt 'docker' state.sls pebble.dockerized
+    # $salt 'docker' state.sls cert.pebble
+    # sleep 30
+    # # I think somebody needs to request a certificate
+    # # before PEBBLE generates it's own. So this one
+    # # is easy. After that https://pebble:15000/roots/0
+    # # should be available.
+    # $salt 'postfix' state.sls postfix
+fi
+
+# The order is important. Docker runs pebble (if we're in test)
+# which is necessary for postfix to get a certificate to start-up.
 $salt 'docker' state.sls hydra.migrate
+$salt 'docker' state.highstate
 $salt '*' state.highstate
 $salt 'docker' state.sls hydra.provision
 $salt 'docker' state.sls phpbb.provision

@@ -47,5 +47,7 @@ systemd-resolved:
         static_ips:
           docker: {{ config.docker.internal_ip }}
           postfix: {{ config.postfix.internal_ip }}
+        cnames:
+          {{ config.dnsmasq.cnames }}
     - require:
       - pkg: dnsmasq
