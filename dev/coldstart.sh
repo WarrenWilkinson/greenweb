@@ -119,7 +119,7 @@ sudo lxc-attach bootdns -- systemctl restart dnsmasq
 echo "Bootstrap Phase 3: Initialize the New Salt Master"
 echo "########################################"
 
-sudo salt 'vmhost' lxc.init salt profile=standard_focal network_profile=standard_net config="{ \"pillarenv\": \"${MODE}\"}" bootstrap_args="-L -M -A salt -x python3"
+sudo salt 'vmhost' lxc.init salt profile=standard_focal network_profile=standard_net config="{ \"pillarenv\": \"${MODE}\"}" bootstrap_args="-L -M -A salt -x python3" bootstrap_delay=60
 
 # Create a space to mount libvirt into it.
 sudo lxc-attach --name=salt -- mkdir /opt/libvirt
