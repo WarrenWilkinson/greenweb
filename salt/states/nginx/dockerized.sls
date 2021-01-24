@@ -44,20 +44,10 @@ certbot:
     - require:
         - file: /opt/nginx
 
-{% for (site, prefix) in [('mail', none), ('grafana', 'grafana'), ('werther', 'identity'),
+{% set site_and_prefix = [('mail', none), ('grafana', 'grafana'), ('werther', 'identity'),
                           ('hydra', 'hydra'), ('phpbb', 'forum'), ('drupal', 'drupal')] %}
 
-{% if prefix is not none %}
-{{ prefix }}.{{ domain }}:
-  acme.cert:
-{% if config.letsencrypt.use_pebble == true %}
-    - server: https://pebble:14000/dir
-{% endif %}
-    - email: {{ config.letsencrypt.email }}
-    - renew: 60
-    - require_in:
-      - docker_container: nginx
-{% endif %}
+{% for (site, prefix) in site_and_prefix %}
 
 /opt/nginx/conf/{{ site }}.conf:
   file.managed:
@@ -102,6 +92,31 @@ nginx:
         - docker_container: drupaldemo
         - docker_container: werther
         - docker_container: hydra
+{% for (site, prefix) in site_and_prefix %}
+        - file: /opt/nginx/conf/{{ site }}.conf
+{% endfor %}
     - watch:
         - file: /opt/nginx/nginx.conf
 
+# Once nginx is started, acme is proxied through and we can
+# request certificates.
+{% for (site, prefix) in site_and_prefix %}
+{% if prefix is not none %}
+{{ prefix }}.{{ domain }}:
+  acme.cert:
+{% if config.letsencrypt.use_pebble == true %}
+    - server: https://pebble:14000/dir
+{% endif %}
+    - email: {{ config.letsencrypt.email }}
+    - renew: 60
+    - http_01_port: 8000
+    - require:
+      - docker_container: nginx
+{% endif %}
+{% endfor %}
+
+# Now that we have keys, run this special script to restart nginx and uncomment
+# that special line which will include all our other packages.
+'sed -i "s/#SECONDPASS//" /opt/nginx/nginx.conf && docker restart nginx':
+  cmd.run:
+    - onlyif: grep -q "#SECONDPASS" /opt/nginx/nginx.conf
