@@ -1,6 +1,14 @@
 #!/bin/bash
 # Bootstrap a basic machine into a salt master
 
+echo "Checking that configuration.yaml exists..."
+CONFIG_FILE="/srv/salt/configuration.yaml"
+if [ ! -f "${CONFIG_FILE}" ]; then
+   echo "${CONFIG_FILE} does not exist. Copy it from ${CONFIG_FILE}.template."
+   exit 1
+fi
+set -x
+
 MODE=${1:-base}
 echo "Bootstrapping ${MODE}"
 
@@ -19,19 +27,6 @@ if [ $MODE != "base" ]; then
     echo "Importing public key /vagrant/${MODE}_pubkey.gpg"
     sudo gpg --homedir /etc/salt/gpgkeys --import "/vagrant/${MODE}_pubkey.gpg"
 fi
-
-echo "Checking that configuration.yaml exists..."
-CONFIG_FILE="/srv/salt/configuration.yaml"
-if [ ! -f "${CONFIG_FILE}" ]; then
-   if [ ! -f "${CONFIG_FILE}.template" ]; then
-       echo "${CONFIG_FILE} does not exist, and nor does ${CONFIG_FILE}.template to create it from."
-      exit 1
-   else
-       echo "Creating ${CONFIG_FILE} based on ${CONFIG_FILE}.template."
-       sudo cp "${CONFIG_FILE}.template" "${CONFIG_FILE}"
-   fi
-fi
-set -x
 
 # echo "Installing a few dependencies..."
 # Install some dependencies

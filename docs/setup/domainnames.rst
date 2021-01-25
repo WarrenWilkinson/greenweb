@@ -15,13 +15,11 @@ are connected (see :doc:`architecture</developers/architecture>`) to
 this network.
 
 You can change the domain that DNSMasq assigns by editing the
-`configuration settings in Salt <https://github.com/WarrenWilkinson/greenweb/blob/master/salt/states/configuration.yaml.template>`_. Just copy the provided template file and edit
-it to your hearts content:
+`configuration settings in Salt <https://github.com/WarrenWilkinson/greenweb/blob/master/salt/states/configuration.yaml.template>`_:
 
 .. code-block:: console
 
    user@host:~/$ cd ~/greenweb/salt/states
-   user@host:greenweb/salt/states/$ cp configuration.yaml.template configuration.yaml
    user@host:greenweb/salt/states/$ nano configuration.yaml
 
 .. include:: ../../salt/states/configuration.yaml.template

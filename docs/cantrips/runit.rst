@@ -22,7 +22,9 @@ and start up the virtual machine and connect to it.
 
 .. code-block:: console
 
-   user@host:~/$ cd greenweb/dev
+   user@host:~/$ cd greenweb/salt/states
+   user@host:greenweb/salt/states/$ cp configuration.yaml.template configuration.yaml
+   user@host:greenweb/salt/states/$ cd ../../dev
    user@host:greenweb/dev/$ vagrant up
    user@host:greenweb/dev/$ vagrant ssh
    vagrant@vagrant$ sh /vagrant/coldstart.sh
