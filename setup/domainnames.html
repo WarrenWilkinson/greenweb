@@ -1,0 +1,312 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Changing Domain Names &mdash; GreenWeb 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Changing LDAP Passwords" href="ldappasswords.html" />
+    <link rel="prev" title="Testing Production Passwords" href="localprod.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> GreenWeb
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cantrips/runit.html">Running Greenweb Locally</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Running Your Greenweb:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pillars.html">Changing Passwords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="localprod.html">Testing Production Passwords</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Changing Domain Names</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#certificates">Certificates</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ldappasswords.html">Changing LDAP Passwords</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Information:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/documentation.html">Building the Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers/architecture.html">Mile High view of the Greenweb Architecture</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GreenWeb</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Changing Domain Names</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/setup/domainnames.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="changing-domain-names">
+<h1>Changing Domain Names<a class="headerlink" href="#changing-domain-names" title="Permalink to this headline">¶</a></h1>
+<p>Your greenweb instance has a sort of “primary” internal domain
+name. By default, it’s greenweb.ca. Since you don’t own that domain
+name, you’ll need to change it to something else.  This will have the
+effect of changing all the basic URIS. For example, forum.greenweb.ca
+will now be forum.yournewname.com or whatever you picked.</p>
+<p>The internal virtual machines are given their fully qualified domain
+names by a <a class="reference external" href="http://www.thekelleys.org.uk/dnsmasq/doc.html">DNSMasq</a>
+instance that handles DHCP on the <a class="reference external" href="https://www.openvswitch.org/">openvswitch</a> network. All internalvirtual machines
+are connected (see <a class="reference internal" href="../developers/architecture.html"><span class="doc">architecture</span></a>) to
+this network.</p>
+<p>You can change the domain that DNSMasq assigns by editing the
+<a class="reference external" href="https://github.com/WarrenWilkinson/greenweb/blob/master/salt/states/configuration.yaml.template">configuration settings in Salt</a>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user@host:~/$</span> <span class="nb">cd</span> ~/greenweb/salt/states
+<span class="gp">user@host:greenweb/salt/states/$</span> nano configuration.yaml
+</pre></div>
+</div>
+<div class="code yaml highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8; mode: yaml -*-</span>
+<span class="c1"># vim: ft=yaml</span>
+<span class="o">---</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="nb">set</span> <span class="n">internal_organization</span> <span class="o">=</span> <span class="s1">&#39;greenweb&#39;</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="nb">set</span> <span class="n">internal_toplevel_domain</span> <span class="o">=</span> <span class="s1">&#39;ca&#39;</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="nb">set</span> <span class="n">internal_domain</span> <span class="o">=</span> <span class="n">internal_organization</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">internal_toplevel_domain</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="n">internal_organization</span><span class="p">:</span> <span class="p">{{</span> <span class="n">internal_organization</span> <span class="p">}}</span>
+<span class="n">internal_toplevel_domain</span><span class="p">:</span> <span class="p">{{</span> <span class="n">internal_toplevel_domain</span> <span class="p">}}</span>
+<span class="n">internal_domain</span><span class="p">:</span> <span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}</span>
+
+<span class="n">docker</span><span class="p">:</span>
+  <span class="n">internal_ip</span><span class="p">:</span> <span class="mf">10.0</span><span class="o">.</span><span class="mf">3.14</span>
+  <span class="n">subnet</span><span class="p">:</span> <span class="mf">172.29</span><span class="o">.</span><span class="mf">0.0</span><span class="o">/</span><span class="mi">24</span>
+  <span class="n">ip_range</span><span class="p">:</span> <span class="mf">172.29</span><span class="o">.</span><span class="mf">0.128</span><span class="o">/</span><span class="mi">25</span>
+  <span class="n">gateway</span><span class="p">:</span> <span class="mf">172.29</span><span class="o">.</span><span class="mf">0.1</span>
+  <span class="n">nginx</span><span class="p">:</span> <span class="mf">172.29</span><span class="o">.</span><span class="mf">0.2</span>
+
+<span class="n">postfix</span><span class="p">:</span>
+  <span class="n">internal_ip</span><span class="p">:</span> <span class="mf">10.0</span><span class="o">.</span><span class="mf">3.34</span>
+  <span class="n">relay_domains</span><span class="p">:</span> <span class="p">[]</span>
+  <span class="n">ssl_primary_domain</span><span class="p">:</span> <span class="n">postfix</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}</span>
+  <span class="n">ssl_cert</span><span class="p">:</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">live</span><span class="o">/</span><span class="n">postfix</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}</span><span class="o">/</span><span class="n">fullchain</span><span class="o">.</span><span class="n">pem</span>
+  <span class="n">ssl_key</span><span class="p">:</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">live</span><span class="o">/</span><span class="n">postfix</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}</span><span class="o">/</span><span class="n">privkey</span><span class="o">.</span><span class="n">pem</span>
+
+<span class="n">dnsmasq</span><span class="p">:</span>
+  <span class="c1"># Add a MX record to DNSMasq so internal computers</span>
+  <span class="c1"># can resolve internal mail address.</span>
+  <span class="n">mx_records</span><span class="p">:</span>
+    <span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}:</span> <span class="n">postfix</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}</span>
+  <span class="n">cnames</span><span class="p">:</span>
+    <span class="n">pebble</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}:</span> <span class="n">docker</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}</span>
+    <span class="n">drupal</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}:</span> <span class="n">docker</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}</span>
+    <span class="n">forum</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}:</span> <span class="n">docker</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}</span>
+    <span class="n">grafana</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}:</span> <span class="n">docker</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}</span>
+    <span class="n">identity</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}:</span> <span class="n">docker</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}</span>
+    <span class="n">hydra</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}:</span> <span class="n">docker</span><span class="o">.</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}</span>
+
+<span class="n">werther</span><span class="p">:</span>
+  <span class="n">bind_dn</span><span class="p">:</span> <span class="n">cn</span><span class="o">=</span><span class="n">werther</span><span class="p">,</span><span class="n">ou</span><span class="o">=</span><span class="n">apps</span><span class="p">,</span><span class="n">dc</span><span class="o">=</span><span class="p">{{</span> <span class="n">internal_organization</span> <span class="p">}},</span><span class="n">dc</span><span class="o">=</span><span class="n">ca</span>
+
+<span class="n">drupal</span><span class="p">:</span>
+  <span class="n">smtp</span><span class="p">:</span>
+    <span class="n">username</span><span class="p">:</span> <span class="n">drupal</span><span class="o">@</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}</span>
+
+<span class="n">letsencrypt</span><span class="p">:</span>
+  <span class="c1"># Pebble is a ACME compatible test server that gets</span>
+  <span class="c1"># installed locally with testing certificates. Then we</span>
+  <span class="c1"># can use certbot in development. You do not want this</span>
+  <span class="c1"># in production! Set it to false for production!</span>
+  <span class="n">use_pebble</span><span class="p">:</span> <span class="n">true</span>
+  <span class="n">email</span><span class="p">:</span> <span class="n">postmaster</span><span class="o">@</span><span class="p">{{</span> <span class="n">internal_domain</span> <span class="p">}}</span>
+</pre></div>
+</div>
+<p>Change the <code class="code docutils literal notranslate"><span class="pre">{%</span> <span class="pre">set</span> <span class="pre">internal_organization</span> <span class="pre">=</span> <span class="pre">'greenweb'</span> <span class="pre">%}</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">{%</span> <span class="pre">set</span> <span class="pre">internal_toplevel_domain</span> <span class="pre">=</span> <span class="pre">'ca'</span> <span class="pre">%}</span></code> to something
+suitable. You’ll need to add/change the host entries <a class="reference internal" href="../cantrips/runit.html"><span class="doc">you created
+earlier</span></a> so that they point to your new name</p>
+<div class="section" id="certificates">
+<h2>Certificates<a class="headerlink" href="#certificates" title="Permalink to this headline">¶</a></h2>
+<p>During development, greenweb spawns an <a class="reference external" href="https://github.com/letsencrypt/pebble">internal pebble server</a> and uses that with certbot
+to get certificates for SSL (that’s why your browser keeps complaining
+about untrusted keys).</p>
+<p>In production, make sure you don’t use the pebble server. That’s
+controlled in the configuration.yaml file.</p>
+<p>The servers are requested by the Docker virtual machine, as part of
+<a class="reference external" href="https://github.com/WarrenWilkinson/greenweb/blob/master/salt/states/nginx/dockerized.sls">setting up nginx</a>.
+So if you’re running more virtual hosts, you’ll want to modify that
+file.</p>
+<p>Finally, postfix also requests a certificate
+<a class="reference external" href="https://github.com/WarrenWilkinson/greenweb/blob/master/salt/states/postfix/init.sls">postfix also requests a certificate</a>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ldappasswords.html" class="btn btn-neutral float-right" title="Changing LDAP Passwords" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="localprod.html" class="btn btn-neutral float-left" title="Testing Production Passwords" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Warren Wilkinson
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

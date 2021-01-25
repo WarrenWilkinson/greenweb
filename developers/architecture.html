@@ -1,0 +1,263 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Mile High view of the Greenweb Architecture &mdash; GreenWeb 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Building the Documentation" href="documentation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> GreenWeb
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cantrips/runit.html">Running Greenweb Locally</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Running Your Greenweb:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../setup/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../setup/pillars.html">Changing Passwords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../setup/localprod.html">Testing Production Passwords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../setup/domainnames.html">Changing Domain Names</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../setup/ldappasswords.html">Changing LDAP Passwords</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Information:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Building the Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Mile High view of the Greenweb Architecture</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GreenWeb</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Mile High view of the Greenweb Architecture</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/developers/architecture.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="mile-high-view-of-the-greenweb-architecture">
+<h1>Mile High view of the Greenweb Architecture<a class="headerlink" href="#mile-high-view-of-the-greenweb-architecture" title="Permalink to this headline">¶</a></h1>
+<p>Out of the box, the GreenWeb provisions a vmhost with infrastructure
+software, lxc virtual machines and a libvirt virtual machine (docker).</p>
+<dl class="docutils">
+<dt>vmhost</dt>
+<dd>Contains an openvswitch network bridge and a nft firewall. Serves as a ‘bastion’
+server. Also has a salt-minion connected to the salt master. It also has a telegraf
+agent reporting metrics to influxdb.</dd>
+<dt>dns</dt>
+<dd>A lxc virtual machine to host the dnsmasq software and manage DNS names on the
+openvswitch network.</dd>
+<dt>salt</dt>
+<dd>A lxc virtual machine to be a salt master.</dd>
+<dt>logging</dt>
+<dd>A lxc virtual machine to host rsyslog and receive logging messages. Unifies logging.</dd>
+<dt>postgresql</dt>
+<dd>An lxc virtual machine to host postgresql database.  It contains database for
+orm-hydra, phpbb and drupal.</dd>
+<dt>influxdb</dt>
+<dd>An lxc virtual machine to host influxdb database.</dd>
+<dt>ldap</dt>
+<dd>An lxc virtual machine to host the ldap database.</dd>
+<dt>postfix</dt>
+<dd>An lxc virtual machine to serve as email infrastructure. It contains postfix and
+dovecot. It is integrated into ldap.</dd>
+<dt>docker</dt>
+<dd><p class="first">A libvirt virtual machine (i.e. more isolated) that runs most of the front end services:</p>
+<dl class="last docutils">
+<dt>hydra:</dt>
+<dd>orm-hydra provides oauth2 support for drupal, phpbb and grafana.</dd>
+<dt>werther:</dt>
+<dd>A login manager, integrated into hydra and ldap.</dd>
+<dt>grafana:</dt>
+<dd>A data visualization package, integrates with influxdb.</dd>
+<dt>phpbb:</dt>
+<dd>Web forum software, relies on a postgresql database and postfix emailing infrastructure.</dd>
+<dt>drupal:</dt>
+<dd>Web site software, relies on a postgresql database and postfix emailing infrastructure.</dd>
+</dl>
+</dd>
+</dl>
+<div class="figure" id="id1">
+<p class="plantuml">
+<img src="../_images/plantuml-a634e06bdbb3f4b1f65960c2044b4014e105f9b1.png" alt="Mile High Architecture Diagram" />
+</p>
+<p class="caption"><span class="caption-text">Mile High Green Web Architecture Diagram</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="documentation.html" class="btn btn-neutral float-left" title="Building the Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Warren Wilkinson
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

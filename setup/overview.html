@@ -1,0 +1,245 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Overview &mdash; GreenWeb 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Changing Passwords" href="pillars.html" />
+    <link rel="prev" title="Running Greenweb Locally" href="../cantrips/runit.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> GreenWeb
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cantrips/runit.html">Running Greenweb Locally</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Running Your Greenweb:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pillars.html">Changing Passwords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="localprod.html">Testing Production Passwords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="domainnames.html">Changing Domain Names</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ldappasswords.html">Changing LDAP Passwords</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Information:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/documentation.html">Building the Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers/architecture.html">Mile High view of the Greenweb Architecture</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GreenWeb</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Overview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/setup/overview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>Even though this project provides a infrastructure ‘templates’, you’re
+still going to get your hands dirty setting up your own greenweb.</p>
+<p>Have you familiarized yourself with <a class="reference internal" href="../cantrips/runit.html"><span class="doc">launching the development
+instance of greenweb</span></a>?  We’re going to do basically
+that, but insert your security passwords in place of several
+placeholder passwords. We’re also going to:</p>
+<ul class="simple">
+<li>Run your production instance locally, just lke a development instance.</li>
+<li>Customize the users database (and talk about how to maintain it).</li>
+<li>Install your production instance onto production hardware.</li>
+<li>Customize DNS records so your site is accessible.</li>
+<li>Discuss back-ups.</li>
+<li>Discuss maintenance and development: how you can build onto your greenweb.</li>
+</ul>
+<p>To elaborate that last bullet, the typical development cycle is:</p>
+<ol class="arabic simple">
+<li>Review and pull or create upstream greenweb changes.</li>
+<li>Modify and maintain your sites salt environment (to be explained).</li>
+<li>Build/update a local copy of your production instance to work out the kinks.</li>
+<li>Build/update your production instance.</li>
+</ol>
+<p>A strong unix background will be very helpful to you. Greenweb isn’t a
+‘product’, it’s a set of executable build scripts that deploy a lot of
+software products. The better your unix background, the easier
+debugging will be for you.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pillars.html" class="btn btn-neutral float-right" title="Changing Passwords" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../cantrips/runit.html" class="btn btn-neutral float-left" title="Running Greenweb Locally" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Warren Wilkinson
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

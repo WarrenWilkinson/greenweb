@@ -1,0 +1,305 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Changing Passwords &mdash; GreenWeb 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Testing Production Passwords" href="localprod.html" />
+    <link rel="prev" title="Overview" href="overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> GreenWeb
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cantrips/runit.html">Running Greenweb Locally</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Running Your Greenweb:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Changing Passwords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="localprod.html">Testing Production Passwords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="domainnames.html">Changing Domain Names</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ldappasswords.html">Changing LDAP Passwords</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Information:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/documentation.html">Building the Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers/architecture.html">Mile High view of the Greenweb Architecture</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GreenWeb</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Changing Passwords</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/setup/pillars.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="changing-passwords">
+<h1>Changing Passwords<a class="headerlink" href="#changing-passwords" title="Permalink to this headline">¶</a></h1>
+<p>You make greenweb your own by changing the locks. And the “locks” are
+passwords, credentials, and private keys.</p>
+<p>Greenweb uses <a class="reference external" href="https://docs.saltstack.com/en/latest/">Salt</a>, (a tool
+that installs software and configures systems) to setup passwords. To
+change a password, let Salt update it; Just put the updated password
+in the <a class="reference external" href="https://docs.saltstack.com/en/getstarted/config/pillar.html">Salt Pillar</a>.</p>
+<p>Production passwords are stored in the salt/pillar/prod/ directory,
+and on a fresh checkout it’s mostly empty.  The files in
+salt/pillar/demo/ demonstrate what and how passwords are specified for
+different components.</p>
+<p>You can just copy the files in the salt/pillar/demo directory into
+the salt/pillar/prod directory and update the passwords, but for extra security, <a class="reference external" href="https://docs.saltstack.com/en/latest/ref/renderers/all/salt.renderers.gpg.html">encrypt the passwords within the files themselves</a>.</p>
+<p>Encryption prevents your passwords from being read by anyone who has
+access to your git repository.  It’s a pain in the ass, but you only
+have to do it once.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user@host:~/$</span> gpg --full-generate-key
+<span class="gp">user@host:~/$</span> gpg --list-keys
+<span class="gp">user@host:~/$</span> <span class="nb">cd</span> ~/greenweb/dev/
+<span class="gp">user@host:greenweb/dev/$</span> gpg --armor --export-secret-key &lt;KEY-NAME&gt; &gt; prod_privkey.gpg
+<span class="gp">user@host:greenweb/dev/$</span> gpg --armor --export &lt;KEY-NAME&gt; &gt; prod_pubkey.gpg
+</pre></div>
+</div>
+<p>The <code class="code docutils literal notranslate"><span class="pre">&lt;KEY-NAME&gt;</span></code> name was printed when you ran <code class="code docutils literal notranslate"><span class="pre">gpg</span>
+<span class="pre">--list-keys</span></code>. It resembles <cite>E6FC8A182A156E9E16209DE6C6CF6DC6DDCB8906</cite>.
+Those commands put your keys into your greenweb repos dev/ folder (and
+a .gitignore rule prevents accidentally committing .gpg files in
+there). You should backup your public and private keys to a safe place.</p>
+<p>With the public key you can encrypt a password:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user@host:~/$</span> <span class="nb">echo</span> -n <span class="s2">&quot;supersecret&quot;</span> <span class="p">|</span> gpg --armor --batch --trust-model always --encrypt -r &lt;KEY-NAME&gt;
+
+<span class="gp">#</span> Or on another computer, first import the public key
+<span class="gp">user@othercomputer:~/$</span> gpg --import prod_pubkey.gpg
+<span class="gp">user@othercomputer:~/$</span> <span class="nb">echo</span> -n <span class="s2">&quot;supersecret&quot;</span> <span class="p">|</span> gpg --armor --batch --trust-model always --encrypt -r &lt;KEY-NAME&gt;
+</pre></div>
+</div>
+<p>Now that you can encrypt passwords, here is how you’d update Grafana’s
+administration-user’s password:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">user@host:~/$</span> <span class="nb">cd</span> greenweb/salt/pillar
+<span class="gp">user@host:greenweb/salt/pillar/$</span> cp demo/grafana.sls prod/grafana.sls
+<span class="gp">user@host:greenweb/salt/pillar/$</span> nano prod/grafana.sls
+</pre></div>
+</div>
+<p>Replace the plain text passwords with the GPG encrypted ones.  My
+final file looks like this. Just try to guess those passwords!</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">#!yaml|gpg -*- coding: utf-8; mode: yaml -*-</span>
+<span class="c1"># vim: ft=yaml</span>
+<span class="nn">---</span>
+
+<span class="nt">grafana</span><span class="p">:</span>
+  <span class="nt">admin</span><span class="p">:</span>
+    <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">admin</span>
+    <span class="nt">password</span><span class="p">:</span> <span class="p p-Indicator">|</span>
+      <span class="no">-----BEGIN PGP MESSAGE-----</span>
+
+      <span class="no">hQGMA7efR1oP+rbXAQwAibaRBOtJyPlVhpaGw48ceukXQlEQGLE07v7qzKCbR4+n</span>
+      <span class="no">j7uYAOxFUmndPkudUgbvFo3CWw/N/XLKm2aK7PqdFeoa8xrhMqEaFI9+ZZhI7W4r</span>
+      <span class="no">eu81XN6MCYKEgLTrAUs1bzef+Qk/wJ+WtEdPw8JfOAIelBT7DyM8TqRCzbx7VMyv</span>
+      <span class="no">Lgw9yUnsu1iMkZ5GgmoLxhqMy9dsgjCqVkPNbk9yaN434++/Rh6ycsj/uAxiIXBS</span>
+      <span class="no">5m5f2GF8KrKjEFAe6nr8tr0zpN1YQ9aZpgtMHG9vGopDR3HWlPlDDFmRxaLGxn7z</span>
+      <span class="no">xTSMOdxWTwuSWAFY6t7pXIVCCY7RF2sm+bUnWdgVTR7STPGTV72UxFpfWEkASKzr</span>
+      <span class="no">NOXBq1ZY8+WHGALvFZTrz1REIQOVHQkGbms5AJAReuO0mNR+jYKMu+QLaamxz8qq</span>
+      <span class="no">/L4hsdoMAZ61Ilkkhn9rL+fITgqBeaqLuvXQWDIsosGArXQTKdGDWCHWrPVIWppJ</span>
+      <span class="no">Ha2DtMOv2qNeYFbqzyi50lMBlHFOMYGMBfcXftsssMy35pNi9hp3NeueSkNb2oUL</span>
+      <span class="no">aaVbeq0BNhhAzSMlGZntYk9izVToT+aYiC5OuL7BBETjUVrrBqVEnMUU4j2FlOws</span>
+      <span class="no">eKQHIA==</span>
+      <span class="no">=dU+p</span>
+      <span class="no">-----END PGP MESSAGE-----</span>
+  <span class="nt">secret_key</span><span class="p">:</span> <span class="p p-Indicator">|</span>
+    <span class="no">-----BEGIN PGP MESSAGE-----</span>
+
+    <span class="no">hQGMA7efR1oP+rbXAQv/bL0DBrdUT/VJJCIGJ/CCzI2MiMyOnO/gr1E1uEuYaJs0</span>
+    <span class="no">wegpRhVRKdhx+OcoIAxRbA238+4OzOxZmQkIPkyQtFCqcarAbzyg/bBHEnViz9Ct</span>
+    <span class="no">/DHF+peT9jaRLMTIQm7yZ6MUvxOtlPe+NnjL+rYY5+jclOd7Km20FNNw3nACqRdK</span>
+    <span class="no">xS3b3z1pgN0wmFTV8hGYBx0YJeLPMUjhCLxwWLcXUjUs2U8bNyS/7rcrGYNSxHwc</span>
+    <span class="no">RD2xM7wC0EeEe5VkHBvlpxSWi08yQrPg5xV4Ia5AaUhFPdkhcwwfWHsKqaBrUMdi</span>
+    <span class="no">nB13GHoNk4WrP3+NpRZ3dEBCsbobQcHAHdLvVnwZprBfx+Lol3Sk/b0mbh0+1ThQ</span>
+    <span class="no">p+s1AAPmHAjaQMzXqTaXAE0JIn3kKuoWSpoXfEzu6fl5en9PxspAJdx02i9ZMfCQ</span>
+    <span class="no">juP1hYmQKfIYQ68p3X19BapX91YetEGIABpXpZHw+tgjnmsWEnUqLV0t/oMqzQ3V</span>
+    <span class="no">ekGPR8+xVXvoHhKOD6Zy0lMBL8dTt8YzylNZcsAg5TSvAWJEttytlRZkuz7die2I</span>
+    <span class="no">tNAOcGBtyJl92lQ/4B8s5L6nYh4Mb6CfNSDKVxsMygJ8FlWghxYqAq0I4CKSZVGB</span>
+    <span class="no">fIVq8A==</span>
+    <span class="no">=n9W1</span>
+    <span class="no">-----END PGP MESSAGE-----</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="localprod.html" class="btn btn-neutral float-right" title="Testing Production Passwords" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="overview.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Warren Wilkinson
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
